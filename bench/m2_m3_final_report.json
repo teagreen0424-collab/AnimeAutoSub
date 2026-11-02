@@ -1,0 +1,2199 @@
+{
+  "title": "AnimeAutoSub M2/M3 Full Pipeline Benchmark Report",
+  "long_12_frames": {
+    "dataset": "12_frames_long_set",
+    "frames_count": 12,
+    "total_truth_chars": 317,
+    "center_frame_baseline": {
+      "edit_distance": 51,
+      "cer_percent": 16.09,
+      "fully_correct_count": 2
+    },
+    "random_pick_baseline": {
+      "monte_carlo_expected_dist": 74.9,
+      "monte_carlo_expected_cer_percent": 23.63,
+      "seed42_dist": 86,
+      "seed42_cer_percent": 27.13
+    },
+    "individual_offsets": {
+      "offset_-0.50s": {
+        "total_dist": 73,
+        "cer_percent": 23.03
+      },
+      "offset_-0.25s": {
+        "total_dist": 61,
+        "cer_percent": 19.24
+      },
+      "offset_+0.00s": {
+        "total_dist": 51,
+        "cer_percent": 16.09
+      },
+      "offset_+0.25s": {
+        "total_dist": 76,
+        "cer_percent": 23.97
+      },
+      "offset_+0.50s": {
+        "total_dist": 112,
+        "cer_percent": 35.33
+      }
+    },
+    "m2_temporal_voting": {
+      "edit_distance": 53,
+      "cer_percent": 16.72,
+      "fully_correct_count": 2,
+      "improvement_over_center_cer_percent": -0.63,
+      "improvement_over_random_cer_percent": 6.91
+    },
+    "n5_rejection_strategies": {
+      "rejected_frames_count": 0,
+      "rejection_rate_percent": 0.0,
+      "drop_strategy": {
+        "edit_distance": 51,
+        "cer_percent": 16.09
+      },
+      "retry_strategy": {
+        "edit_distance": 51,
+        "cer_percent": 16.09
+      },
+      "vote_strategy": {
+        "edit_distance": 53,
+        "cer_percent": 16.72
+      }
+    },
+    "frames": [
+      {
+        "id": 2,
+        "verified_ts": 150.48,
+        "truth": "こうなると暮らしている家がそこまで離れていなかったのは、不幸中の幸いだった。",
+        "truth_len": 38,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 149.98,
+            "text": "労うなるほ、界幸予い孕きだち雲まで誰れていな。、不幸中の幸いだった。",
+            "box_width": 882.0022583007812,
+            "dist_to_truth": 17,
+            "sim_to_center": 0.986,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 150.23,
+            "text": "労うなるほ、界幸予い孕きだち雲まで誰れていな。は、不幸中の幸いだった。",
+            "box_width": 882.0022583007812,
+            "dist_to_truth": 16,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 150.48,
+            "text": "労うなるほ、界幸予い孕きだち雲まで誰れていな。は、不幸中の幸いだった。",
+            "box_width": 882.0022583007812,
+            "dist_to_truth": 16,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 150.73,
+            "text": "労うなるほ、界幸予い孕きだち雲まで誰れていな。は、不幸中の幸いだった。",
+            "box_width": 882.0022583007812,
+            "dist_to_truth": 16,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 150.98,
+            "text": "労うなるほ、界幸予い孕きだち雲まで誰れていな。は、不幸中の幸いだった。",
+            "box_width": 882.0022583007812,
+            "dist_to_truth": 16,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "労うなるほ、界幸予い孕きだち雲まで誰れていな。は、不幸中の幸いだった。",
+        "center_dist": 16,
+        "voted_text": "労うなるほ、界幸予い孕きだち雲まで誰れていな。は、不幸中の幸いだった。",
+        "voted_dist": 16,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "労うなるほ、界幸予い孕きだち雲まで誰れていな。は、不幸中の幸いだった。",
+            "dist": 16
+          },
+          "retry": {
+            "text": "労うなるほ、界幸予い孕きだち雲まで誰れていな。は、不幸中の幸いだった。",
+            "dist": 16
+          },
+          "vote": {
+            "text": "労うなるほ、界幸予い孕きだち雲まで誰れていな。は、不幸中の幸いだった。",
+            "dist": 16
+          }
+        }
+      },
+      {
+        "id": 3,
+        "verified_ts": 276.275,
+        "truth": "そんな晴斗に迷惑をかけないよう、どうにか自立しようとしている瑛斗。",
+        "truth_len": 33,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 275.775,
+            "text": "そんな晴斗に迷惑をかけないよう、どうにか自立しょうとしている瑛斗",
+            "box_width": 585.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 276.025,
+            "text": "そんな晴斗に迷惑をかけないよう、どうにか自立しょうとしている瑛斗",
+            "box_width": 585.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 276.275,
+            "text": "そんな晴斗に迷惑をかけないよう、どうにか自立しょうとしている瑛斗",
+            "box_width": 585.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 276.525,
+            "text": "そんな晴斗に迷惑をかけないよう、どうにか自立しょうとしている瑛斗",
+            "box_width": 585.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 276.775,
+            "text": "そんな晴斗に迷惑をかけないよう、どうにか自立しょうとしている瑛斗",
+            "box_width": 585.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "そんな晴斗に迷惑をかけないよう、どうにか自立しょうとしている瑛斗",
+        "center_dist": 2,
+        "voted_text": "そんな晴斗に迷惑をかけないよう、どうにか自立しょうとしている瑛斗",
+        "voted_dist": 2,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "そんな晴斗に迷惑をかけないよう、どうにか自立しょうとしている瑛斗",
+            "dist": 2
+          },
+          "retry": {
+            "text": "そんな晴斗に迷惑をかけないよう、どうにか自立しょうとしている瑛斗",
+            "dist": 2
+          },
+          "vote": {
+            "text": "そんな晴斗に迷惑をかけないよう、どうにか自立しょうとしている瑛斗",
+            "dist": 2
+          }
+        }
+      },
+      {
+        "id": 4,
+        "verified_ts": 396.295,
+        "truth": "枝彌「——えっ、と、どういうこと？」",
+        "truth_len": 18,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 395.795,
+            "text": "枝彌一えっ、ど「&22c11s?",
+            "box_width": 301.00164794921875,
+            "dist_to_truth": 13,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 396.045,
+            "text": "枝彌一えっ、ど「&22c11s?",
+            "box_width": 301.00164794921875,
+            "dist_to_truth": 13,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 396.295,
+            "text": "枝彌一えっ、ど「&22c11s?",
+            "box_width": 301.00164794921875,
+            "dist_to_truth": 13,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 396.545,
+            "text": "枝彌一えっ、ど「&22c11s?",
+            "box_width": 301.00164794921875,
+            "dist_to_truth": 13,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 396.795,
+            "text": "枝彌一えっ、ど「&22c11s?",
+            "box_width": 301.00164794921875,
+            "dist_to_truth": 13,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "枝彌一えっ、ど「&22c11s?",
+        "center_dist": 13,
+        "voted_text": "枝彌一えっ、ど「&22c11s?",
+        "voted_dist": 13,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "枝彌一えっ、ど「&22c11s?",
+            "dist": 13
+          },
+          "retry": {
+            "text": "枝彌一えっ、ど「&22c11s?",
+            "dist": 13
+          },
+          "vote": {
+            "text": "枝彌一えっ、ど「&22c11s?",
+            "dist": 13
+          }
+        }
+      },
+      {
+        "id": 5,
+        "verified_ts": 528.345,
+        "truth": "晴斗「取り返しのつかないことやらかしそうで、心配なんだよ」",
+        "truth_len": 29,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 527.845,
+            "text": "晴斗「取り返ししのつかないことやらかしそうで心配なんたよ」",
+            "box_width": 524.0,
+            "dist_to_truth": 3,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 528.095,
+            "text": "晴斗「取り返ししのつかないことやらかしそうで心配なんたよ」",
+            "box_width": 521.0,
+            "dist_to_truth": 3,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 528.345,
+            "text": "晴斗「取り返ししのつかないことやらかしそうで心配なんたよ」",
+            "box_width": 522.0,
+            "dist_to_truth": 3,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 528.595,
+            "text": "晴斗「取り返しのつかないことやらかしそうで心配なんたよ」",
+            "box_width": 520.0009765625,
+            "dist_to_truth": 2,
+            "sim_to_center": 0.982,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 528.845,
+            "text": "晴斗「取り返ししのつかないことやらかしそうで心配なんたよ」",
+            "box_width": 521.0009765625,
+            "dist_to_truth": 3,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "晴斗「取り返ししのつかないことやらかしそうで心配なんたよ」",
+        "center_dist": 3,
+        "voted_text": "晴斗「取り返ししのつかないことやらかしそうで心配なんたよ」",
+        "voted_dist": 3,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "晴斗「取り返ししのつかないことやらかしそうで心配なんたよ」",
+            "dist": 3
+          },
+          "retry": {
+            "text": "晴斗「取り返ししのつかないことやらかしそうで心配なんたよ」",
+            "dist": 3
+          },
+          "vote": {
+            "text": "晴斗「取り返ししのつかないことやらかしそうで心配なんたよ」",
+            "dist": 3
+          }
+        }
+      },
+      {
+        "id": 6,
+        "verified_ts": 658.91,
+        "truth": "——機会が訪れたのは、数日後だった。",
+        "truth_len": 18,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 658.41,
+            "text": "一機会が訪れたのは、数日後だった。",
+            "box_width": 333.0014953613281,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 658.66,
+            "text": "一機会が訪れたのは、数日後だった。",
+            "box_width": 333.0014953613281,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 658.91,
+            "text": "一機会が訪れたのは、数日後だった。",
+            "box_width": 333.0014953613281,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 659.16,
+            "text": "一機会が訪れたのは、数日後だった。",
+            "box_width": 333.0014953613281,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 659.41,
+            "text": "一機会が訪れたのは、数日後だった。",
+            "box_width": 333.0014953613281,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "一機会が訪れたのは、数日後だった。",
+        "center_dist": 2,
+        "voted_text": "一機会が訪れたのは、数日後だった。",
+        "voted_dist": 2,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "一機会が訪れたのは、数日後だった。",
+            "dist": 2
+          },
+          "retry": {
+            "text": "一機会が訪れたのは、数日後だった。",
+            "dist": 2
+          },
+          "vote": {
+            "text": "一機会が訪れたのは、数日後だった。",
+            "dist": 2
+          }
+        }
+      },
+      {
+        "id": 13,
+        "verified_ts": 1661.69,
+        "truth": "瑛斗は午後になると友達と遊ぶと出かけ、家には私と晴斗、そして拓斗の三人だけになった。",
+        "truth_len": 42,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 1661.19,
+            "text": "瑛斗は午後になると友達と遊ぶと出かけ家にはニ人だけになった。",
+            "box_width": 692.000732421875,
+            "dist_to_truth": 13,
+            "sim_to_center": 0.845,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 1661.44,
+            "text": "瑛斗は午後になると友達と遊ぶと出かけ家には私と晴斗、そして拓斗のニ人だけになった。",
+            "box_width": 692.000732421875,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 1661.69,
+            "text": "瑛斗は午後になると友達と遊ぶと出かけ家には私と晴斗、そして拓斗のニ人だけになった。",
+            "box_width": 692.000732421875,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 1661.94,
+            "text": "瑛斗は午後になると友達と遊ぶと出かけ家には私と晴斗、そして拓斗のニ人だけになった。",
+            "box_width": 692.000732421875,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 1662.19,
+            "text": "きっかけらしいきっかけは、なかったと思う。",
+            "box_width": 480.0,
+            "dist_to_truth": 37,
+            "sim_to_center": 0.258,
+            "degraded_reasons": [
+              "similarity_to_center_lt_0.60"
+            ]
+          }
+        ],
+        "valid_candidates_count": 4,
+        "discarded_candidates_count": 1,
+        "is_low_confidence": false,
+        "center_text": "瑛斗は午後になると友達と遊ぶと出かけ家には私と晴斗、そして拓斗のニ人だけになった。",
+        "center_dist": 2,
+        "voted_text": "瑛斗は午後になると友達と遊ぶと出かけ家には私と晴斗、そして拓斗のニ人だけになった。",
+        "voted_dist": 2,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "瑛斗は午後になると友達と遊ぶと出かけ家には私と晴斗、そして拓斗のニ人だけになった。",
+            "dist": 2
+          },
+          "retry": {
+            "text": "瑛斗は午後になると友達と遊ぶと出かけ家には私と晴斗、そして拓斗のニ人だけになった。",
+            "dist": 2
+          },
+          "vote": {
+            "text": "瑛斗は午後になると友達と遊ぶと出かけ家には私と晴斗、そして拓斗のニ人だけになった。",
+            "dist": 2
+          }
+        }
+      },
+      {
+        "id": 14,
+        "verified_ts": 1762.68,
+        "truth": "枝彌「問答無用です！とにかく、二人はそこで見ていなさい」",
+        "truth_len": 28,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 1762.18,
+            "text": "枝彌「問答無用です！とにかく、二人はそこで見ていなきい」",
+            "box_width": 501.0010070800781,
+            "dist_to_truth": 1,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 1762.43,
+            "text": "枝彌「問答無用です！とにかく、二人はそこで見ていなきい」",
+            "box_width": 501.0039978027344,
+            "dist_to_truth": 1,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 1762.68,
+            "text": "枝彌「問答無用です！とにかく、二人はそこで見ていなきい」",
+            "box_width": 501.0010070800781,
+            "dist_to_truth": 1,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 1762.93,
+            "text": "枝彌「問答無用です！とにかく、二人はそこで見ていなきい」",
+            "box_width": 501.0010070800781,
+            "dist_to_truth": 1,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 1763.18,
+            "text": "枝彌「問答無用です！とにかく、二人はそこで見ていなきい」",
+            "box_width": 501.0010070800781,
+            "dist_to_truth": 1,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "枝彌「問答無用です！とにかく、二人はそこで見ていなきい」",
+        "center_dist": 1,
+        "voted_text": "枝彌「問答無用です！とにかく、二人はそこで見ていなきい」",
+        "voted_dist": 1,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "枝彌「問答無用です！とにかく、二人はそこで見ていなきい」",
+            "dist": 1
+          },
+          "retry": {
+            "text": "枝彌「問答無用です！とにかく、二人はそこで見ていなきい」",
+            "dist": 1
+          },
+          "vote": {
+            "text": "枝彌「問答無用です！とにかく、二人はそこで見ていなきい」",
+            "dist": 1
+          }
+        }
+      },
+      {
+        "id": 17,
+        "verified_ts": 2177.09,
+        "truth": "晴斗「瑛斗、お前……」",
+        "truth_len": 11,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 2176.59,
+            "text": "晴斗前00『瑛斗、、お前",
+            "box_width": 141.0035400390625,
+            "dist_to_truth": 8,
+            "sim_to_center": 0.909,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 2176.84,
+            "text": "晴斗山00『瑛斗、、お前",
+            "box_width": 141.0035400390625,
+            "dist_to_truth": 8,
+            "sim_to_center": 0.909,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 2177.09,
+            "text": "晴斗0『瑛斗、、お前",
+            "box_width": 141.0035400390625,
+            "dist_to_truth": 6,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 2177.34,
+            "text": "瑛斗「もし兄貴のせいでばあちゃんがここから出て行くなら、俺も一緒に出て",
+            "box_width": 821.00244140625,
+            "dist_to_truth": 32,
+            "sim_to_center": 0.133,
+            "degraded_reasons": [
+              "deviation_from_median_gt_50pct",
+              "similarity_to_center_lt_0.60"
+            ]
+          },
+          {
+            "offset": 0.5,
+            "ts": 2177.59,
+            "text": "瑛斗「もし兄貴のせいでばあちゃんがここから出て行くなら、俺も一緒に出て",
+            "box_width": 821.0006103515625,
+            "dist_to_truth": 32,
+            "sim_to_center": 0.133,
+            "degraded_reasons": [
+              "deviation_from_median_gt_50pct",
+              "similarity_to_center_lt_0.60"
+            ]
+          }
+        ],
+        "valid_candidates_count": 3,
+        "discarded_candidates_count": 2,
+        "is_low_confidence": false,
+        "center_text": "晴斗0『瑛斗、、お前",
+        "center_dist": 6,
+        "voted_text": "晴斗前00『瑛斗、、お前",
+        "voted_dist": 8,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "晴斗0『瑛斗、、お前",
+            "dist": 6
+          },
+          "retry": {
+            "text": "晴斗0『瑛斗、、お前",
+            "dist": 6
+          },
+          "vote": {
+            "text": "晴斗前00『瑛斗、、お前",
+            "dist": 8
+          }
+        }
+      },
+      {
+        "id": 20,
+        "verified_ts": 2579.86,
+        "truth": "拓斗「晴斗兄ちゃんにあげたの！？それとも瑛斗兄ちゃん！？」",
+        "truth_len": 29,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 2579.36,
+            "text": "拓斗「晴斗兄ちそれとも瑛斗兄ちゃん！?」",
+            "box_width": 277.0018005371094,
+            "dist_to_truth": 10,
+            "sim_to_center": 0.816,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 2579.61,
+            "text": "拓斗「晴斗兄ちそれとも瑛斗兄ちゃん！?」",
+            "box_width": 277.0018005371094,
+            "dist_to_truth": 10,
+            "sim_to_center": 0.816,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 2579.86,
+            "text": "拓斗「晴斗兄ちやんにあげたの！？それとも瑛斗兄ちゃん！?」",
+            "box_width": 344.0058288574219,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 2580.11,
+            "text": "拓斗「晴斗兄ちやんにあげたの！？それとも瑛斗兄ちゃん！?」",
+            "box_width": 344.0058288574219,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 2580.36,
+            "text": "拓斗「晴斗兄ちやんにあげたの！？それとも瑛斗兄ちゃん！?」",
+            "box_width": 344.0058288574219,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "拓斗「晴斗兄ちやんにあげたの！？それとも瑛斗兄ちゃん！?」",
+        "center_dist": 2,
+        "voted_text": "拓斗「晴斗兄ちやんにあげたの！？それとも瑛斗兄ちゃん！?」",
+        "voted_dist": 2,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "拓斗「晴斗兄ちやんにあげたの！？それとも瑛斗兄ちゃん！?」",
+            "dist": 2
+          },
+          "retry": {
+            "text": "拓斗「晴斗兄ちやんにあげたの！？それとも瑛斗兄ちゃん！?」",
+            "dist": 2
+          },
+          "vote": {
+            "text": "拓斗「晴斗兄ちやんにあげたの！？それとも瑛斗兄ちゃん！?」",
+            "dist": 2
+          }
+        }
+      },
+      {
+        "id": 23,
+        "verified_ts": 2985.535,
+        "truth": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+        "truth_len": 25,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 2985.035,
+            "text": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+            "box_width": 664.000732421875,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 2985.285,
+            "text": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+            "box_width": 664.000732421875,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 2985.535,
+            "text": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+            "box_width": 664.000732421875,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 2985.785,
+            "text": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+            "box_width": 664.000732421875,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 2986.035,
+            "text": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+            "box_width": 664.000732421875,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+        "center_dist": 0,
+        "voted_text": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+        "voted_dist": 0,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+            "dist": 0
+          },
+          "retry": {
+            "text": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+            "dist": 0
+          },
+          "vote": {
+            "text": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+            "dist": 0
+          }
+        }
+      },
+      {
+        "id": 25,
+        "verified_ts": 3271.74,
+        "truth": "今度はそれを基準にしてあの子たちも行動すると思う。",
+        "truth_len": 25,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 3271.24,
+            "text": "含度はそれを基準にしてあの子たちも行動すると",
+            "box_width": 831.0023803710938,
+            "dist_to_truth": 4,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 3271.49,
+            "text": "含度はそれを基準にしてあの子たちも行動すると",
+            "box_width": 831.0023803710938,
+            "dist_to_truth": 4,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 3271.74,
+            "text": "含度はそれを基準にしてあの子たちも行動すると",
+            "box_width": 831.0023803710938,
+            "dist_to_truth": 4,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 3271.99,
+            "text": "含度はそれを基準にしてあの子たちも行動すると",
+            "box_width": 831.0023803710938,
+            "dist_to_truth": 4,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 3272.24,
+            "text": "含度はそれを基準にしてあの子たちも行動すると",
+            "box_width": 831.0023803710938,
+            "dist_to_truth": 4,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "含度はそれを基準にしてあの子たちも行動すると",
+        "center_dist": 4,
+        "voted_text": "含度はそれを基準にしてあの子たちも行動すると",
+        "voted_dist": 4,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "含度はそれを基準にしてあの子たちも行動すると",
+            "dist": 4
+          },
+          "retry": {
+            "text": "含度はそれを基準にしてあの子たちも行動すると",
+            "dist": 4
+          },
+          "vote": {
+            "text": "含度はそれを基準にしてあの子たちも行動すると",
+            "dist": 4
+          }
+        }
+      },
+      {
+        "id": 28,
+        "verified_ts": 3635.92,
+        "truth": "よっぽど自分が一番だって証明したいようね。",
+        "truth_len": 21,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 3635.42,
+            "text": "よっぽど自分が一番だって証明したいようね。",
+            "box_width": 774.0,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 3635.67,
+            "text": "よっぽど自分が一番だって証明したいようね。",
+            "box_width": 774.0,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 3635.92,
+            "text": "よっぽど自分が一番だって証明したいようね。",
+            "box_width": 774.0,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 3636.17,
+            "text": "よっぽど自分が一番だって証明したいようね。",
+            "box_width": 774.0,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 3636.42,
+            "text": "よっぽど自分が一番だって証明したいようね。",
+            "box_width": 774.0,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "よっぽど自分が一番だって証明したいようね。",
+        "center_dist": 0,
+        "voted_text": "よっぽど自分が一番だって証明したいようね。",
+        "voted_dist": 0,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "よっぽど自分が一番だって証明したいようね。",
+            "dist": 0
+          },
+          "retry": {
+            "text": "よっぽど自分が一番だって証明したいようね。",
+            "dist": 0
+          },
+          "vote": {
+            "text": "よっぽど自分が一番だって証明したいようね。",
+            "dist": 0
+          }
+        }
+      }
+    ]
+  },
+  "short_15_frames": {
+    "dataset": "15_frames_short_set",
+    "frames_count": 15,
+    "total_truth_chars": 439,
+    "center_frame_baseline": {
+      "edit_distance": 98,
+      "cer_percent": 22.32,
+      "fully_correct_count": 2
+    },
+    "random_pick_baseline": {
+      "monte_carlo_expected_dist": 108.89,
+      "monte_carlo_expected_cer_percent": 24.8,
+      "seed42_dist": 108,
+      "seed42_cer_percent": 24.6
+    },
+    "individual_offsets": {
+      "offset_-0.50s": {
+        "total_dist": 101,
+        "cer_percent": 23.01
+      },
+      "offset_-0.25s": {
+        "total_dist": 101,
+        "cer_percent": 23.01
+      },
+      "offset_+0.00s": {
+        "total_dist": 98,
+        "cer_percent": 22.32
+      },
+      "offset_+0.25s": {
+        "total_dist": 122,
+        "cer_percent": 27.79
+      },
+      "offset_+0.50s": {
+        "total_dist": 122,
+        "cer_percent": 27.79
+      }
+    },
+    "m2_temporal_voting": {
+      "edit_distance": 98,
+      "cer_percent": 22.32,
+      "fully_correct_count": 2,
+      "improvement_over_center_cer_percent": 0.0,
+      "improvement_over_random_cer_percent": 2.48
+    },
+    "n5_rejection_strategies": {
+      "rejected_frames_count": 2,
+      "rejection_rate_percent": 13.33,
+      "drop_strategy": {
+        "edit_distance": 139,
+        "cer_percent": 31.66
+      },
+      "retry_strategy": {
+        "edit_distance": 98,
+        "cer_percent": 22.32
+      },
+      "vote_strategy": {
+        "edit_distance": 98,
+        "cer_percent": 22.32
+      }
+    },
+    "frames": [
+      {
+        "id": 1,
+        "verified_ts": 5.14,
+        "truth": "それぞれ仕事と学校に行く二人を、玄関で見送る。",
+        "truth_len": 23,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 4.64,
+            "text": "それぞれ仕事と学校に行く二人を、玄関で見送",
+            "box_width": 592.0008544921875,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 4.89,
+            "text": "それぞれ仕事と学校に行く二人を、玄関で見送",
+            "box_width": 592.0008544921875,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 5.14,
+            "text": "それぞれ仕事と学校に行く二人を、玄関で見送",
+            "box_width": 594.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 5.39,
+            "text": "それぞれ仕事と学校に行く二人を、玄関で見送",
+            "box_width": 595.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 5.64,
+            "text": "それぞれ仕事と学校に行く二人を、玄関で見送",
+            "box_width": 595.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "それぞれ仕事と学校に行く二人を、玄関で見送",
+        "center_dist": 2,
+        "voted_text": "それぞれ仕事と学校に行く二人を、玄関で見送",
+        "voted_dist": 2,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "それぞれ仕事と学校に行く二人を、玄関で見送",
+            "dist": 2
+          },
+          "retry": {
+            "text": "それぞれ仕事と学校に行く二人を、玄関で見送",
+            "dist": 2
+          },
+          "vote": {
+            "text": "それぞれ仕事と学校に行く二人を、玄関で見送",
+            "dist": 2
+          }
+        }
+      },
+      {
+        "id": 2,
+        "verified_ts": 14.68,
+        "truth": "つまり今日の家事は、拓斗の面倒を見ながらしなくてはいけないようだ。",
+        "truth_len": 33,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 14.18,
+            "text": "つまり念具の家家事は、拓斗の面倒を見ながらしな",
+            "box_width": 469.0010681152344,
+            "dist_to_truth": 14,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 14.43,
+            "text": "つまり念具の家家事は、拓斗の面倒を見ながらしな",
+            "box_width": 469.0010681152344,
+            "dist_to_truth": 14,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 14.68,
+            "text": "つまり念具の家家事は、拓斗の面倒を見ながらしな",
+            "box_width": 469.0010681152344,
+            "dist_to_truth": 14,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 14.93,
+            "text": "つまり念具の家家事は、拓斗の面倒を見ながらしな",
+            "box_width": 469.0010681152344,
+            "dist_to_truth": 14,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 15.18,
+            "text": "つまり念具の家家事は、拓斗の面倒を見ながらしな",
+            "box_width": 469.0010681152344,
+            "dist_to_truth": 14,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "つまり念具の家家事は、拓斗の面倒を見ながらしな",
+        "center_dist": 14,
+        "voted_text": "つまり念具の家家事は、拓斗の面倒を見ながらしな",
+        "voted_dist": 14,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "つまり念具の家家事は、拓斗の面倒を見ながらしな",
+            "dist": 14
+          },
+          "retry": {
+            "text": "つまり念具の家家事は、拓斗の面倒を見ながらしな",
+            "dist": 14
+          },
+          "vote": {
+            "text": "つまり念具の家家事は、拓斗の面倒を見ながらしな",
+            "dist": 14
+          }
+        }
+      },
+      {
+        "id": 3,
+        "verified_ts": 32.125,
+        "truth": "拓斗「そんなの後でいいじゃん。それより俺と遊んでよ」",
+        "truth_len": 26,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 31.625,
+            "text": "拓斗「そんなの後でいいじゃん。それより俺と遊んで",
+            "box_width": 470.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 31.875,
+            "text": "拓斗「そんなの後でいいじゃん。それより俺と遊んで",
+            "box_width": 470.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 32.125,
+            "text": "拓斗「そんなの後でいいじゃん。それより俺と遊んで",
+            "box_width": 470.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 32.375,
+            "text": "拓斗「そんなの後でいいじゃん。それより俺と遊んで",
+            "box_width": 470.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 32.625,
+            "text": "拓斗「そんなの後でいいじゃん。それより俺と遊んで",
+            "box_width": 470.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "拓斗「そんなの後でいいじゃん。それより俺と遊んで",
+        "center_dist": 2,
+        "voted_text": "拓斗「そんなの後でいいじゃん。それより俺と遊んで",
+        "voted_dist": 2,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "拓斗「そんなの後でいいじゃん。それより俺と遊んで",
+            "dist": 2
+          },
+          "retry": {
+            "text": "拓斗「そんなの後でいいじゃん。それより俺と遊んで",
+            "dist": 2
+          },
+          "vote": {
+            "text": "拓斗「そんなの後でいいじゃん。それより俺と遊んで",
+            "dist": 2
+          }
+        }
+      },
+      {
+        "id": 4,
+        "verified_ts": 43.443,
+        "truth": "拓斗「えー？じゃあ、手伝ったらお昼ご飯、俺の好きなやつ作ってくれる？」",
+        "truth_len": 35,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 42.943,
+            "text": "拓斗しゃあ手伝ったらお昼ご飯、俺の好きなやつ作ってくれる？」",
+            "box_width": 452.0044250488281,
+            "dist_to_truth": 6,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 43.193,
+            "text": "拓斗しゃあ手伝ったらお昼ご飯、俺の好きなやつ作ってくれる？」",
+            "box_width": 452.0044250488281,
+            "dist_to_truth": 6,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 43.443,
+            "text": "拓斗しゃあ手伝ったらお昼ご飯、俺の好きなやつ作ってくれる？」",
+            "box_width": 452.0044250488281,
+            "dist_to_truth": 6,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 43.693,
+            "text": "拓斗しゃあ手伝ったらお昼ご飯、俺の好きなやつ作ってくれる？」",
+            "box_width": 452.0044250488281,
+            "dist_to_truth": 6,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 43.943,
+            "text": "拓斗しゃあ手伝ったらお昼ご飯、俺の好きなやつ作ってくれる？」",
+            "box_width": 452.0044250488281,
+            "dist_to_truth": 6,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "拓斗しゃあ手伝ったらお昼ご飯、俺の好きなやつ作ってくれる？」",
+        "center_dist": 6,
+        "voted_text": "拓斗しゃあ手伝ったらお昼ご飯、俺の好きなやつ作ってくれる？」",
+        "voted_dist": 6,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "拓斗しゃあ手伝ったらお昼ご飯、俺の好きなやつ作ってくれる？」",
+            "dist": 6
+          },
+          "retry": {
+            "text": "拓斗しゃあ手伝ったらお昼ご飯、俺の好きなやつ作ってくれる？」",
+            "dist": 6
+          },
+          "vote": {
+            "text": "拓斗しゃあ手伝ったらお昼ご飯、俺の好きなやつ作ってくれる？」",
+            "dist": 6
+          }
+        }
+      },
+      {
+        "id": 5,
+        "verified_ts": 55.403,
+        "truth": "拓斗「オッケー！んじゃ、さっさとやっちまおうぜ！」",
+        "truth_len": 25,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 54.903,
+            "text": "拓斗「オッケー！んじゃ、さっさとやっちまおうぜ!」",
+            "box_width": 394.00128173828125,
+            "dist_to_truth": 1,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 55.153,
+            "text": "拓斗「オッケー！んじゃ、さっさとやっちまおうぜ!」",
+            "box_width": 394.00128173828125,
+            "dist_to_truth": 1,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 55.403,
+            "text": "拓斗「オッケー！んじゃ、さっさとやっちまおうぜ!」",
+            "box_width": 394.00128173828125,
+            "dist_to_truth": 1,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 55.653,
+            "text": "拓斗「オッケー！んじゃ、さっさとやっちまおうぜ!」",
+            "box_width": 394.00128173828125,
+            "dist_to_truth": 1,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 55.903,
+            "text": "拓斗「オッケー！んじゃ、さっさとやっちまおうぜ!」",
+            "box_width": 394.00128173828125,
+            "dist_to_truth": 1,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "拓斗「オッケー！んじゃ、さっさとやっちまおうぜ!」",
+        "center_dist": 1,
+        "voted_text": "拓斗「オッケー！んじゃ、さっさとやっちまおうぜ!」",
+        "voted_dist": 1,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "拓斗「オッケー！んじゃ、さっさとやっちまおうぜ!」",
+            "dist": 1
+          },
+          "retry": {
+            "text": "拓斗「オッケー！んじゃ、さっさとやっちまおうぜ!」",
+            "dist": 1
+          },
+          "vote": {
+            "text": "拓斗「オッケー！んじゃ、さっさとやっちまおうぜ!」",
+            "dist": 1
+          }
+        }
+      },
+      {
+        "id": 6,
+        "verified_ts": 62.532,
+        "truth": "枝彌「いい加減にしなさい。あなた、もう何日も帰ってないんでしょう？今どこにいるの？」",
+        "truth_len": 42,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 62.032,
+            "text": "枝彌「いい加減にしなさい。あなた、もう何日も帰SLC972M192「LOEUACES",
+            "box_width": 408.001220703125,
+            "dist_to_truth": 19,
+            "sim_to_center": 0.786,
+            "degraded_reasons": [
+              "latin_digits_symbols_garbage",
+              "tail_latin_num_degradation"
+            ]
+          },
+          {
+            "offset": -0.25,
+            "ts": 62.282,
+            "text": "枝彌「いい加減にしなさい。あなた、もう何日も帰LC972M192「LOEUACES",
+            "box_width": 414.001220703125,
+            "dist_to_truth": 19,
+            "sim_to_center": 0.771,
+            "degraded_reasons": [
+              "latin_digits_symbols_garbage",
+              "tail_latin_num_degradation"
+            ]
+          },
+          {
+            "offset": 0.0,
+            "ts": 62.532,
+            "text": "枝彌「いい加減にしなさい。あなた、もう何日も帰SLC972M192今どこにいるの？」",
+            "box_width": 408.001220703125,
+            "dist_to_truth": 10,
+            "sim_to_center": 1.0,
+            "degraded_reasons": [
+              "latin_digits_symbols_garbage"
+            ]
+          },
+          {
+            "offset": 0.25,
+            "ts": 62.782,
+            "text": "枝彌「いい加減にしなさい。あなた、もう何日も帰SLC972M192「LOEUACES",
+            "box_width": 408.001220703125,
+            "dist_to_truth": 19,
+            "sim_to_center": 0.786,
+            "degraded_reasons": [
+              "latin_digits_symbols_garbage",
+              "tail_latin_num_degradation"
+            ]
+          },
+          {
+            "offset": 0.5,
+            "ts": 63.032,
+            "text": "枝彌「いい加減にしなさい。あなた、もう何日も帰SLC972M192「LOEUACES",
+            "box_width": 408.001220703125,
+            "dist_to_truth": 19,
+            "sim_to_center": 0.786,
+            "degraded_reasons": [
+              "latin_digits_symbols_garbage",
+              "tail_latin_num_degradation"
+            ]
+          }
+        ],
+        "valid_candidates_count": 0,
+        "discarded_candidates_count": 5,
+        "is_low_confidence": true,
+        "center_text": "枝彌「いい加減にしなさい。あなた、もう何日も帰SLC972M192今どこにいるの？」",
+        "center_dist": 10,
+        "voted_text": "枝彌「いい加減にしなさい。あなた、もう何日も帰SLC972M192今どこにいるの？」",
+        "voted_dist": 10,
+        "center_rejected": true,
+        "rejection_strategies": {
+          "drop": {
+            "text": "",
+            "dist": 42
+          },
+          "retry": {
+            "text": "枝彌「いい加減にしなさい。あなた、もう何日も帰SLC972M192今どこにいるの？」",
+            "dist": 10
+          },
+          "vote": {
+            "text": "枝彌「いい加減にしなさい。あなた、もう何日も帰SLC972M192今どこにいるの？」",
+            "dist": 10
+          }
+        }
+      },
+      {
+        "id": 7,
+        "verified_ts": 76.426,
+        "truth": "電話越しに返ってくる気怠そうな声に、うんざりしてしまう。",
+        "truth_len": 28,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 75.926,
+            "text": "電話越しに返ってくる気怠そうな声に、うんざりしてしまう。",
+            "box_width": 668.000732421875,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 76.176,
+            "text": "電話越しに返ってくる気怠そうな声に、うんざりしてしまう。",
+            "box_width": 667.000732421875,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 76.426,
+            "text": "電話越しに返ってくる気怠そうな声に、うんざりしてしまう。",
+            "box_width": 668.000732421875,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 76.676,
+            "text": "電話越しに返ってくる気怠そうな声に、うんざりしてしまう。",
+            "box_width": 668.000732421875,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 76.926,
+            "text": "電話越しに返ってくる気怠そうな声に、うんざりしてしまう。",
+            "box_width": 668.000732421875,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "電話越しに返ってくる気怠そうな声に、うんざりしてしまう。",
+        "center_dist": 0,
+        "voted_text": "電話越しに返ってくる気怠そうな声に、うんざりしてしまう。",
+        "voted_dist": 0,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "電話越しに返ってくる気怠そうな声に、うんざりしてしまう。",
+            "dist": 0
+          },
+          "retry": {
+            "text": "電話越しに返ってくる気怠そうな声に、うんざりしてしまう。",
+            "dist": 0
+          },
+          "vote": {
+            "text": "電話越しに返ってくる気怠そうな声に、うんざりしてしまう。",
+            "dist": 0
+          }
+        }
+      },
+      {
+        "id": 8,
+        "verified_ts": 87.793,
+        "truth": "恵麻「……うっざ。別にいいでしょ、私がどうしようがさ」",
+        "truth_len": 27,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 87.293,
+            "text": "惠麻うっざ。別にいいでしよ、私がどうしよう88がさ」",
+            "box_width": 298.0067138671875,
+            "dist_to_truth": 7,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 87.543,
+            "text": "惠麻うっざ。別にいいでしよ、私がどうしよう88がさ」",
+            "box_width": 298.0067138671875,
+            "dist_to_truth": 7,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 87.793,
+            "text": "惠麻うっざ。別にいいでしよ、私がどうしよう88がさ」",
+            "box_width": 298.0067138671875,
+            "dist_to_truth": 7,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 88.043,
+            "text": "惠麻うっざ。別にいいでしよ、私がどうしよう88がさ」",
+            "box_width": 298.0067138671875,
+            "dist_to_truth": 7,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 88.293,
+            "text": "惠麻うっざ。別にいいでしよ、私がどうしよう88がさ」",
+            "box_width": 298.0067138671875,
+            "dist_to_truth": 7,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "惠麻うっざ。別にいいでしよ、私がどうしよう88がさ」",
+        "center_dist": 7,
+        "voted_text": "惠麻うっざ。別にいいでしよ、私がどうしよう88がさ」",
+        "voted_dist": 7,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "惠麻うっざ。別にいいでしよ、私がどうしよう88がさ」",
+            "dist": 7
+          },
+          "retry": {
+            "text": "惠麻うっざ。別にいいでしよ、私がどうしよう88がさ」",
+            "dist": 7
+          },
+          "vote": {
+            "text": "惠麻うっざ。別にいいでしよ、私がどうしよう88がさ」",
+            "dist": 7
+          }
+        }
+      },
+      {
+        "id": 9,
+        "verified_ts": 101.767,
+        "truth": "恵麻「とぼける気？まあ別にいいけど。でもさ、男遊びがどうとか、お母さんに言う権利、なくない？」",
+        "truth_len": 47,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 101.267,
+            "text": "「とぼける気幸恵別にいいけど。でもあ男遊びがどうとか、お母さんに言う権利、な「&い?",
+            "box_width": 354.00140380859375,
+            "dist_to_truth": 11,
+            "sim_to_center": 0.667,
+            "degraded_reasons": [
+              "deviation_from_median_gt_50pct"
+            ]
+          },
+          {
+            "offset": -0.25,
+            "ts": 101.517,
+            "text": "まお別にいいせどでもう男お母さんに言う権利、な「&い?",
+            "box_width": 353.00567626953125,
+            "dist_to_truth": 26,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 101.767,
+            "text": "まお別にいいせどでもう男お母さんに言う権利、な「&い?",
+            "box_width": 353.00567626953125,
+            "dist_to_truth": 26,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 102.017,
+            "text": "まお別にいいせどでもう男お母さんに言う権利、な「&い?",
+            "box_width": 354.0056457519531,
+            "dist_to_truth": 26,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 102.267,
+            "text": "まお別にいいせどでもう男お母さんに言う権利、な「&い?",
+            "box_width": 354.0056457519531,
+            "dist_to_truth": 26,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 4,
+        "discarded_candidates_count": 1,
+        "is_low_confidence": false,
+        "center_text": "まお別にいいせどでもう男お母さんに言う権利、な「&い?",
+        "center_dist": 26,
+        "voted_text": "まお別にいいせどでもう男お母さんに言う権利、な「&い?",
+        "voted_dist": 26,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "まお別にいいせどでもう男お母さんに言う権利、な「&い?",
+            "dist": 26
+          },
+          "retry": {
+            "text": "まお別にいいせどでもう男お母さんに言う権利、な「&い?",
+            "dist": 26
+          },
+          "vote": {
+            "text": "まお別にいいせどでもう男お母さんに言う権利、な「&い?",
+            "dist": 26
+          }
+        }
+      },
+      {
+        "id": 10,
+        "verified_ts": 114.515,
+        "truth": "恵麻「あーもう、だからほっといてってば！あの子たちが心配なら勝手にして！」",
+        "truth_len": 37,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 114.015,
+            "text": "恵麻「あ一もうだからほたちが心配なら勝手に",
+            "box_width": 388.0,
+            "dist_to_truth": 17,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 114.265,
+            "text": "恵麻「あ一もうだからほたちが心配なら勝手に",
+            "box_width": 389.0,
+            "dist_to_truth": 17,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 114.515,
+            "text": "恵麻「あ一もうだからほたちが心配なら勝手に",
+            "box_width": 389.0,
+            "dist_to_truth": 17,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 114.765,
+            "text": "恵麻「あ一もうだからほたちが心配なら勝手に",
+            "box_width": 389.0,
+            "dist_to_truth": 17,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 115.015,
+            "text": "恵麻「あ一もうだからほたちが心配なら勝手に",
+            "box_width": 389.0,
+            "dist_to_truth": 17,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "恵麻「あ一もうだからほたちが心配なら勝手に",
+        "center_dist": 17,
+        "voted_text": "恵麻「あ一もうだからほたちが心配なら勝手に",
+        "voted_dist": 17,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "恵麻「あ一もうだからほたちが心配なら勝手に",
+            "dist": 17
+          },
+          "retry": {
+            "text": "恵麻「あ一もうだからほたちが心配なら勝手に",
+            "dist": 17
+          },
+          "vote": {
+            "text": "恵麻「あ一もうだからほたちが心配なら勝手に",
+            "dist": 17
+          }
+        }
+      },
+      {
+        "id": 11,
+        "verified_ts": 130.43,
+        "truth": "あの様子だと恵麻は当分帰ってこないつもりだろうし。",
+        "truth_len": 25,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 129.93,
+            "text": "あの様子だと恵麻は当分帰ってこないつもりだるうしo",
+            "box_width": 831.0006103515625,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 130.18,
+            "text": "あの様子だと恵麻は当分帰ってこないつもりだるうしo",
+            "box_width": 831.0006103515625,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 130.43,
+            "text": "あの様子だと恵麻は当分帰ってこないつもりだるうしo",
+            "box_width": 831.0006103515625,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 130.68,
+            "text": "C225しo",
+            "box_width": 832.0006103515625,
+            "dist_to_truth": 24,
+            "sim_to_center": 0.129,
+            "degraded_reasons": [
+              "latin_digits_symbols_garbage",
+              "length_under_ratio_threshold",
+              "deviation_from_median_gt_50pct",
+              "similarity_to_center_lt_0.60"
+            ]
+          },
+          {
+            "offset": 0.5,
+            "ts": 130.93,
+            "text": "C225しo",
+            "box_width": 832.0006103515625,
+            "dist_to_truth": 24,
+            "sim_to_center": 0.129,
+            "degraded_reasons": [
+              "latin_digits_symbols_garbage",
+              "length_under_ratio_threshold",
+              "deviation_from_median_gt_50pct",
+              "similarity_to_center_lt_0.60"
+            ]
+          }
+        ],
+        "valid_candidates_count": 3,
+        "discarded_candidates_count": 2,
+        "is_low_confidence": false,
+        "center_text": "あの様子だと恵麻は当分帰ってこないつもりだるうしo",
+        "center_dist": 2,
+        "voted_text": "あの様子だと恵麻は当分帰ってこないつもりだるうしo",
+        "voted_dist": 2,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "あの様子だと恵麻は当分帰ってこないつもりだるうしo",
+            "dist": 2
+          },
+          "retry": {
+            "text": "あの様子だと恵麻は当分帰ってこないつもりだるうしo",
+            "dist": 2
+          },
+          "vote": {
+            "text": "あの様子だと恵麻は当分帰ってこないつもりだるうしo",
+            "dist": 2
+          }
+        }
+      },
+      {
+        "id": 12,
+        "verified_ts": 135.057,
+        "truth": "なら、しばらくはこっちで生活することにしよう。",
+        "truth_len": 23,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 134.557,
+            "text": "なら、しばらくはこっちで生活することにしよ5",
+            "box_width": 687.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 134.807,
+            "text": "なら、しばらくはこっちで生活することにしよ5",
+            "box_width": 687.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 135.057,
+            "text": "なら、しばらくはこっちで生活することにしよ5",
+            "box_width": 687.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 135.307,
+            "text": "なら、しばらくはこっちで生活することにしよ5",
+            "box_width": 687.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 135.557,
+            "text": "なら、しばらくはこっちで生活することにしよ5",
+            "box_width": 687.0,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "なら、しばらくはこっちで生活することにしよ5",
+        "center_dist": 2,
+        "voted_text": "なら、しばらくはこっちで生活することにしよ5",
+        "voted_dist": 2,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "なら、しばらくはこっちで生活することにしよ5",
+            "dist": 2
+          },
+          "retry": {
+            "text": "なら、しばらくはこっちで生活することにしよ5",
+            "dist": 2
+          },
+          "vote": {
+            "text": "なら、しばらくはこっちで生活することにしよ5",
+            "dist": 2
+          }
+        }
+      },
+      {
+        "id": 13,
+        "verified_ts": 150.022,
+        "truth": "晴斗「ただいま。どうしたの、こんな時間まで？」",
+        "truth_len": 23,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 149.522,
+            "text": "晴斗「ただいま。どうしたの、こんな時間まで？」",
+            "box_width": 337.00592041015625,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 149.772,
+            "text": "晴斗「ただいま。どうしたの、こんな時間まで？」",
+            "box_width": 337.00592041015625,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 150.022,
+            "text": "晴斗「ただいま。どうしたの、こんな時間まで？」",
+            "box_width": 337.00592041015625,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 150.272,
+            "text": "晴斗「ただいま。どうしたの、こんな時間まで？」",
+            "box_width": 337.00592041015625,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 150.522,
+            "text": "晴斗「ただいま。どうしたの、こんな時間まで？」",
+            "box_width": 337.00592041015625,
+            "dist_to_truth": 0,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "晴斗「ただいま。どうしたの、こんな時間まで？」",
+        "center_dist": 0,
+        "voted_text": "晴斗「ただいま。どうしたの、こんな時間まで？」",
+        "voted_dist": 0,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "晴斗「ただいま。どうしたの、こんな時間まで？」",
+            "dist": 0
+          },
+          "retry": {
+            "text": "晴斗「ただいま。どうしたの、こんな時間まで？」",
+            "dist": 0
+          },
+          "vote": {
+            "text": "晴斗「ただいま。どうしたの、こんな時間まで？」",
+            "dist": 0
+          }
+        }
+      },
+      {
+        "id": 14,
+        "verified_ts": 162.37,
+        "truth": "枝彌「ならすぐに用意するわね。食べながら少し話しましょう」",
+        "truth_len": 29,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 161.87,
+            "text": "枝彌「ならすぐに用意するわね。食べながら少し話しまじよう」",
+            "box_width": 820.0006103515625,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": -0.25,
+            "ts": 162.12,
+            "text": "枝彌「ならすぐに用意するわね。食べながら少し話しまじよう」",
+            "box_width": 820.0006103515625,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.0,
+            "ts": 162.37,
+            "text": "枝彌「ならすぐに用意するわね。食べながら少し話しまじよう」",
+            "box_width": 820.0006103515625,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.25,
+            "ts": 162.62,
+            "text": "枝彌「ならすぐに用意するわね。食べながら少し話しまじよう」",
+            "box_width": 820.0006103515625,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          },
+          {
+            "offset": 0.5,
+            "ts": 162.87,
+            "text": "枝彌「ならすぐに用意するわね。食べながら少し話しまじよう」",
+            "box_width": 820.0006103515625,
+            "dist_to_truth": 2,
+            "sim_to_center": 1.0,
+            "degraded_reasons": []
+          }
+        ],
+        "valid_candidates_count": 5,
+        "discarded_candidates_count": 0,
+        "is_low_confidence": false,
+        "center_text": "枝彌「ならすぐに用意するわね。食べながら少し話しまじよう」",
+        "center_dist": 2,
+        "voted_text": "枝彌「ならすぐに用意するわね。食べながら少し話しまじよう」",
+        "voted_dist": 2,
+        "center_rejected": false,
+        "rejection_strategies": {
+          "drop": {
+            "text": "枝彌「ならすぐに用意するわね。食べながら少し話しまじよう」",
+            "dist": 2
+          },
+          "retry": {
+            "text": "枝彌「ならすぐに用意するわね。食べながら少し話しまじよう」",
+            "dist": 2
+          },
+          "vote": {
+            "text": "枝彌「ならすぐに用意するわね。食べながら少し話しまじよう」",
+            "dist": 2
+          }
+        }
+      },
+      {
+        "id": 15,
+        "verified_ts": 169.288,
+        "truth": "晴斗「ありがとう、おばあちゃん」",
+        "truth_len": 16,
+        "candidates": [
+          {
+            "offset": -0.5,
+            "ts": 168.788,
+            "text": "晴斗「わかった。じゃあ、着替えてくるから」",
+            "box_width": 339.00146484375,
+            "dist_to_truth": 16,
+            "sim_to_center": 0.27,
+            "degraded_reasons": [
+              "similarity_to_center_lt_0.60"
+            ]
+          },
+          {
+            "offset": -0.25,
+            "ts": 169.038,
+            "text": "晴斗「話りがとう、おばあちゃん」",
+            "box_width": 264.00189208984375,
+            "dist_to_truth": 1,
+            "sim_to_center": 0.5,
+            "degraded_reasons": [
+              "similarity_to_center_lt_0.60"
+            ]
+          },
+          {
+            "offset": 0.0,
+            "ts": 169.288,
+            "text": "晴斗「ありがとう、TYAGOAL",
+            "box_width": 262.00762939453125,
+            "dist_to_truth": 7,
+            "sim_to_center": 1.0,
+            "degraded_reasons": [
+              "latin_digits_symbols_garbage",
+              "tail_latin_num_degradation"
+            ]
+          },
+          {
+            "offset": 0.25,
+            "ts": 169.538,
+            "text": "晴斗「ありがとう、おばあちゃん」",
+            "box_width": 264.00189208984375,
+            "dist_to_truth": 0,
+            "sim_to_center": 0.562,
+            "degraded_reasons": [
+              "similarity_to_center_lt_0.60"
+            ]
+          },
+          {
+            "offset": 0.5,
+            "ts": 169.788,
+            "text": "晴斗「ありがとう、おばあちゃん」",
+            "box_width": 264.00189208984375,
+            "dist_to_truth": 0,
+            "sim_to_center": 0.562,
+            "degraded_reasons": [
+              "similarity_to_center_lt_0.60"
+            ]
+          }
+        ],
+        "valid_candidates_count": 0,
+        "discarded_candidates_count": 5,
+        "is_low_confidence": true,
+        "center_text": "晴斗「ありがとう、TYAGOAL",
+        "center_dist": 7,
+        "voted_text": "晴斗「ありがとう、TYAGOAL",
+        "voted_dist": 7,
+        "center_rejected": true,
+        "rejection_strategies": {
+          "drop": {
+            "text": "",
+            "dist": 16
+          },
+          "retry": {
+            "text": "晴斗「ありがとう、TYAGOAL",
+            "dist": 7
+          },
+          "vote": {
+            "text": "晴斗「ありがとう、TYAGOAL",
+            "dist": 7
+          }
+        }
+      }
+    ]
+  }
+}

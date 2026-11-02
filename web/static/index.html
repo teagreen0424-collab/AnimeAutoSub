@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnimeAutoSub WebUI</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+  <!-- 全局拖拽提示蒙层 -->
+  <div class="drag-drop-overlay" id="dragDropOverlay" style="display:none;">
+    <div class="drag-drop-box">
+      <div class="drag-icon">📥</div>
+      <div class="drag-text">释放鼠标即可载入片源创建新任务</div>
+    </div>
+  </div>
+
+  <!-- 顶部状态栏 TopBar -->
+  <header class="topbar">
+    <div class="brand" id="brandHome" title="点击返回任务列表" style="cursor: pointer;">
+      <div class="logo-badge">AS</div>
+      <div class="brand-text">
+        <span class="brand-title">AnimeAutoSub</span>
+        <span class="brand-subtitle">多语言硬字幕与语音流水线</span>
+      </div>
+    </div>
+
+    <!-- 系统状态仪表盘与操作 -->
+    <div class="topbar-actions">
+      <div class="queue-status-badge" id="queueStatusBadge" title="全局任务队列状态">
+        <span class="queue-dot" id="queueDot"></span>
+        <span id="queueText">队列: 空闲</span>
+      </div>
+
+      <div class="gpu-meter" id="gpuMeter" title="实时显存状态 (来自 nvidia-smi)">
+        <span class="meter-icon">⚡</span>
+        <span class="meter-label">GPU:</span>
+        <span class="meter-val" id="gpuName">RTX 4060</span>
+        <span class="meter-bar-wrap">
+          <span class="meter-bar" id="gpuBar" style="width: 12%;"></span>
+        </span>
+        <span class="meter-val" id="gpuMem">0.8G / 8.0G</span>
+      </div>
+
+      <button class="btn btn-secondary btn-sm" id="btnRefresh" title="刷新任务列表">
+        <span class="btn-icon">↻</span> 刷新
+      </button>
+
+      <button class="btn btn-secondary btn-sm" id="btnSettings" title="系统设置与只读环境信息">
+        <span class="btn-icon">⚙</span> 设置
+      </button>
+
+      <button class="btn btn-primary" id="btnNewTask">
+        <span class="btn-icon">+</span> 新建任务
+      </button>
+    </div>
+  </header>
+
+  <!-- 全局网络/服务离线提示条 (S2 错误态) -->
+  <div class="offline-banner" id="offlineBanner" style="display:none;">
+    <span>⚠️ 无法连接到本地服务 (http://127.0.0.1:8000)，请确认后端服务已启动</span>
+    <button class="btn btn-outline btn-xs" id="btnRetryOffline">🔄 立即重试</button>
+  </div>
+
+  <!-- 主体视图容器 -->
+  <main class="main-container">
+
+    <!-- 屏幕 1: 任务列表 (Screen 1: Task List) -->
+    <section id="screenTaskList" class="screen-view">
+      <!-- 汇总指标卡 -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-num" id="statTotal">--</div>
+          <div class="stat-title">已扫描任务总数</div>
+        </div>
+        <div class="stat-card highlight-cyan">
+          <div class="stat-num" id="statFormal">--</div>
+          <div class="stat-title">正式任务 (可续跑 / 重渲染)</div>
+        </div>
+        <div class="stat-card highlight-amber">
+          <div class="stat-num" id="statLegacy">--</div>
+          <div class="stat-title">历史产物 (只读展示)</div>
+        </div>
+        <div class="stat-card highlight-emerald">
+          <div class="stat-num" id="statDone">--</div>
+          <div class="stat-title">成片已就绪 (可播放)</div>
+        </div>
+      </div>
+
+      <!-- 工具栏与筛选过滤 -->
+      <div class="toolbar">
+        <div class="filter-group">
+          <button class="filter-btn active" data-filter="all">全部任务 (<span id="cntAll">0</span>)</button>
+          <button class="filter-btn" data-filter="formal">正式任务 (<span id="cntFormal">0</span>)</button>
+          <button class="filter-btn" data-filter="legacy">历史产物 (<span id="cntLegacy">0</span>)</button>
+          <label class="debug-toggle-wrap" title="切换是否展示包含 test_ 或标记为测试的调试任务">
+            <input type="checkbox" id="chkShowDebug">
+            <span>显示调试任务</span>
+          </label>
+        </div>
+        <div class="search-box">
+          <input type="text" id="taskSearchInput" placeholder="输入片名 / 任务 ID 搜索...">
+        </div>
+      </div>
+
+      <!-- 任务卡片列表网格 -->
+      <div class="tasks-grid" id="tasksListContainer">
+        <div class="loading-placeholder">正在加载任务...</div>
+      </div>
+    </section>
+
+    <!-- 屏幕 2: 任务详情 (Screen 2: Task Detail) -->
+    <section id="screenTaskDetail" class="screen-view" style="display:none;">
+      <!-- 详情页顶栏 -->
+      <div class="detail-header">
+        <button class="btn btn-outline btn-sm" id="btnBackToList">
+          ← 返回任务列表
+        </button>
+        <div class="detail-title-wrap">
+          <h2 id="detailTitle">--</h2>
+          <div class="detail-tags" id="detailTags">
+            <!-- 动态标签 -->
+          </div>
+        </div>
+        <div class="detail-top-actions">
+          <button class="btn btn-emerald btn-sm" id="btnDetailDownloadVideo" style="display:none;" title="一键下载当前成片 output.mp4">
+            ⬇ 下载成片 (MP4)
+          </button>
+          <button class="btn btn-primary btn-sm" id="btnOpenSubtitleEditor" title="快速定位并打开当前任务的字幕编辑器">
+            ✏️ 编辑字幕
+          </button>
+          <button class="btn btn-emerald btn-sm" id="btnResumeTask" style="display:none;">
+            ▶ 从断点恢复续跑
+          </button>
+          <button class="btn btn-danger btn-sm" id="btnCancelTask" style="display:none;">
+            ✕ 取消流水线 (释放GPU)
+          </button>
+          <span class="status-pill status-done" id="detailStatusPill">DONE</span>
+        </div>
+      </div>
+
+      <!-- 动态实时进度面板 (仅在 running / queued / waiting_gpu 时展开) -->
+      <div class="live-progress-panel" id="liveProgressPanel" style="display:none;">
+        <div class="live-progress-header">
+          <div class="live-stage-title" id="liveStageTitle">⚡ 正在执行阶段...</div>
+          <div class="live-pct-val" id="liveTotalPctText">0.0%</div>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="liveTotalProgressBar" style="width: 0%;"></div>
+        </div>
+        <div class="live-progress-footer">
+          <span id="liveQueueMsg">队列状态: 正常</span>
+          <span id="liveHeartbeat">心跳: 正常</span>
+        </div>
+      </div>
+
+      <!-- 详情主体双栏布局 -->
+      <div class="detail-columns">
+        <!-- 左栏: 视频播放器与产物文件 -->
+        <div class="detail-left-col">
+          <!-- 视频播放卡片 -->
+          <div class="panel-card video-card">
+            <div class="panel-header">
+              <span class="panel-title">🎬 成片预览 (HTTP 206 自由拖拽)</span>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button class="btn btn-emerald btn-xs" id="btnVideoCardDownload" style="display:none;" title="下载最终成片 output.mp4">
+                  ⬇ 下载成片
+                </button>
+                <span class="panel-subtitle" id="videoFileName">--</span>
+              </div>
+            </div>
+            <div class="video-wrapper" id="videoWrapper">
+              <video id="detailVideo" controls preload="auto">
+                您的浏览器不支持 HTML5 视频播放
+              </video>
+              <div class="video-empty" id="videoEmptyPlaceholder" style="display:none;">
+                <span>暂无已压制成片视频 (执行完毕后自动载入播放)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 产物文件清单卡片 -->
+          <div class="panel-card products-card">
+            <div class="panel-header">
+              <span class="panel-title">📦 产物文件清单</span>
+              <span class="panel-subtitle" id="productsCount">-- 件产物</span>
+            </div>
+            <div class="products-list-wrap">
+              <table class="products-table">
+                <thead>
+                  <tr>
+                    <th>文件名</th>
+                    <th>尺寸</th>
+                    <th>更新时间</th>
+                    <th style="text-align: right; width: 60px;">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="productsTableBody">
+                  <!-- 动态插入 -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右栏: 流水线阶段与运行数据 -->
+        <div class="detail-right-col">
+          <!-- 流水线执行进度指示板 -->
+          <div class="panel-card stages-card">
+            <div class="panel-header">
+              <span class="panel-title">⚡ 流水线阶段跟踪 (M4 状态机)</span>
+              <span class="panel-subtitle" id="stagesSummary">--</span>
+            </div>
+            <div class="pipeline-track" id="pipelineTrack">
+              <!-- 动态插入阶段节点 -->
+            </div>
+          </div>
+
+          <!-- Tab 切换容器 (日志 / Manifest / 字幕) -->
+          <div class="panel-card tabs-card">
+            <div class="tabs-header">
+              <button class="tab-btn active" data-tab="log">📜 实时运行日志 (pipeline.log)</button>
+              <button class="tab-btn" data-tab="manifest">🧾 Manifest 原文</button>
+              <button class="tab-btn" data-tab="subtitles" id="tabBtnSubtitles">✏️ 字幕编辑器 (行内改字/单帧预览)</button>
+              <div class="tabs-actions">
+                <label class="auto-scroll-label">
+                  <input type="checkbox" id="chkAutoScroll" checked> 自动滚屏
+                </label>
+              </div>
+            </div>
+            <div class="tabs-content">
+              <!-- Tab 1: 日志 -->
+              <div class="tab-panel active" id="tabPanelLog">
+                <pre class="terminal-box" id="logContent">正在连接实时 SSE 日志流...</pre>
+              </div>
+
+              <!-- Tab 2: Manifest JSON -->
+              <div class="tab-panel" id="tabPanelManifest">
+                <pre class="terminal-box json-box" id="manifestContent">正在加载 Manifest...</pre>
+              </div>
+
+              <!-- Tab 3: 字幕编辑与单帧精确预览 (P3) -->
+              <div class="tab-panel" id="tabPanelSubtitles">
+                <div class="subtitles-editor-container">
+                  <!-- 字幕操作工具条 -->
+                  <div class="subtitles-toolbar">
+                    <div class="subtitles-toolbar-left">
+                      <span class="subtitles-count-badge" id="subtitlesTotalCount">共 0 条对白</span>
+                      <span class="subtitles-dirty-badge" id="subtitlesDirtyBadge" style="display:none;">⚠ 有未保存修改</span>
+                    </div>
+                    <div class="subtitles-toolbar-right">
+                      <button class="btn btn-secondary btn-sm" id="btnExportAss" title="导出 ASS 字幕文件">
+                        ⬇ 导出 ASS
+                      </button>
+                      <button class="btn btn-secondary btn-sm" id="btnExportSrt" title="导出 SRT 字幕文件">
+                        ⬇ 导出 SRT
+                      </button>
+                      <button class="btn btn-primary btn-sm" id="btnSaveSubtitles" disabled>
+                        💾 保存修改
+                      </button>
+                      <button class="btn btn-emerald btn-sm" id="btnRerender" title="仅重新运行排版与视频压制 (无需重跑 OCR 和翻译)">
+                        ⚡ 增量重渲染
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- 字幕主体区域: 左侧表格 + 右侧单帧精确预览 -->
+                  <div class="subtitles-editor-body">
+                    <!-- 左侧表格 -->
+                    <div class="subtitles-table-panel">
+                      <div class="subtitles-table-wrap">
+                        <table class="subtitles-table">
+                          <thead>
+                            <tr>
+                              <th style="width: 44px; text-align: center;">#</th>
+                              <th style="width: 120px;">时间范围</th>
+                              <th style="width: 40%;">原文 (源语言)</th>
+                              <th>中文译文 (点击直接改字)</th>
+                            </tr>
+                          </thead>
+                          <tbody id="subtitlesTableBody">
+                            <!-- 动态每页 50 行 -->
+                          </tbody>
+                        </table>
+                      </div>
+                      <!-- 分页控制条 -->
+                      <div class="pagination-bar" id="paginationBar">
+                        <button class="page-btn" id="btnFirstPage">« 首页</button>
+                        <button class="page-btn" id="btnPrevPage">‹ 上一页</button>
+                        <span class="page-info" id="pageInfo">第 1 / 1 页</span>
+                        <button class="page-btn" id="btnNextPage">下一页 ›</button>
+                        <button class="page-btn" id="btnLastPage">末页 »</button>
+                      </div>
+                    </div>
+
+                    <!-- 右侧单帧精确预览 -->
+                    <div class="subtitles-preview-panel">
+                      <div class="preview-panel-header">
+                        <span class="preview-panel-title">🎯 单帧精确预览</span>
+                        <span class="preview-time-tag" id="previewTimeTag">00:00.00</span>
+                      </div>
+                      <div class="preview-img-box" id="previewImgBox">
+                        <div class="preview-spinner" id="previewLoading" style="display:none;">⏳ 正在精确提取单帧画面...</div>
+                        <img id="previewImg" src="" alt="精确单帧画面" style="display:none;" />
+                        <div class="preview-placeholder" id="previewPlaceholder">
+                          <span>👆 点击左侧任意对白行</span>
+                          <span style="font-size: 11px; margin-top: 6px; color: var(--text-dim);">可在此精确查看对应帧的真实排版画面</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 屏幕 3: 全屏独立字幕编辑器 (Screen 3: Fullscreen Subtitle Editor, #task=<id>&edit=1) -->
+    <section id="screenEditor" class="screen-view" style="display:none;">
+      <!-- 编辑器顶栏 -->
+      <div class="editor-header">
+        <div class="editor-header-left">
+          <button class="btn btn-outline btn-sm" id="btnEditorBackToDetail">
+            ← 返回任务详情
+          </button>
+          <div class="editor-title-wrap">
+            <h2 id="editorTaskTitle">--</h2>
+            <span class="editor-sub-tag" id="editorTaskTag">P3 全屏独立字幕编辑工作台</span>
+          </div>
+        </div>
+
+        <div class="editor-header-right">
+          <button class="btn btn-emerald btn-sm" id="fsBtnDownloadVideoTop" title="一键下载当前成片 output.mp4">
+            ⬇ 下载成片
+          </button>
+          <span class="subtitles-count-badge" id="fsSubtitlesCount">共 0 条对白</span>
+          <span class="subtitles-dirty-badge" id="fsSubtitlesDirtyBadge" style="display:none;">⚠ 有未保存修改</span>
+          <button class="btn btn-secondary btn-sm" id="fsBtnExportAss" title="导出 ASS 字幕">
+            ⬇ 导出 ASS
+          </button>
+          <button class="btn btn-secondary btn-sm" id="fsBtnExportSrt" title="导出 SRT 字幕">
+            ⬇ 导出 SRT
+          </button>
+          <button class="btn btn-primary btn-sm" id="fsBtnSaveSubtitles" disabled>
+            💾 保存修改
+          </button>
+          <button class="btn btn-emerald btn-sm" id="fsBtnRerender" title="仅重新运行排版与视频压制">
+            ⚡ 增量重渲染
+          </button>
+        </div>
+      </div>
+
+      <!-- 编辑器主体布局: 左 55% 画面预览 + 右 45% 对白表格 -->
+      <div class="editor-columns">
+        <!-- 左栏 55%: 单帧精确预览 + 说明 + 成片下载卡片 (S1-c / S2) -->
+        <div class="editor-left-panel">
+          <div class="panel-card editor-preview-card">
+            <div class="editor-preview-header">
+              <div class="editor-preview-title">
+                <span>🎯 服务端单帧预览</span>
+                <span class="editor-source-badge">💡 预览为服务端 libass 渲染，与成片同源</span>
+              </div>
+              <span class="preview-time-tag" id="fsPreviewTimeTag">00:00.00</span>
+            </div>
+
+            <div class="editor-preview-viewport" id="fsPreviewViewport">
+              <div class="preview-spinner" id="fsPreviewLoading" style="display:none;">⏳ 正在提取单帧画面 (libass 同源渲染)...</div>
+              <img id="fsPreviewImg" src="" alt="服务端精确排版单帧画面" style="display:none;" />
+              <div class="preview-placeholder" id="fsPreviewPlaceholder">
+                <span>👆 点击右侧任意对白行</span>
+                <span style="font-size: 11px; margin-top: 6px; color: var(--text-dim);">自动跳转对应时间 (start + 0.2s) 并即时刷新真实排版画面</span>
+              </div>
+            </div>
+
+            <div class="editor-preview-footer">
+              <span id="fsFrameNotice">精确定位模式: -i 精确 seek + sha256 磁盘高速缓存</span>
+              <span id="fsFrameRenderCost" style="font-family: var(--font-mono); color: var(--cyan);">渲染耗时: --</span>
+            </div>
+          </div>
+
+          <!-- 成片下载与快捷操作卡片 (S1-c / S2) -->
+          <div class="panel-card editor-actions-card" id="fsActionsCard">
+            <div class="panel-header">
+              <span class="panel-title">📦 成片与字幕产物下载</span>
+              <span class="panel-subtitle" id="fsVideoStatus">🎬 output.mp4</span>
+            </div>
+            <div class="editor-actions-body">
+              <div class="editor-download-buttons">
+                <button class="btn btn-emerald btn-sm" id="fsBtnDownloadVideoBottom">
+                  ⬇ 下载成片 (output.mp4)
+                </button>
+                <button class="btn btn-secondary btn-sm" id="fsBtnDownloadAssBottom">
+                  ⬇ 导出 ASS 字幕
+                </button>
+                <button class="btn btn-secondary btn-sm" id="fsBtnDownloadSrtBottom">
+                  ⬇ 导出 SRT 字幕
+                </button>
+              </div>
+              <div class="editor-info-note">
+                <span>💡 提示: 预览画面由服务端 libass 滤镜实时渲染，与成片绝对同源。行内改字后「💾 保存修改」即时更新 ASS；点「⚡ 增量重渲染」将在 ~10 秒内压制新成片。</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右栏 45%: 字幕对白表格与分页 -->
+        <div class="editor-right-panel">
+          <div class="panel-card editor-table-card">
+            <div class="editor-table-wrap" id="fsTableWrap">
+              <table class="editor-subtitles-table">
+                <thead>
+                  <tr>
+                    <th style="width: 110px; min-width: 110px; max-width: 110px; text-align: center;">时间范围</th>
+                    <th style="width: calc((100% - 110px) / 2);">原文 (源语言)</th>
+                    <th style="width: calc((100% - 110px) / 2);">中文译文 (点击行内改字)</th>
+                  </tr>
+                </thead>
+                <tbody id="fsSubtitlesTableBody">
+                  <!-- 动态渲染行 -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 分页控制条 -->
+            <div class="pagination-bar" id="fsPaginationBar">
+              <button class="page-btn" id="fsBtnFirstPage">« 首页</button>
+              <button class="page-btn" id="fsBtnPrevPage">‹ 上一页</button>
+              <span class="page-info" id="fsPageInfo">第 1 / 1 页 (共 0 条)</span>
+              <button class="page-btn" id="fsBtnNextPage">下一页 ›</button>
+              <button class="page-btn" id="fsBtnLastPage">末页 »</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 屏幕 4: 系统设置 (Screen 4: Settings) -->
+    <section id="screenSettings" class="screen-view" style="display:none;">
+      <div class="detail-header">
+        <button class="btn btn-outline btn-sm" id="btnSettingsBackToList">
+          ← 返回任务列表
+        </button>
+        <div class="detail-title-wrap">
+          <h2>⚙ 系统设置与运行环境</h2>
+          <div class="detail-tags">
+            <span class="tag-badge tag-formal">P4 只读系统配置</span>
+            <span class="tag-badge tag-mode">Schema v2</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-grid">
+        <!-- 卡片 1: 界面偏好 -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <span class="panel-title">🖥️ 界面偏好与调试任务</span>
+          </div>
+          <div class="settings-card-body">
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">显示调试任务 (test_*)</div>
+                <div class="setting-desc">开启后将在任务列表中展示以 test_ 开头的自动化测试产物。默认隐藏以保持工作区整洁。</div>
+              </div>
+              <div class="setting-control">
+                <input type="checkbox" id="chkSettingsShowDebug">
+              </div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">单帧预览节流防抖</div>
+                <div class="setting-desc">拖动时间码时的请求防抖（M1 规范设定为 ≥ 150ms 并配合 AbortController 取消前序未完成请求）。</div>
+              </div>
+              <div class="setting-val-readonly">150 ms</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 卡片 2: 网络与端口 -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <span class="panel-title">🌐 网络端口与本地服务</span>
+          </div>
+          <div class="settings-card-body">
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">WebUI 服务端口</div>
+                <div class="setting-desc">FastAPI / Uvicorn 监听端口 (M5 动态端口机制: 8000 起递增)。</div>
+              </div>
+              <div class="setting-val-readonly" id="cfgPort">8000 (127.0.0.1)</div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">Ollama API 服务地址</div>
+                <div class="setting-desc">大模型本地推理守护进程地址 (显存租约管理与主动释放)。</div>
+              </div>
+              <div class="setting-val-readonly" id="cfgOllamaUrl">http://127.0.0.1:11434</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 卡片 3: AI 模型与推理引擎 -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <span class="panel-title">🧠 AI 模型与推理引擎</span>
+          </div>
+          <div class="settings-card-body">
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">本地模型存储路径 (OLLAMA_MODELS)</div>
+                <div class="setting-desc">离线模型权重文件存放目录，严禁写入 C 盘。</div>
+              </div>
+              <div class="setting-val-readonly" id="cfgModelsPath">D:\Dev\ollama\models</div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">生产翻译大模型</div>
+                <div class="setting-desc">Sakura 日韩汉化精调模型，显存动态租约，任务完成后主动释放显存。</div>
+              </div>
+              <div class="setting-val-readonly" id="cfgTranslationModel">sakura-14b-qwen2.5-v1.0-iq4_xs</div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">硬字幕 OCR 提取引擎</div>
+                <div class="setting-desc">RapidOCR + ONNX Runtime CUDA Execution Provider 加速。</div>
+              </div>
+              <div class="setting-val-readonly" id="cfgOcrEngine">RapidOCR (ONNX Runtime CUDA)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 卡片 4: 媒体处理与存储规范 -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <span class="panel-title">🛠️ 媒体编码与产物规范</span>
+          </div>
+          <div class="settings-card-body">
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">FFmpeg 可执行文件路径</div>
+                <div class="setting-desc">全片硬字幕压制与 -i 精确单帧提取后端。</div>
+              </div>
+              <div class="setting-val-readonly" id="cfgFfmpegPath">D:\Dev\ffmpeg\bin\ffmpeg.exe</div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">Manifest 契约版本</div>
+                <div class="setting-desc">Schema Version 2，已全面消除 ja/ja_raw 双写，统一由 src/src_raw 驱动。</div>
+              </div>
+              <div class="setting-val-readonly" id="cfgSchemaVersion">Schema v2</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 新建任务弹窗 (Modal) -->
+  <div class="modal-backdrop" id="modalNewTask" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">✨ 新建翻译压制任务</h3>
+        <button class="modal-close-btn" id="modalCloseBtn">✕</button>
+      </div>
+
+      <form class="modal-form" id="formNewTask">
+        <!-- 快速选择片源 -->
+        <div class="form-group">
+          <label class="form-label">从服务器已有片源快速选择:</label>
+          <select class="form-select" id="selectQuickFile">
+            <option value="">-- 点击选择 input / ocr_input 目录中的片源 --</option>
+          </select>
+        </div>
+
+        <!-- 片源路径输入 -->
+        <div class="form-group">
+          <label class="form-label">或输入片源绝对/相对路径 (支持拖入): <span class="req-star">*</span></label>
+          <input type="text" class="form-input" id="inputVideoPath" placeholder="例如: ocr_input/test_3min.mp4" required>
+        </div>
+
+        <!-- 语言与模式双列 -->
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label class="form-label">源语言 (Source Lang):</label>
+            <select class="form-select" id="selectLang">
+              <option value="ja" selected>日文 (Japanese - ja)</option>
+              <option value="ko">韩文 (Korean - ko)</option>
+            </select>
+          </div>
+
+          <div class="form-group col-6">
+            <label class="form-label">处理模式 (Pipeline Mode):</label>
+            <select class="form-select" id="selectMode">
+              <option value="auto" selected>自动探测 (根据音视频格式)</option>
+              <option value="ocr">硬字幕提取 (OCR 识别)</option>
+              <option value="asr">纯语音转写 (Whisper ASR)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 任务自定义标题 -->
+        <div class="form-group">
+          <label class="form-label">任务显示名称 (可选):</label>
+          <input type="text" class="form-input" id="inputTaskTitle" placeholder="留空则自动以文件名命名">
+        </div>
+
+        <!-- 高级选项折叠 -->
+        <details class="form-advanced-details">
+          <summary class="advanced-summary">⚙️ 高级流水线参数 (默认已针对硬件最优化)</summary>
+          <div class="advanced-body">
+            <div class="form-row">
+              <div class="form-group col-6">
+                <label class="form-label">OCR 采样帧率 (FPS) (固定值):</label>
+                <input type="text" class="form-input" id="inputFps" value="2.0 FPS" disabled>
+              </div>
+              <div class="form-group col-6">
+                <label class="form-label">帧差阈值 (frame_diff) (固定值):</label>
+                <input type="text" class="form-input" id="inputDiff" value="2.5%" disabled>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-6">
+                <label class="form-label">翻译模型 (Ollama) (固定值):</label>
+                <input type="text" class="form-input" value="sakura-14b-qwen2.5-v1.0-iq4_xs" disabled>
+              </div>
+              <div class="form-group col-6">
+                <label class="form-label">语音模型 (Whisper) (固定值):</label>
+                <input type="text" class="form-input" value="large-v3 (本地离线)" disabled>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- 弹窗底部操作按钮 -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancelModal">取消</button>
+          <button type="submit" class="btn btn-primary" id="btnSubmitTask">
+            🚀 立即开始处理 (进入队列)
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

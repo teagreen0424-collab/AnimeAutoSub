@@ -1,0 +1,11 @@
+{
+  "total_frames": 100,
+  "total_chars": 2467,
+  "exact_matches": 100,
+  "exact_rate": 100.0,
+  "total_edit_distance": 0,
+  "cer": 0.0,
+  "pass1_sec": 129.99621599994134,
+  "pass2_sec": 19.955123499967158,
+  "diff_records": []
+}

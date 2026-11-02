@@ -1,0 +1,206 @@
+{
+  "total_truth_chars": 319,
+  "direct_dist_tot": 55,
+  "direct_cer": 17.24,
+  "pipeline_dist_tot": 74,
+  "pipeline_cer": 23.2,
+  "recorded_cer": 21.94,
+  "comparison": [
+    {
+      "id": 2,
+      "truth": "こうなると暮らしている家がそこまで離れていなかったのは、不幸中の幸いだった。",
+      "direct_ocr": "こまで離れていなは不幸中の幸いだった。",
+      "pipeline_ocr": "こまで離れていな は 不幸中の幸いだった。",
+      "recorded_ocr": "労うなるほ意え幸予い孕きだちにまで誰れていな。はは、不幸中の幸いだった。",
+      "direct_dist": 19,
+      "pipeline_dist": 19,
+      "recorded_dist": 16,
+      "raw_txts": [
+        "こまで離れていな",
+        "は",
+        "不幸中の幸いだった。"
+      ],
+      "boxes_count": 3
+    },
+    {
+      "id": 3,
+      "truth": "そんな晴斗に迷惑をかけないよう、どうにか自立しようとしている瑛斗。",
+      "direct_ocr": "そんな晴斗に迷惑をかけないよう、どうにか自立しょうとしている瑛斗。",
+      "pipeline_ocr": "そんな晴斗に迷惑をかけないよう、 どうにか自立 しょうとしている瑛斗。",
+      "recorded_ocr": "そんな晴斗に迷惑をかけないよう、どうにか自立しょうとしている瑛斗",
+      "direct_dist": 1,
+      "pipeline_dist": 3,
+      "recorded_dist": 2,
+      "raw_txts": [
+        "そんな晴斗に迷惑をかけないよう、",
+        "どうにか自立",
+        "しょうとしている瑛斗。"
+      ],
+      "boxes_count": 3
+    },
+    {
+      "id": 4,
+      "truth": "枝彌「——えっ、と、どういうこと？」",
+      "direct_ocr": "枝彌一えっ、ど「&225115?",
+      "pipeline_ocr": "枝彌 一えっ、 ど 「&225115?",
+      "recorded_ocr": "枝彌一えっ、ど「&225115?",
+      "direct_dist": 13,
+      "pipeline_dist": 15,
+      "recorded_dist": 13,
+      "raw_txts": [
+        "枝彌",
+        "一えっ、",
+        "ど",
+        "「&225115?"
+      ],
+      "boxes_count": 4
+    },
+    {
+      "id": 5,
+      "truth": "晴斗「取り返しのつかないことやらかしそうで、心配なんだよ」",
+      "direct_ocr": "晴斗「取り返ししのつかないことやらかしそうで心配なんたよ」",
+      "pipeline_ocr": "晴斗 「取り返し しのつかないことやらかしそう で 心配 なんたよ」",
+      "recorded_ocr": "晴斗「取り返ししのつかないことやらかしそうで心配なんたよ」",
+      "direct_dist": 3,
+      "pipeline_dist": 7,
+      "recorded_dist": 3,
+      "raw_txts": [
+        "晴斗",
+        "「取り返し",
+        "しのつかないことやらかしそう",
+        "で",
+        "心配",
+        "なんたよ」"
+      ],
+      "boxes_count": 6
+    },
+    {
+      "id": 6,
+      "truth": "——機会が訪れたのは、数日後だった。",
+      "direct_ocr": "一機会が訪れたのは、数日後だった。",
+      "pipeline_ocr": "一機会が訪れたのは、 数日後だった。",
+      "recorded_ocr": "一機会が訪れたのは、数日後だった。",
+      "direct_dist": 2,
+      "pipeline_dist": 3,
+      "recorded_dist": 2,
+      "raw_txts": [
+        "一機会が訪れたのは、",
+        "数日後だった。"
+      ],
+      "boxes_count": 2
+    },
+    {
+      "id": 13,
+      "truth": "瑛斗は午後になると友達と遊ぶと出かけ、家には私と晴斗、そして拓斗の三人だけになった。",
+      "direct_ocr": "瑛斗は午後になると友達と遊ぶと出かけ家には私と晴斗、そして拓斗の三人だけになった。",
+      "pipeline_ocr": "瑛斗は午後になると友達と遊ぶと出かけ 家には 私と晴斗、そして拓斗の 三人だけになった。",
+      "recorded_ocr": "瑛斗は午後になると友達と遊ぶと出かけ家には三人だけになった。",
+      "direct_dist": 1,
+      "pipeline_dist": 3,
+      "recorded_dist": 12,
+      "raw_txts": [
+        "瑛斗は午後になると友達と遊ぶと出かけ",
+        "家には",
+        "私と晴斗、そして拓斗の",
+        "三人だけになった。"
+      ],
+      "boxes_count": 4
+    },
+    {
+      "id": 14,
+      "truth": "枝彌「問答無用です！ とにかく、二人はそこで見ていなさい」",
+      "direct_ocr": "枝彌个間答無用です！とにかく、二人はそこで見ていなきい」",
+      "pipeline_ocr": "枝彌 个間答無用 です！ とにかく、二人はそこで見て いなきい」",
+      "recorded_ocr": "枝彌「間答無用です！とにかく、二人はそこで見ていなきい」",
+      "direct_dist": 4,
+      "pipeline_dist": 6,
+      "recorded_dist": 3,
+      "raw_txts": [
+        "枝彌",
+        "个間答無用",
+        "です！",
+        "とにかく、二人はそこで見て",
+        "いなきい」"
+      ],
+      "boxes_count": 5
+    },
+    {
+      "id": 17,
+      "truth": "晴斗「瑛斗、お前……」",
+      "direct_ocr": "晴斗『瑛斗、、お前",
+      "pipeline_ocr": "晴斗 『瑛斗、 、お前",
+      "recorded_ocr": "晴斗『瑛斗、、お前",
+      "direct_dist": 5,
+      "pipeline_dist": 7,
+      "recorded_dist": 5,
+      "raw_txts": [
+        "晴斗",
+        "『瑛斗、",
+        "、お前"
+      ],
+      "boxes_count": 3
+    },
+    {
+      "id": 20,
+      "truth": "拓斗「晴斗兄ちゃんにあげたの！？ それとも瑛斗兄ちゃん！？」",
+      "direct_ocr": "拓斗「晴斗兄ちやんにあげたの！？それとも瑛斗兄ちゃん！?」",
+      "pipeline_ocr": "拓斗 「晴斗兄ち やんにあげたの！？ それとも瑛斗兄 ちゃん！?」",
+      "recorded_ocr": "拓斗「晴斗兄ちそれとも瑛斗兄ちゃん！？」",
+      "direct_dist": 3,
+      "pipeline_dist": 5,
+      "recorded_dist": 10,
+      "raw_txts": [
+        "拓斗",
+        "「晴斗兄ち",
+        "やんにあげたの！？",
+        "それとも瑛斗兄",
+        "ちゃん！?」"
+      ],
+      "boxes_count": 5
+    },
+    {
+      "id": 23,
+      "truth": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+      "direct_ocr": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+      "pipeline_ocr": "拓斗の重さが増したような感覚と共に、 熱が広 がった。",
+      "recorded_ocr": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+      "direct_dist": 0,
+      "pipeline_dist": 2,
+      "recorded_dist": 0,
+      "raw_txts": [
+        "拓斗の重さが増したような感覚と共に、",
+        "熱が広",
+        "がった。"
+      ],
+      "boxes_count": 3
+    },
+    {
+      "id": 25,
+      "truth": "今度はそれを基準にしてあの子たちも行動すると思う。",
+      "direct_ocr": "含度はそれを基準にしてあの子たちも行動すると",
+      "pipeline_ocr": "含度はそれを基準にしてあの子たちも行動すると",
+      "recorded_ocr": "令度はそれを基準にしてあの子たちも行動すると",
+      "direct_dist": 4,
+      "pipeline_dist": 4,
+      "recorded_dist": 4,
+      "raw_txts": [
+        "含度はそれを基準にしてあの子たちも行動すると"
+      ],
+      "boxes_count": 1
+    },
+    {
+      "id": 28,
+      "truth": "よっぽど自分が一番だって証明したいようね。",
+      "direct_ocr": "よっぽど自分が一番だって証明したいようね。",
+      "pipeline_ocr": "よっぽど自分が一番だって証明したいようね。",
+      "recorded_ocr": "よっぽど自分が一番だって証明したいようね。",
+      "direct_dist": 0,
+      "pipeline_dist": 0,
+      "recorded_dist": 0,
+      "raw_txts": [
+        "よっぽど自分が一番だって証明したいようね。"
+      ],
+      "boxes_count": 1
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "language": "ko",
+  "description": "Korean Hardsub Layout Profile (Skeleton for K Stage Calibration)",
+  "overlay_style": "replace_mask",
+  "auto_wrap": true,
+  "max_line_chars": 20,
+  "font_name": "Malgun Gothic",
+  "font_size": 64,
+  "bold": true,
+  "outline": 3.0,
+  "shadow": 0.5,
+  "margin_v": 18,
+  "mask_padding": 8,
+  "mask_grid_quant": 8,
+  "mask_opacity": "00",
+  "char_width_ratio": 0.92,
+  "zh_width_padding_ref": 40.0,
+  "max_allowed_area_ratio": 0.16,
+  "single_line_max_ratio": 0.085,
+  "double_line_max_ratio": 0.15,
+  "area_target_max_px": 120000
+}

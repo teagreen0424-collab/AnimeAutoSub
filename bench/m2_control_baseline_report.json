@@ -1,0 +1,687 @@
+{
+  "benchmark": "M2 5-frame Random Control Baseline",
+  "total_truth_chars": 319,
+  "center_frame_baseline": {
+    "offset_sec": 0.0,
+    "edit_distance": 104,
+    "cer_percent": 32.6
+  },
+  "random_pick_seed42": {
+    "seed": 42,
+    "edit_distance": 94,
+    "cer_percent": 29.47,
+    "picks": [
+      {
+        "id": 2,
+        "offset": -0.5,
+        "dist": 17
+      },
+      {
+        "id": 3,
+        "offset": -0.5,
+        "dist": 2
+      },
+      {
+        "id": 4,
+        "offset": 0.0,
+        "dist": 13
+      },
+      {
+        "id": 5,
+        "offset": -0.25,
+        "dist": 3
+      },
+      {
+        "id": 6,
+        "offset": -0.25,
+        "dist": 2
+      },
+      {
+        "id": 13,
+        "offset": -0.25,
+        "dist": 13
+      },
+      {
+        "id": 14,
+        "offset": -0.5,
+        "dist": 2
+      },
+      {
+        "id": 17,
+        "offset": 0.5,
+        "dist": 6
+      },
+      {
+        "id": 20,
+        "offset": -0.5,
+        "dist": 11
+      },
+      {
+        "id": 23,
+        "offset": 0.5,
+        "dist": 0
+      },
+      {
+        "id": 25,
+        "offset": 0.25,
+        "dist": 25
+      },
+      {
+        "id": 28,
+        "offset": -0.5,
+        "dist": 0
+      }
+    ]
+  },
+  "random_pick_monte_carlo_expected": {
+    "runs": 10000,
+    "expected_edit_distance": 87.64,
+    "expected_cer_percent": 27.47
+  },
+  "filtered_random_pick_expected": {
+    "filter": "similarity_to_center >= 0.6",
+    "runs": 10000,
+    "expected_edit_distance": 96.26,
+    "expected_cer_percent": 30.18
+  },
+  "individual_offsets": {
+    "offset_-0.50s": {
+      "total_edit_distance": 74,
+      "cer_percent": 23.2
+    },
+    "offset_-0.25s": {
+      "total_edit_distance": 74,
+      "cer_percent": 23.2
+    },
+    "offset_+0.00s": {
+      "total_edit_distance": 104,
+      "cer_percent": 32.6
+    },
+    "offset_+0.25s": {
+      "total_edit_distance": 94,
+      "cer_percent": 29.47
+    },
+    "offset_+0.50s": {
+      "total_edit_distance": 93,
+      "cer_percent": 29.15
+    }
+  },
+  "per_frame_details": [
+    {
+      "id": 2,
+      "truth": "こうなると暮らしている家がそこまで離れていなかったのは、不幸中の幸いだった。",
+      "truth_len": 38,
+      "center_timestamp": 150.48000000000002,
+      "candidates": [
+        {
+          "offset_sec": -0.5,
+          "timestamp_sec": 149.98,
+          "ocr_text": "労うなるほ、界幸予い孕きだち雲まで誰れていな。、不幸中の幸いだった。",
+          "edit_dist_to_truth": 17,
+          "similarity_to_center": 0.971,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": -0.25,
+          "timestamp_sec": 150.23,
+          "ocr_text": "労うなるほ、界幸予い孕きだち雲まで誰れていな。は、不幸中の幸いだった。",
+          "edit_dist_to_truth": 16,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.0,
+          "timestamp_sec": 150.48,
+          "ocr_text": "労うなるほ、界幸予い孕きだち雲まで誰れていな。は、不幸中の幸いだった。",
+          "edit_dist_to_truth": 16,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.25,
+          "timestamp_sec": 150.73,
+          "ocr_text": "労うなるほ、界幸予い孕きだち雲まで誰れていな。は、不幸中の幸いだった。",
+          "edit_dist_to_truth": 16,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.5,
+          "timestamp_sec": 150.98,
+          "ocr_text": "労うなるほ、界幸予い孕きだち雲まで誰れていな。は、不幸中の幸いだった。",
+          "edit_dist_to_truth": 16,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "truth": "そんな晴斗に迷惑をかけないよう、どうにか自立しようとしている瑛斗。",
+      "truth_len": 33,
+      "center_timestamp": 276.375,
+      "candidates": [
+        {
+          "offset_sec": -0.5,
+          "timestamp_sec": 275.875,
+          "ocr_text": "そんな晴斗に迷惑をかけないよう、どうにか自立しょうとしている瑛斗",
+          "edit_dist_to_truth": 2,
+          "similarity_to_center": 0.688,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": -0.25,
+          "timestamp_sec": 276.125,
+          "ocr_text": "そんな晴斗に迷惑をかけないよう、どうにか自立しょうとしている瑛斗",
+          "edit_dist_to_truth": 2,
+          "similarity_to_center": 0.688,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.0,
+          "timestamp_sec": 276.375,
+          "ocr_text": "そんな晴斗に迷惑をかけないよう、どうにか自立大S11213512",
+          "edit_dist_to_truth": 11,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.25,
+          "timestamp_sec": 276.625,
+          "ocr_text": "そんな晴斗に迷惑をかけないよう、どうにか自立しょうとしている瑛斗",
+          "edit_dist_to_truth": 2,
+          "similarity_to_center": 0.688,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.5,
+          "timestamp_sec": 276.875,
+          "ocr_text": "そんな晴斗に迷惑をかけないよう、どうにか自立しょうとしている瑛斗",
+          "edit_dist_to_truth": 2,
+          "similarity_to_center": 0.688,
+          "valid_neighbor": true
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "truth": "枝彌「——えっ、と、どういうこと？」",
+      "truth_len": 18,
+      "center_timestamp": 396.395,
+      "candidates": [
+        {
+          "offset_sec": -0.5,
+          "timestamp_sec": 395.895,
+          "ocr_text": "枝彌一えっ、ど「&22c11s?",
+          "edit_dist_to_truth": 13,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": -0.25,
+          "timestamp_sec": 396.145,
+          "ocr_text": "枝彌一えっ、ど「&22c11s?",
+          "edit_dist_to_truth": 13,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.0,
+          "timestamp_sec": 396.395,
+          "ocr_text": "枝彌一えっ、ど「&22c11s?",
+          "edit_dist_to_truth": 13,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.25,
+          "timestamp_sec": 396.645,
+          "ocr_text": "枝彌一えっ、ど「&22c11s?",
+          "edit_dist_to_truth": 13,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.5,
+          "timestamp_sec": 396.895,
+          "ocr_text": "枝彌一えっ、ど「&22c11s?",
+          "edit_dist_to_truth": 13,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "truth": "晴斗「取り返しのつかないことやらかしそうで、心配なんだよ」",
+      "truth_len": 29,
+      "center_timestamp": 528.345,
+      "candidates": [
+        {
+          "offset_sec": -0.5,
+          "timestamp_sec": 527.845,
+          "ocr_text": "晴斗「取り返ししのつかないことやらかしそうで心配なんたよ」",
+          "edit_dist_to_truth": 3,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": -0.25,
+          "timestamp_sec": 528.095,
+          "ocr_text": "晴斗「取り返ししのつかないことやらかしそうで心配なんたよ」",
+          "edit_dist_to_truth": 3,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.0,
+          "timestamp_sec": 528.345,
+          "ocr_text": "晴斗「取り返ししのつかないことやらかしそうで心配なんたよ」",
+          "edit_dist_to_truth": 3,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.25,
+          "timestamp_sec": 528.595,
+          "ocr_text": "晴斗「取り返しのつかないことやらかしそうで心配なんたよ」",
+          "edit_dist_to_truth": 2,
+          "similarity_to_center": 0.966,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.5,
+          "timestamp_sec": 528.845,
+          "ocr_text": "晴斗「取り返ししのつかないことやらかしそうで心配なんたよ」",
+          "edit_dist_to_truth": 3,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "truth": "——機会が訪れたのは、数日後だった。",
+      "truth_len": 18,
+      "center_timestamp": 659.01,
+      "candidates": [
+        {
+          "offset_sec": -0.5,
+          "timestamp_sec": 658.51,
+          "ocr_text": "一機会が訪れたのは、数日後だった。",
+          "edit_dist_to_truth": 2,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": -0.25,
+          "timestamp_sec": 658.76,
+          "ocr_text": "一機会が訪れたのは、数日後だった。",
+          "edit_dist_to_truth": 2,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.0,
+          "timestamp_sec": 659.01,
+          "ocr_text": "一機会が訪れたのは、数日後だった。",
+          "edit_dist_to_truth": 2,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.25,
+          "timestamp_sec": 659.26,
+          "ocr_text": "一機会が訪れたのは、数日後だった。",
+          "edit_dist_to_truth": 2,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.5,
+          "timestamp_sec": 659.51,
+          "ocr_text": "一機会が訪れたのは、数日後だった。",
+          "edit_dist_to_truth": 2,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "truth": "瑛斗は午後になると友達と遊ぶと出かけ、家には私と晴斗、そして拓斗の三人だけになった。",
+      "truth_len": 42,
+      "center_timestamp": 1660.0900000000001,
+      "candidates": [
+        {
+          "offset_sec": -0.5,
+          "timestamp_sec": 1659.59,
+          "ocr_text": "瑛斗は午後になると友達と遊ぶと出かけ家には二人だけになった。",
+          "edit_dist_to_truth": 13,
+          "similarity_to_center": 0.967,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": -0.25,
+          "timestamp_sec": 1659.84,
+          "ocr_text": "瑛斗は午後になると友達と遊ぶと出かけ家には二人だけになった。",
+          "edit_dist_to_truth": 13,
+          "similarity_to_center": 0.967,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.0,
+          "timestamp_sec": 1660.09,
+          "ocr_text": "瑛斗は午後になると友達と遊ぶと出かけ家にはニ人だけになった。",
+          "edit_dist_to_truth": 13,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.25,
+          "timestamp_sec": 1660.34,
+          "ocr_text": "瑛斗は午後になると友達と遊ぶと出かけ家にはニ人だけになった。",
+          "edit_dist_to_truth": 13,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.5,
+          "timestamp_sec": 1660.59,
+          "ocr_text": "瑛斗は午後になると友達と遊ぶと出かけ家にはニ人だけになった。",
+          "edit_dist_to_truth": 13,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "truth": "枝彌「問答無用です！ とにかく、二人はそこで見ていなさい」",
+      "truth_len": 29,
+      "center_timestamp": 1762.68,
+      "candidates": [
+        {
+          "offset_sec": -0.5,
+          "timestamp_sec": 1762.18,
+          "ocr_text": "枝彌「問答無用です！とにかく、二人はそこで見ていなきい」",
+          "edit_dist_to_truth": 2,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": -0.25,
+          "timestamp_sec": 1762.43,
+          "ocr_text": "枝彌「問答無用です！とにかく、二人はそこで見ていなきい」",
+          "edit_dist_to_truth": 2,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.0,
+          "timestamp_sec": 1762.68,
+          "ocr_text": "枝彌「問答無用です！とにかく、二人はそこで見ていなきい」",
+          "edit_dist_to_truth": 2,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.25,
+          "timestamp_sec": 1762.93,
+          "ocr_text": "枝彌「問答無用です！とにかく、二人はそこで見ていなきい」",
+          "edit_dist_to_truth": 2,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.5,
+          "timestamp_sec": 1763.18,
+          "ocr_text": "枝彌「問答無用です！とにかく、二人はそこで見ていなきい」",
+          "edit_dist_to_truth": 2,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "truth": "晴斗「瑛斗、お前……」",
+      "truth_len": 11,
+      "center_timestamp": 2176.69,
+      "candidates": [
+        {
+          "offset_sec": -0.5,
+          "timestamp_sec": 2176.19,
+          "ocr_text": "『瑛斗、、お前",
+          "edit_dist_to_truth": 7,
+          "similarity_to_center": 0.583,
+          "valid_neighbor": false
+        },
+        {
+          "offset_sec": -0.25,
+          "timestamp_sec": 2176.44,
+          "ocr_text": "晴斗前00『瑛斗、、お前",
+          "edit_dist_to_truth": 8,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.0,
+          "timestamp_sec": 2176.69,
+          "ocr_text": "晴斗前00『瑛斗、、お前",
+          "edit_dist_to_truth": 8,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.25,
+          "timestamp_sec": 2176.94,
+          "ocr_text": "晴斗山00『瑛斗、、お前",
+          "edit_dist_to_truth": 8,
+          "similarity_to_center": 0.917,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.5,
+          "timestamp_sec": 2177.19,
+          "ocr_text": "晴斗0『瑛斗、、お前",
+          "edit_dist_to_truth": 6,
+          "similarity_to_center": 0.833,
+          "valid_neighbor": true
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "truth": "拓斗「晴斗兄ちゃんにあげたの！？ それとも瑛斗兄ちゃん！？」",
+      "truth_len": 30,
+      "center_timestamp": 2578.96,
+      "candidates": [
+        {
+          "offset_sec": -0.5,
+          "timestamp_sec": 2578.46,
+          "ocr_text": "拓斗「晴斗兄ちそれとも瑛斗兄ちゃん！?」",
+          "edit_dist_to_truth": 11,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": -0.25,
+          "timestamp_sec": 2578.71,
+          "ocr_text": "拓斗「晴斗兄ちそれとも瑛斗兄ちゃん！?」",
+          "edit_dist_to_truth": 11,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.0,
+          "timestamp_sec": 2578.96,
+          "ocr_text": "拓斗「晴斗兄ちそれとも瑛斗兄ちゃん！?」",
+          "edit_dist_to_truth": 11,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.25,
+          "timestamp_sec": 2579.21,
+          "ocr_text": "拓斗「晴斗兄ちそれとも瑛斗兄ちゃん！?」",
+          "edit_dist_to_truth": 11,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.5,
+          "timestamp_sec": 2579.46,
+          "ocr_text": "拓斗「晴斗兄ちそれとも瑛斗兄ちゃん！?」",
+          "edit_dist_to_truth": 11,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "truth": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+      "truth_len": 25,
+      "center_timestamp": 2985.635,
+      "candidates": [
+        {
+          "offset_sec": -0.5,
+          "timestamp_sec": 2985.135,
+          "ocr_text": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+          "edit_dist_to_truth": 0,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": -0.25,
+          "timestamp_sec": 2985.385,
+          "ocr_text": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+          "edit_dist_to_truth": 0,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.0,
+          "timestamp_sec": 2985.635,
+          "ocr_text": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+          "edit_dist_to_truth": 0,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.25,
+          "timestamp_sec": 2985.885,
+          "ocr_text": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+          "edit_dist_to_truth": 0,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.5,
+          "timestamp_sec": 2986.135,
+          "ocr_text": "拓斗の重さが増したような感覚と共に、熱が広がった。",
+          "edit_dist_to_truth": 0,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "truth": "今度はそれを基準にしてあの子たちも行動すると思う。",
+      "truth_len": 25,
+      "center_timestamp": 3272.84,
+      "candidates": [
+        {
+          "offset_sec": -0.5,
+          "timestamp_sec": 3272.34,
+          "ocr_text": "含度はそれを基準にしてあの子たちも行動すると",
+          "edit_dist_to_truth": 4,
+          "similarity_to_center": 0.0,
+          "valid_neighbor": false
+        },
+        {
+          "offset_sec": -0.25,
+          "timestamp_sec": 3272.59,
+          "ocr_text": "含度はそれを基準にしてあの子たちも行動すると",
+          "edit_dist_to_truth": 4,
+          "similarity_to_center": 0.0,
+          "valid_neighbor": false
+        },
+        {
+          "offset_sec": 0.0,
+          "timestamp_sec": 3272.84,
+          "ocr_text": "2",
+          "edit_dist_to_truth": 25,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.25,
+          "timestamp_sec": 3273.09,
+          "ocr_text": "2",
+          "edit_dist_to_truth": 25,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.5,
+          "timestamp_sec": 3273.34,
+          "ocr_text": "2",
+          "edit_dist_to_truth": 25,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "truth": "よっぽど自分が一番だって証明したいようね。",
+      "truth_len": 21,
+      "center_timestamp": 3636.02,
+      "candidates": [
+        {
+          "offset_sec": -0.5,
+          "timestamp_sec": 3635.52,
+          "ocr_text": "よっぽど自分が一番だって証明したいようね。",
+          "edit_dist_to_truth": 0,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": -0.25,
+          "timestamp_sec": 3635.77,
+          "ocr_text": "よっぽど自分が一番だって証明したいようね。",
+          "edit_dist_to_truth": 0,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.0,
+          "timestamp_sec": 3636.02,
+          "ocr_text": "よっぽど自分が一番だって証明したいようね。",
+          "edit_dist_to_truth": 0,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.25,
+          "timestamp_sec": 3636.27,
+          "ocr_text": "よっぽど自分が一番だって証明したいようね。",
+          "edit_dist_to_truth": 0,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        },
+        {
+          "offset_sec": 0.5,
+          "timestamp_sec": 3636.52,
+          "ocr_text": "よっぽど自分が一番だって証明したいようね。",
+          "edit_dist_to_truth": 0,
+          "similarity_to_center": 1.0,
+          "valid_neighbor": true
+        }
+      ]
+    }
+  ]
+}

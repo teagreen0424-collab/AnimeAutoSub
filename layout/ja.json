@@ -1,0 +1,22 @@
+{
+  "language": "ja",
+  "description": "Japanese Anime Hardsub Adaptive Layout Profile",
+  "overlay_style": "replace_mask",
+  "auto_wrap": true,
+  "max_line_chars": 18,
+  "font_name": "Microsoft YaHei",
+  "font_size": 68,
+  "bold": true,
+  "outline": 3.2,
+  "shadow": 0.5,
+  "margin_v": 16,
+  "mask_padding": 8,
+  "mask_grid_quant": 8,
+  "mask_opacity": "00",
+  "char_width_ratio": 0.95,
+  "zh_width_padding_ref": 40.0,
+  "max_allowed_area_ratio": 0.16,
+  "single_line_max_ratio": 0.085,
+  "double_line_max_ratio": 0.15,
+  "area_target_max_px": 120000
+}

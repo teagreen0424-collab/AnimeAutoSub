@@ -1,0 +1,12 @@
+{
+  "total_frames": 27,
+  "cpu_elapsed_sec": 34.718914000084624,
+  "cpu_avg_ms": 1285.8857037068378,
+  "cuda_elapsed_sec": 32.975452000042424,
+  "cuda_avg_ms": 1221.3130370386082,
+  "speedup": 1.0528715118155152,
+  "cpu_chars": 414,
+  "cuda_chars": 414,
+  "exact_matches": 27,
+  "diff_count": 0
+}

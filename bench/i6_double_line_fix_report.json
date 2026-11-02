@@ -1,0 +1,51 @@
+[
+  {
+    "name": "基准 (Default)",
+    "params": {
+      "Rec.lang_type": "japan",
+      "EngineConfig.onnxruntime.use_cuda": true
+    },
+    "diff_count": 7,
+    "tot_dist": 105,
+    "tot_chars": 760,
+    "cer": 0.13815789473684212
+  },
+  {
+    "name": "档位 1: 调低 box_thresh (0.5 -> 0.3)",
+    "params": {
+      "Rec.lang_type": "japan",
+      "EngineConfig.onnxruntime.use_cuda": true,
+      "Det.box_thresh": 0.3
+    },
+    "diff_count": 7,
+    "tot_dist": 105,
+    "tot_chars": 760,
+    "cer": 0.13815789473684212
+  },
+  {
+    "name": "档位 2: 调低 box_thresh (0.3) + unclip_ratio (1.6 -> 2.0)",
+    "params": {
+      "Rec.lang_type": "japan",
+      "EngineConfig.onnxruntime.use_cuda": true,
+      "Det.box_thresh": 0.3,
+      "Det.unclip_ratio": 2.0
+    },
+    "diff_count": 5,
+    "tot_dist": 20,
+    "tot_chars": 760,
+    "cer": 0.02631578947368421
+  },
+  {
+    "name": "档位 3: 调低 box_thresh (0.3) + 增大 limit_side_len (960 -> 1280)",
+    "params": {
+      "Rec.lang_type": "japan",
+      "EngineConfig.onnxruntime.use_cuda": true,
+      "Det.box_thresh": 0.3,
+      "Det.limit_side_len": 1280
+    },
+    "diff_count": 11,
+    "tot_dist": 78,
+    "tot_chars": 760,
+    "cer": 0.10263157894736842
+  }
+]

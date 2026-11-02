@@ -1,0 +1,48 @@
+{
+  "pipeline": "Chain B - Video OCR (test_3min)",
+  "video_input": "ocr_input\\test_3min.mp4",
+  "video_duration_sec": 180.18,
+  "subtitle_count": 38,
+  "timing": {
+    "ocr_sec": 80.07,
+    "translation_sec": 203.72,
+    "layout_sec": 0.11,
+    "burn_mux_sec": 9.83,
+    "total_wall_clock_sec": 293.73
+  },
+  "mask_metrics": {
+    "mask_count": 38,
+    "mean_area_px": 98412.0,
+    "max_area_px": 190000,
+    "min_area_px": 55088,
+    "area_criterion_le_120k": true,
+    "distinct_heights": [
+      80,
+      88,
+      96,
+      112,
+      120,
+      128,
+      144,
+      152,
+      184
+    ],
+    "height_variance_le_8px": true
+  },
+  "peak_vram_mb": 7762,
+  "products": {
+    "mp4": {
+      "path": "E:\\translate\\ocr_output\\test_3min\\test_3min_中文字幕.mp4",
+      "size_bytes": 7991496,
+      "size_mb": 7.62
+    },
+    "mkv": {
+      "path": "E:\\translate\\ocr_output\\test_3min\\test_3min_中文字幕.mkv",
+      "size_bytes": 6692983,
+      "size_mb": 6.38
+    },
+    "ass": "E:\\translate\\ocr_output\\test_3min\\subtitle.ass",
+    "japanese_json": "E:\\translate\\ocr_output\\test_3min\\japanese.json",
+    "chinese_json": "E:\\translate\\ocr_output\\test_3min\\chinese.json"
+  }
+}

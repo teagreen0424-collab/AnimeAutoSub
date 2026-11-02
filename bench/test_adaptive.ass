@@ -1,0 +1,18 @@
+[Script Info]
+Title: Test Adaptive Mask
+ScriptType: v4.00+
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+YCbCr Matrix: TV.709
+PlayResX: 1280
+PlayResY: 720
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Mask,Arial,10,&H00000000,&H00000000,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,0,0,7,0,0,0,1
+Style: Default,Microsoft YaHei,45,&H00FFFFFF,&H000000FF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,2.5,0.5,5,10,10,10,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:10.00,Mask,,0,0,0,,{\an7\pos(195,520)\p1\c&H0a0a0a&\1a&H00&}m 0 0 l 811 0 l 811 144 l 0 144{\p0}
+Dialogue: 1,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\an5\pos(601,592)}枝弥「等洗完衣服和打扫完之后。\N所以，如果你能帮忙的话我会很高兴的」

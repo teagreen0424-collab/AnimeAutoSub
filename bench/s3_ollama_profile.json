@@ -1,0 +1,20 @@
+{
+  "chain_a": {
+    "name": "Chain A (Speech)",
+    "mean_total_s": 1.7478062666666672,
+    "mean_prompt_tokens": 255.2,
+    "mean_prompt_s": 0.3234514666666667,
+    "mean_gen_tokens": 10.8,
+    "mean_gen_s": 0.805077,
+    "tokens_per_sec": 13.414865907236202
+  },
+  "chain_b": {
+    "name": "Chain B (OCR Subtitles)",
+    "mean_total_s": 1.5578684933333333,
+    "mean_prompt_tokens": 297.0,
+    "mean_prompt_s": 0.3493219333333333,
+    "mean_gen_tokens": 15.866666666666667,
+    "mean_gen_s": 1.177973,
+    "tokens_per_sec": 13.469465485768069
+  }
+}

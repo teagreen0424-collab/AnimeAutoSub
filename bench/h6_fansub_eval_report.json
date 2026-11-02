@@ -1,0 +1,382 @@
+{
+  "total_frames": 40,
+  "single": {
+    "frames": 20,
+    "ref_chars": 430,
+    "edit_dist": 20,
+    "cer": 0.046511627906976744
+  },
+  "double": {
+    "frames": 20,
+    "ref_chars": 760,
+    "edit_dist": 104,
+    "cer": 0.1368421052631579
+  },
+  "total": {
+    "ref_chars": 1190,
+    "edit_dist": 124,
+    "cer": 0.10420168067226891
+  },
+  "records": [
+    {
+      "index": 1,
+      "kind": "单行",
+      "sec": 2.5,
+      "ref_text": "今夜の風は、ずいぶんと冷たいですね。",
+      "pred_text": "2t後編今夜の風は、ずいぶんと冷たいですね。",
+      "edit_distance": 4,
+      "status": "DIFF(4)"
+    },
+    {
+      "index": 2,
+      "kind": "单行",
+      "sec": 3.5,
+      "ref_text": "今夜の風は、ずいぶんと冷たいですね。",
+      "pred_text": "2t後編今夜の風は、ずいぶんと冷たいですね。",
+      "edit_distance": 4,
+      "status": "DIFF(4)"
+    },
+    {
+      "index": 3,
+      "kind": "单行",
+      "sec": 4.5,
+      "ref_text": "今夜の風は、ずいぶんと冷たいですね。",
+      "pred_text": "2t後編今夜の風は、ずいぶんと冷たいですね。",
+      "edit_distance": 4,
+      "status": "DIFF(4)"
+    },
+    {
+      "index": 4,
+      "kind": "单行",
+      "sec": 5.5,
+      "ref_text": "今夜の風は、ずいぶんと冷たいですね。",
+      "pred_text": "2t後編今夜の風は、ずいぶんと冷たいですね。",
+      "edit_distance": 4,
+      "status": "DIFF(4)"
+    },
+    {
+      "index": 5,
+      "kind": "单行",
+      "sec": 6.5,
+      "ref_text": "今夜の風は、ずいぶんと冷たいですね。",
+      "pred_text": "2t後編今夜の風は、ずいぶんと冷たいですね。",
+      "edit_distance": 4,
+      "status": "DIFF(4)"
+    },
+    {
+      "index": 6,
+      "kind": "单行",
+      "sec": 9.0,
+      "ref_text": "私たちはいつだって、本当の気持ちを隠して笑っているんだ。",
+      "pred_text": "私たちはいつだって、本当の気持ちを隠して笑っているんだ。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 7,
+      "kind": "单行",
+      "sec": 10.0,
+      "ref_text": "私たちはいつだって、本当の気持ちを隠して笑っているんだ。",
+      "pred_text": "私たちはいつだって、本当の気持ちを隠して笑っているんだ。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 8,
+      "kind": "单行",
+      "sec": 11.0,
+      "ref_text": "私たちはいつだって、本当の気持ちを隠して笑っているんだ。",
+      "pred_text": "私たちはいつだって、本当の気持ちを隠して笑っているんだ。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 9,
+      "kind": "单行",
+      "sec": 12.0,
+      "ref_text": "私たちはいつだって、本当の気持ちを隠して笑っているんだ。",
+      "pred_text": "私たちはいつだって、本当の気持ちを隠して笑っているんだ。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 10,
+      "kind": "单行",
+      "sec": 13.0,
+      "ref_text": "私たちはいつだって、本当の気持ちを隠して笑っているんだ。",
+      "pred_text": "私たちはいつだって、本当の気持ちを隠して笑っているんだ。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 11,
+      "kind": "单行",
+      "sec": 35.0,
+      "ref_text": "そんな顔をしないでくれ、頼むから！",
+      "pred_text": "そんな顔をしないでくれ、頼むから！",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 12,
+      "kind": "单行",
+      "sec": 36.0,
+      "ref_text": "そんな顔をしないでくれ、頼むから！",
+      "pred_text": "そんな顔をしないでくれ、頼むから！",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 13,
+      "kind": "单行",
+      "sec": 37.0,
+      "ref_text": "そんな顔をしないでくれ、頼むから！",
+      "pred_text": "そんな顔をしないでくれ、頼むから！",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 14,
+      "kind": "单行",
+      "sec": 38.0,
+      "ref_text": "そんな顔をしないでくれ、頼むから！",
+      "pred_text": "そんな顔をしないでくれ、頼むから！",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 15,
+      "kind": "单行",
+      "sec": 39.0,
+      "ref_text": "そんな顔をしないでくれ、頼むから！",
+      "pred_text": "そんな顔をしないでくれ、頼むから！",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 16,
+      "kind": "单行",
+      "sec": 53.0,
+      "ref_text": "明日になれば、きっとすべてが変わるはずだから。",
+      "pred_text": "明日になれば、きっとすべてが変わるはずだから。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 17,
+      "kind": "单行",
+      "sec": 54.0,
+      "ref_text": "明日になれば、きっとすべてが変わるはずだから。",
+      "pred_text": "明日になれば、きっとすべてが変わるはずだから。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 18,
+      "kind": "单行",
+      "sec": 55.0,
+      "ref_text": "明日になれば、きっとすべてが変わるはずだから。",
+      "pred_text": "明日になれば、きっとすべてが変わるはずだから。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 19,
+      "kind": "单行",
+      "sec": 56.0,
+      "ref_text": "明日になれば、きっとすべてが変わるはずだから。",
+      "pred_text": "明日になれば、きっとすべてが変わるはずだから。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 20,
+      "kind": "单行",
+      "sec": 57.0,
+      "ref_text": "明日になれば、きっとすべてが変わるはずだから。",
+      "pred_text": "明日になれば、きっとすべてが変わるはずだから。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 21,
+      "kind": "双行",
+      "sec": 17.0,
+      "ref_text": "たとえ世界中が君の敵になったとしても、私はずっと君の味方でいると誓うよ。",
+      "pred_text": "たとえ世界中が君の敵になったとしても、私はずっと君の味方でいると誓うよ。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 22,
+      "kind": "双行",
+      "sec": 18.0,
+      "ref_text": "たとえ世界中が君の敵になったとしても、私はずっと君の味方でいると誓うよ。",
+      "pred_text": "たとえ世界中が君の敵になったとしても、",
+      "edit_distance": 17,
+      "status": "DIFF(17)"
+    },
+    {
+      "index": 23,
+      "kind": "双行",
+      "sec": 19.0,
+      "ref_text": "たとえ世界中が君の敵になったとしても、私はずっと君の味方でいると誓うよ。",
+      "pred_text": "たとえ世界中が君の敵になったとしても、",
+      "edit_distance": 17,
+      "status": "DIFF(17)"
+    },
+    {
+      "index": 24,
+      "kind": "双行",
+      "sec": 20.0,
+      "ref_text": "たとえ世界中が君の敵になったとしても、私はずっと君の味方でいると誓うよ。",
+      "pred_text": "たとえ世界中が君の敵になったとしても、私はずっと君の味方でいると誓うよ。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 25,
+      "kind": "双行",
+      "sec": 21.0,
+      "ref_text": "たとえ世界中が君の敵になったとしても、私はずっと君の味方でいると誓うよ。",
+      "pred_text": "たとえ世界中が君の敵になったとしても、",
+      "edit_distance": 17,
+      "status": "DIFF(17)"
+    },
+    {
+      "index": 26,
+      "kind": "双行",
+      "sec": 22.0,
+      "ref_text": "たとえ世界中が君の敵になったとしても、私はずっと君の味方でいると誓うよ。",
+      "pred_text": "たとえ世界中が君の敵になったとしても、",
+      "edit_distance": 17,
+      "status": "DIFF(17)"
+    },
+    {
+      "index": 27,
+      "kind": "双行",
+      "sec": 22.5,
+      "ref_text": "たとえ世界中が君の敵になったとしても、私はずっと君の味方でいると誓うよ。",
+      "pred_text": "たとえ世界中が君の敵になったとしても、",
+      "edit_distance": 17,
+      "status": "DIFF(17)"
+    },
+    {
+      "index": 28,
+      "kind": "双行",
+      "sec": 26.0,
+      "ref_text": "あの日の約束を覚えていますか？桜が散る頃に、もう一度ここで会おうと言ったことを。",
+      "pred_text": "あの日の約束を覚えていますか？桜が散る頃に、もう一度ここで会おうと言ったことを。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 29,
+      "kind": "双行",
+      "sec": 27.0,
+      "ref_text": "あの日の約束を覚えていますか？桜が散る頃に、もう一度ここで会おうと言ったことを。",
+      "pred_text": "あの日の約束を覚えていますか？桜が散る頃に、もう一度ここで会おうと言ったことを。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 30,
+      "kind": "双行",
+      "sec": 28.0,
+      "ref_text": "あの日の約束を覚えていますか？桜が散る頃に、もう一度ここで会おうと言ったことを。",
+      "pred_text": "あの日の約束を覚えていますか？桜が散る頃に",
+      "edit_distance": 19,
+      "status": "DIFF(19)"
+    },
+    {
+      "index": 31,
+      "kind": "双行",
+      "sec": 29.0,
+      "ref_text": "あの日の約束を覚えていますか？桜が散る頃に、もう一度ここで会おうと言ったことを。",
+      "pred_text": "あの日の約束を覚えていますか？桜が散る頃に、もう一度ここで会おうと言ったことを。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 32,
+      "kind": "双行",
+      "sec": 30.0,
+      "ref_text": "あの日の約束を覚えていますか？桜が散る頃に、もう一度ここで会おうと言ったことを。",
+      "pred_text": "あの日の約束を覚えていますか？桜が散る頃に、もう一度ここで会おうと言ったことを。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 33,
+      "kind": "双行",
+      "sec": 31.0,
+      "ref_text": "あの日の約束を覚えていますか？桜が散る頃に、もう一度ここで会おうと言ったことを。",
+      "pred_text": "あの日の約束を覚えていますか？桜が散る頃に、もう一度ここで会おうと言ったことを。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 34,
+      "kind": "双行",
+      "sec": 31.5,
+      "ref_text": "あの日の約束を覚えていますか？桜が散る頃に、もう一度ここで会おうと言ったことを。",
+      "pred_text": "あの日の約束を覚えていますか？桜が散る頃に、もう一度ここで会おうと言ったことを。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 35,
+      "kind": "双行",
+      "sec": 43.0,
+      "ref_text": "「これで終わりじゃない、ここからが始まりだ」そう強く自分に言い聞かせていた。",
+      "pred_text": "「これで終わりじゃない、ここからが始まりだ」そう強く自分に言い聞かせていた。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 36,
+      "kind": "双行",
+      "sec": 44.0,
+      "ref_text": "「これで終わりじゃない、ここからが始まりだ」そう強く自分に言い聞かせていた。",
+      "pred_text": "「これで終わりじゃない、ここからが始まりだ」そう強く自分に言い聞かせていた。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 37,
+      "kind": "双行",
+      "sec": 45.0,
+      "ref_text": "「これで終わりじゃない、ここからが始まりだ」そう強く自分に言い聞かせていた。",
+      "pred_text": "「これで終わりじゃない、ここからが始まりだ」そう強く自分に言い聞かせていた。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 38,
+      "kind": "双行",
+      "sec": 46.0,
+      "ref_text": "「これで終わりじゃない、ここからが始まりだ」そう強く自分に言い聞かせていた。",
+      "pred_text": "「これで終わりじゃない、ここからが始まりだ」そう強く自分に言い聞かせていた。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 39,
+      "kind": "双行",
+      "sec": 47.0,
+      "ref_text": "「これで終わりじゃない、ここからが始まりだ」そう強く自分に言い聞かせていた。",
+      "pred_text": "「これで終わりじゃない、ここからが始まりだ」そう強く自分に言い聞かせていた。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    },
+    {
+      "index": 40,
+      "kind": "双行",
+      "sec": 48.0,
+      "ref_text": "「これで終わりじゃない、ここからが始まりだ」そう強く自分に言い聞かせていた。",
+      "pred_text": "「これで終わりじゃない、ここからが始まりだ」そう強く自分に言い聞かせていた。",
+      "edit_distance": 0,
+      "status": "MATCH"
+    }
+  ]
+}

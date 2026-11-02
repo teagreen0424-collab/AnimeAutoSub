@@ -1,0 +1,7 @@
+# 日漫字幕流水线依赖
+# 注意：torch 和 torchaudio 在 install.bat 中单独安装（需要 CUDA 版本）
+
+faster-whisper>=1.0.0
+demucs>=4.0.0
+pysubs2>=1.7.0
+requests>=2.28.0

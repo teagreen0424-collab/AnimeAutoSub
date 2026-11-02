@@ -1,0 +1,266 @@
+{
+  "total_time_s": 11.69,
+  "decode_s": 1.679,
+  "inference_s": 9.675,
+  "other_s": 0.317,
+  "call_records": [
+    {
+      "call": 1,
+      "sec": 0.0,
+      "duration_ms": 884.4,
+      "boxes_count": 5
+    },
+    {
+      "call": 2,
+      "sec": 3.74,
+      "duration_ms": 231.5,
+      "boxes_count": 3
+    },
+    {
+      "call": 3,
+      "sec": 7.94,
+      "duration_ms": 215.7,
+      "boxes_count": 1
+    },
+    {
+      "call": 4,
+      "sec": 9.81,
+      "duration_ms": 201.9,
+      "boxes_count": 2
+    },
+    {
+      "call": 5,
+      "sec": 13.08,
+      "duration_ms": 225.6,
+      "boxes_count": 3
+    },
+    {
+      "call": 6,
+      "sec": 17.75,
+      "duration_ms": 205.2,
+      "boxes_count": 2
+    },
+    {
+      "call": 7,
+      "sec": 21.96,
+      "duration_ms": 225.6,
+      "boxes_count": 6
+    },
+    {
+      "call": 8,
+      "sec": 30.83,
+      "duration_ms": 213.0,
+      "boxes_count": 3
+    },
+    {
+      "call": 9,
+      "sec": 34.1,
+      "duration_ms": 219.3,
+      "boxes_count": 6
+    },
+    {
+      "call": 10,
+      "sec": 42.51,
+      "duration_ms": 224.9,
+      "boxes_count": 5
+    },
+    {
+      "call": 11,
+      "sec": 46.71,
+      "duration_ms": 218.7,
+      "boxes_count": 7
+    },
+    {
+      "call": 12,
+      "sec": 54.65,
+      "duration_ms": 195.1,
+      "boxes_count": 5
+    },
+    {
+      "call": 13,
+      "sec": 56.52,
+      "duration_ms": 205.0,
+      "boxes_count": 3
+    },
+    {
+      "call": 14,
+      "sec": 58.86,
+      "duration_ms": 209.7,
+      "boxes_count": 3
+    },
+    {
+      "call": 15,
+      "sec": 59.33,
+      "duration_ms": 204.1,
+      "boxes_count": 3
+    },
+    {
+      "call": 16,
+      "sec": 59.79,
+      "duration_ms": 206.3,
+      "boxes_count": 3
+    },
+    {
+      "call": 17,
+      "sec": 60.26,
+      "duration_ms": 206.2,
+      "boxes_count": 3
+    },
+    {
+      "call": 18,
+      "sec": 61.66,
+      "duration_ms": 235.4,
+      "boxes_count": 7
+    },
+    {
+      "call": 19,
+      "sec": 70.54,
+      "duration_ms": 198.8,
+      "boxes_count": 5
+    },
+    {
+      "call": 20,
+      "sec": 74.74,
+      "duration_ms": 198.9,
+      "boxes_count": 3
+    },
+    {
+      "call": 21,
+      "sec": 79.41,
+      "duration_ms": 200.8,
+      "boxes_count": 2
+    },
+    {
+      "call": 22,
+      "sec": 86.89,
+      "duration_ms": 216.4,
+      "boxes_count": 6
+    },
+    {
+      "call": 23,
+      "sec": 89.22,
+      "duration_ms": 220.8,
+      "boxes_count": 7
+    },
+    {
+      "call": 24,
+      "sec": 94.36,
+      "duration_ms": 206.1,
+      "boxes_count": 4
+    },
+    {
+      "call": 25,
+      "sec": 98.57,
+      "duration_ms": 228.9,
+      "boxes_count": 8
+    },
+    {
+      "call": 26,
+      "sec": 104.64,
+      "duration_ms": 205.3,
+      "boxes_count": 4
+    },
+    {
+      "call": 27,
+      "sec": 113.05,
+      "duration_ms": 203.3,
+      "boxes_count": 4
+    },
+    {
+      "call": 28,
+      "sec": 116.32,
+      "duration_ms": 200.0,
+      "boxes_count": 5
+    },
+    {
+      "call": 29,
+      "sec": 120.52,
+      "duration_ms": 212.7,
+      "boxes_count": 4
+    },
+    {
+      "call": 30,
+      "sec": 127.53,
+      "duration_ms": 204.5,
+      "boxes_count": 1
+    },
+    {
+      "call": 31,
+      "sec": 129.4,
+      "duration_ms": 215.6,
+      "boxes_count": 2
+    },
+    {
+      "call": 32,
+      "sec": 133.6,
+      "duration_ms": 193.0,
+      "boxes_count": 2
+    },
+    {
+      "call": 33,
+      "sec": 136.87,
+      "duration_ms": 193.0,
+      "boxes_count": 3
+    },
+    {
+      "call": 34,
+      "sec": 142.01,
+      "duration_ms": 197.5,
+      "boxes_count": 2
+    },
+    {
+      "call": 35,
+      "sec": 143.88,
+      "duration_ms": 193.7,
+      "boxes_count": 3
+    },
+    {
+      "call": 36,
+      "sec": 149.02,
+      "duration_ms": 200.1,
+      "boxes_count": 4
+    },
+    {
+      "call": 37,
+      "sec": 151.35,
+      "duration_ms": 231.0,
+      "boxes_count": 5
+    },
+    {
+      "call": 38,
+      "sec": 158.83,
+      "duration_ms": 196.2,
+      "boxes_count": 0
+    },
+    {
+      "call": 39,
+      "sec": 160.69,
+      "duration_ms": 210.9,
+      "boxes_count": 2
+    },
+    {
+      "call": 40,
+      "sec": 167.23,
+      "duration_ms": 208.4,
+      "boxes_count": 4
+    },
+    {
+      "call": 41,
+      "sec": 169.1,
+      "duration_ms": 207.9,
+      "boxes_count": 3
+    },
+    {
+      "call": 42,
+      "sec": 172.84,
+      "duration_ms": 198.6,
+      "boxes_count": 3
+    },
+    {
+      "call": 43,
+      "sec": 176.11,
+      "duration_ms": 205.2,
+      "boxes_count": 5
+    }
+  ]
+}

@@ -1,0 +1,375 @@
+{
+  "720p_samples": [
+    {
+      "index": 1,
+      "timestamp_sec": 1.8,
+      "raw_image": "bench\\mask_samples\\720p_frame_01_1.8s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\720p_frame_01_1.8s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\720p_frame_01_1.8s_comparison.png",
+      "mask_box": [
+        197,
+        512,
+        1007,
+        664
+      ],
+      "mask_width": 810,
+      "mask_height": 152,
+      "mask_area_px": 123120,
+      "criterion_le_120k": false,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 2,
+      "timestamp_sec": 5.8,
+      "raw_image": "bench\\mask_samples\\720p_frame_02_5.8s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\720p_frame_02_5.8s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\720p_frame_02_5.8s_comparison.png",
+      "mask_box": [
+        194,
+        544,
+        1006,
+        632
+      ],
+      "mask_width": 812,
+      "mask_height": 88,
+      "mask_area_px": 71456,
+      "criterion_le_120k": true,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 3,
+      "timestamp_sec": 8.8,
+      "raw_image": "bench\\mask_samples\\720p_frame_03_8.8s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\720p_frame_03_8.8s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\720p_frame_03_8.8s_comparison.png",
+      "mask_box": [
+        170,
+        576,
+        753,
+        672
+      ],
+      "mask_width": 583,
+      "mask_height": 96,
+      "mask_area_px": 55968,
+      "criterion_le_120k": true,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 4,
+      "timestamp_sec": 11.5,
+      "raw_image": "bench\\mask_samples\\720p_frame_04_11.5s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\720p_frame_04_11.5s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\720p_frame_04_11.5s_comparison.png",
+      "mask_box": [
+        196,
+        584,
+        1019,
+        664
+      ],
+      "mask_width": 823,
+      "mask_height": 80,
+      "mask_area_px": 65840,
+      "criterion_le_120k": true,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 5,
+      "timestamp_sec": 15.4,
+      "raw_image": "bench\\mask_samples\\720p_frame_05_15.4s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\720p_frame_05_15.4s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\720p_frame_05_15.4s_comparison.png",
+      "mask_box": [
+        195,
+        544,
+        1047,
+        632
+      ],
+      "mask_width": 852,
+      "mask_height": 88,
+      "mask_area_px": 74976,
+      "criterion_le_120k": true,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 6,
+      "timestamp_sec": 32.5,
+      "raw_image": "bench\\mask_samples\\720p_frame_06_32.5s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\720p_frame_06_32.5s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\720p_frame_06_32.5s_comparison.png",
+      "mask_box": [
+        197,
+        520,
+        1048,
+        632
+      ],
+      "mask_width": 851,
+      "mask_height": 112,
+      "mask_area_px": 95312,
+      "criterion_le_120k": true,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 7,
+      "timestamp_sec": 35.0,
+      "raw_image": "bench\\mask_samples\\720p_frame_07_35.0s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\720p_frame_07_35.0s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\720p_frame_07_35.0s_comparison.png",
+      "mask_box": [
+        195,
+        520,
+        1006,
+        664
+      ],
+      "mask_width": 811,
+      "mask_height": 144,
+      "mask_area_px": 116784,
+      "criterion_le_120k": true,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 8,
+      "timestamp_sec": 44.6,
+      "raw_image": "bench\\mask_samples\\720p_frame_08_44.6s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\720p_frame_08_44.6s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\720p_frame_08_44.6s_comparison.png",
+      "mask_box": [
+        195,
+        520,
+        1046,
+        672
+      ],
+      "mask_width": 851,
+      "mask_height": 152,
+      "mask_area_px": 129352,
+      "criterion_le_120k": false,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 9,
+      "timestamp_sec": 50.7,
+      "raw_image": "bench\\mask_samples\\720p_frame_09_50.7s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\720p_frame_09_50.7s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\720p_frame_09_50.7s_comparison.png",
+      "mask_box": [
+        196,
+        520,
+        1045,
+        664
+      ],
+      "mask_width": 849,
+      "mask_height": 144,
+      "mask_area_px": 122256,
+      "criterion_le_120k": false,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 10,
+      "timestamp_sec": 55.5,
+      "raw_image": "bench\\mask_samples\\720p_frame_10_55.5s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\720p_frame_10_55.5s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\720p_frame_10_55.5s_comparison.png",
+      "mask_box": [
+        196,
+        512,
+        1011,
+        664
+      ],
+      "mask_width": 815,
+      "mask_height": 152,
+      "mask_area_px": 123880,
+      "criterion_le_120k": false,
+      "japanese_residue_rate": 0.0
+    }
+  ],
+  "1080p_samples": [
+    {
+      "index": 1,
+      "timestamp_sec": 3.5,
+      "raw_image": "bench\\mask_samples\\1080p_frame_01_3.5s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\1080p_frame_01_3.5s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\1080p_frame_01_3.5s_comparison.png",
+      "mask_box": [
+        409,
+        816,
+        1483,
+        1056
+      ],
+      "mask_width": 1074,
+      "mask_height": 240,
+      "mask_area_px": 257760,
+      "criterion_le_120k": false,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 2,
+      "timestamp_sec": 5.5,
+      "raw_image": "bench\\mask_samples\\1080p_frame_02_5.5s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\1080p_frame_02_5.5s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\1080p_frame_02_5.5s_comparison.png",
+      "mask_box": [
+        409,
+        816,
+        1483,
+        1056
+      ],
+      "mask_width": 1074,
+      "mask_height": 240,
+      "mask_area_px": 257760,
+      "criterion_le_120k": false,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 3,
+      "timestamp_sec": 9.5,
+      "raw_image": "bench\\mask_samples\\1080p_frame_03_9.5s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\1080p_frame_03_9.5s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\1080p_frame_03_9.5s_comparison.png",
+      "mask_box": [
+        342,
+        960,
+        1545,
+        1048
+      ],
+      "mask_width": 1203,
+      "mask_height": 88,
+      "mask_area_px": 105864,
+      "criterion_le_120k": true,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 4,
+      "timestamp_sec": 12.0,
+      "raw_image": "bench\\mask_samples\\1080p_frame_04_12.0s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\1080p_frame_04_12.0s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\1080p_frame_04_12.0s_comparison.png",
+      "mask_box": [
+        342,
+        960,
+        1545,
+        1048
+      ],
+      "mask_width": 1203,
+      "mask_height": 88,
+      "mask_area_px": 105864,
+      "criterion_le_120k": true,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 5,
+      "timestamp_sec": 18.0,
+      "raw_image": "bench\\mask_samples\\1080p_frame_05_18.0s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\1080p_frame_05_18.0s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\1080p_frame_05_18.0s_comparison.png",
+      "mask_box": [
+        505,
+        904,
+        1385,
+        1056
+      ],
+      "mask_width": 880,
+      "mask_height": 152,
+      "mask_area_px": 133760,
+      "criterion_le_120k": false,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 6,
+      "timestamp_sec": 21.0,
+      "raw_image": "bench\\mask_samples\\1080p_frame_06_21.0s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\1080p_frame_06_21.0s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\1080p_frame_06_21.0s_comparison.png",
+      "mask_box": [
+        535,
+        904,
+        1355,
+        1056
+      ],
+      "mask_width": 820,
+      "mask_height": 152,
+      "mask_area_px": 124640,
+      "criterion_le_120k": false,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 7,
+      "timestamp_sec": 27.0,
+      "raw_image": "bench\\mask_samples\\1080p_frame_07_27.0s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\1080p_frame_07_27.0s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\1080p_frame_07_27.0s_comparison.png",
+      "mask_box": [
+        279,
+        904,
+        1611,
+        1056
+      ],
+      "mask_width": 1332,
+      "mask_height": 152,
+      "mask_area_px": 202464,
+      "criterion_le_120k": false,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 8,
+      "timestamp_sec": 30.0,
+      "raw_image": "bench\\mask_samples\\1080p_frame_08_30.0s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\1080p_frame_08_30.0s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\1080p_frame_08_30.0s_comparison.png",
+      "mask_box": [
+        279,
+        904,
+        1611,
+        1056
+      ],
+      "mask_width": 1332,
+      "mask_height": 152,
+      "mask_area_px": 202464,
+      "criterion_le_120k": false,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 9,
+      "timestamp_sec": 36.0,
+      "raw_image": "bench\\mask_samples\\1080p_frame_09_36.0s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\1080p_frame_09_36.0s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\1080p_frame_09_36.0s_comparison.png",
+      "mask_box": [
+        506,
+        952,
+        1386,
+        1056
+      ],
+      "mask_width": 880,
+      "mask_height": 104,
+      "mask_area_px": 91520,
+      "criterion_le_120k": true,
+      "japanese_residue_rate": 0.0
+    },
+    {
+      "index": 10,
+      "timestamp_sec": 45.0,
+      "raw_image": "bench\\mask_samples\\1080p_frame_10_45.0s_raw.png",
+      "adaptive_image": "bench\\mask_samples\\1080p_frame_10_45.0s_adaptive.png",
+      "comparison_image": "bench\\mask_samples\\1080p_frame_10_45.0s_comparison.png",
+      "mask_box": [
+        493,
+        904,
+        1424,
+        1056
+      ],
+      "mask_width": 931,
+      "mask_height": 152,
+      "mask_area_px": 141512,
+      "criterion_le_120k": false,
+      "japanese_residue_rate": 0.0
+    }
+  ],
+  "720p_mean_area_px": 97894.4,
+  "1080p_mean_area_px": 162360.8,
+  "720p_max_area_px": 129352,
+  "1080p_max_area_px": 257760,
+  "720p_mean_le_120k": true,
+  "1080p_mean_le_120k": false,
+  "height_variance_720p": 850.56,
+  "height_variance_1080p": 2598.4,
+  "japanese_residue_rate": 0.0
+}

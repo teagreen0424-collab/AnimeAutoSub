@@ -1,0 +1,116 @@
+{
+  "root_cause": "pipeline_ocr.py:184 使用 ' '.join(valid_lines) 对日语分块文本框强行插入空格，单帧注入 1~4 个无意义空格",
+  "total_truth_chars": 319,
+  "direct_rapidocr": {
+    "edit_distance": 55,
+    "cer_percent": 17.24
+  },
+  "pipeline_ocr_before_fix": {
+    "edit_distance": 74,
+    "cer_percent": 23.2
+  },
+  "pipeline_ocr_after_fix": {
+    "edit_distance": 55,
+    "cer_percent": 17.24
+  },
+  "recovered_cer_percent": 5.96,
+  "total_spaces_injected": 28,
+  "per_frame_breakdown": [
+    {
+      "frame_id": 2,
+      "boxes_count": 3,
+      "spaces_injected": 2,
+      "direct_dist": 19,
+      "pipeline_dist": 19,
+      "gap": 0
+    },
+    {
+      "frame_id": 3,
+      "boxes_count": 3,
+      "spaces_injected": 2,
+      "direct_dist": 1,
+      "pipeline_dist": 3,
+      "gap": 2
+    },
+    {
+      "frame_id": 4,
+      "boxes_count": 4,
+      "spaces_injected": 3,
+      "direct_dist": 13,
+      "pipeline_dist": 15,
+      "gap": 2
+    },
+    {
+      "frame_id": 5,
+      "boxes_count": 6,
+      "spaces_injected": 5,
+      "direct_dist": 3,
+      "pipeline_dist": 7,
+      "gap": 4
+    },
+    {
+      "frame_id": 6,
+      "boxes_count": 2,
+      "spaces_injected": 1,
+      "direct_dist": 2,
+      "pipeline_dist": 3,
+      "gap": 1
+    },
+    {
+      "frame_id": 13,
+      "boxes_count": 4,
+      "spaces_injected": 3,
+      "direct_dist": 1,
+      "pipeline_dist": 3,
+      "gap": 2
+    },
+    {
+      "frame_id": 14,
+      "boxes_count": 5,
+      "spaces_injected": 4,
+      "direct_dist": 4,
+      "pipeline_dist": 6,
+      "gap": 2
+    },
+    {
+      "frame_id": 17,
+      "boxes_count": 3,
+      "spaces_injected": 2,
+      "direct_dist": 5,
+      "pipeline_dist": 7,
+      "gap": 2
+    },
+    {
+      "frame_id": 20,
+      "boxes_count": 5,
+      "spaces_injected": 4,
+      "direct_dist": 3,
+      "pipeline_dist": 5,
+      "gap": 2
+    },
+    {
+      "frame_id": 23,
+      "boxes_count": 3,
+      "spaces_injected": 2,
+      "direct_dist": 0,
+      "pipeline_dist": 2,
+      "gap": 2
+    },
+    {
+      "frame_id": 25,
+      "boxes_count": 1,
+      "spaces_injected": 0,
+      "direct_dist": 4,
+      "pipeline_dist": 4,
+      "gap": 0
+    },
+    {
+      "frame_id": 28,
+      "boxes_count": 1,
+      "spaces_injected": 0,
+      "direct_dist": 0,
+      "pipeline_dist": 0,
+      "gap": 0
+    }
+  ]
+}

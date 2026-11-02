@@ -1,0 +1,168 @@
+{
+  "benchmark": "P5 Directed Experiment: Det-Only 2x Upsampling & Y-axis Line Merging",
+  "total_truth_chars": 439,
+  "baseline_1x": {
+    "total_dist": 98,
+    "cer_percent": 22.32
+  },
+  "p5_a_det2x": {
+    "total_dist": 162,
+    "cer_percent": 36.9
+  },
+  "p5_b_merged": {
+    "total_dist": 158,
+    "cer_percent": 35.99
+  },
+  "frames_comparison": [
+    {
+      "id": 1,
+      "truth": "それぞれ仕事と学校に行く二人を、玄関で見送る。",
+      "baseline_dist": 2,
+      "det2x_dist": 4,
+      "merged_dist": 2,
+      "baseline_text": "それぞれ仕事と学校に行く二人を、玄関で見送",
+      "det2x_text": "それぞれ仕事と学校に行く二人を、で見送玄関",
+      "merged_text": "それぞれ仕事と学校に行く二人を、玄関で見送"
+    },
+    {
+      "id": 2,
+      "truth": "つまり今日の家事は、拓斗の面倒を見ながらしなくてはいけないようだ。",
+      "baseline_dist": 14,
+      "det2x_dist": 9,
+      "merged_dist": 24,
+      "baseline_text": "つまり念具の家家事は、拓斗の面倒を見ながらしな",
+      "det2x_text": "つまり念日の家拓斗の面倒を見ながらしな家事は、くてほいけないようだ。",
+      "merged_text": "つまり念日の家くてほいけないようだ。家事は、拓斗の面倒を見ながらしな"
+    },
+    {
+      "id": 3,
+      "truth": "拓斗「そんなの後でいいじゃん。それより俺と遊んでよ」",
+      "baseline_dist": 2,
+      "det2x_dist": 2,
+      "merged_dist": 2,
+      "baseline_text": "拓斗「そんなの後でいいじゃん。それより俺と遊んで",
+      "det2x_text": "拓斗「そんなの後でいいじゃん。それより俺と遊んで",
+      "merged_text": "拓斗「そんなの後でいいじゃん。それより俺と遊んで"
+    },
+    {
+      "id": 4,
+      "truth": "拓斗「えー？じゃあ、手伝ったらお昼ご飯、俺の好きなやつ作ってくれる？」",
+      "baseline_dist": 6,
+      "det2x_dist": 11,
+      "merged_dist": 25,
+      "baseline_text": "拓斗しゃあ手伝ったらお昼ご飯、俺の好きなやつ作ってくれる？」",
+      "det2x_text": "拓斗しゃ俺の好手伝ったらお昼ご飯、あ、きなやつ作ってくれる？」",
+      "merged_text": "拓斗きなやつ作ってしゃあ、くれる？」手伝ったらお昼ご飯、俺の好"
+    },
+    {
+      "id": 5,
+      "truth": "拓斗「オッケー！んじゃ、さっさとやっちまおうぜ！」",
+      "baseline_dist": 1,
+      "det2x_dist": 9,
+      "merged_dist": 5,
+      "baseline_text": "拓斗「オッケー！んじゃ、さっさとやっちまおうぜ!」",
+      "det2x_text": "拓斗「オッケー！さっさとやっちまおうんじゃ、ぜ！",
+      "merged_text": "拓斗ぜ！「オッケー！んじゃ、さっさとやっちまおう"
+    },
+    {
+      "id": 6,
+      "truth": "枝彌「いい加減にしなさい。あなた、もう何日も帰ってないんでしょう？今どこにいるの？」",
+      "baseline_dist": 10,
+      "det2x_dist": 29,
+      "merged_dist": 32,
+      "baseline_text": "枝彌「いい加減にしなさい。あなた、もう何日も帰SLC972M192今どこにいるの？」",
+      "det2x_text": "枝彌あなた、も帰っ「いい加減にしなさい。もう何日も今どごにいるの？」てないんでしょう？",
+      "merged_text": "枝彌てないんでしょう？「いい加減にしなさい。あなた、今どごにいるの？」もう何日もも帰っ"
+    },
+    {
+      "id": 7,
+      "truth": "電話越しに返ってくる気怠そうな声に、うんざりしてしまう。",
+      "baseline_dist": 0,
+      "det2x_dist": 1,
+      "merged_dist": 11,
+      "baseline_text": "電話越しに返ってくる気怠そうな声に、うんざりしてしまう。",
+      "det2x_text": "電話越しに返ってくる気怠そうな声に、うんざりしてしまう",
+      "merged_text": "してしまう電話越しに返ってくる気怠そうな声に、うんざり"
+    },
+    {
+      "id": 8,
+      "truth": "恵麻「……うっざ。別にいいでしょ、私がどうしようがさ」",
+      "baseline_dist": 7,
+      "det2x_dist": 5,
+      "merged_dist": 5,
+      "baseline_text": "惠麻うっざ。別にいいでしよ、私がどうしよう88がさ」",
+      "det2x_text": "惠麻80xうっざ。別にいいでしよ、私がどうしようがさ」",
+      "merged_text": "惠麻80xうっざ。別にいいでしよ、私がどうしようがさ」"
+    },
+    {
+      "id": 9,
+      "truth": "恵麻「とぼける気？まあ別にいいけど。でもさ、男遊びがどうとか、お母さんに言う権利、なくない？」",
+      "baseline_dist": 26,
+      "det2x_dist": 28,
+      "merged_dist": 25,
+      "baseline_text": "まお別にいいせどでもう男お母さんに言う権利、な「&い?",
+      "det2x_text": "志不?男まャ別にいいけどでもきなお母さんに言う権利、遊びがどい?]",
+      "merged_text": "志不?まャ別にいいけどでもき男い?]遊びがどお母さんに言う権利、な"
+    },
+    {
+      "id": 10,
+      "truth": "恵麻「あーもう、だからほっといてってば！あの子たちが心配なら勝手にして！」",
+      "baseline_dist": 17,
+      "det2x_dist": 20,
+      "merged_dist": 14,
+      "baseline_text": "恵麻「あ一もうだからほたちが心配なら勝手に",
+      "det2x_text": "惠麻あの子「あ一もう、だからほたちが心配なら勝手に",
+      "merged_text": "惠麻「あ一もう、だからほあの子たちが心配なら勝手に"
+    },
+    {
+      "id": 11,
+      "truth": "あの様子だと恵麻は当分帰ってこないつもりだろうし。",
+      "baseline_dist": 2,
+      "det2x_dist": 3,
+      "merged_dist": 7,
+      "baseline_text": "あの様子だと恵麻は当分帰ってこないつもりだるうしo",
+      "det2x_text": "あの様子だと恵麻は当分帰ってこないつもりだる5しo",
+      "merged_text": "5しoあの様子だと恵麻は当分帰ってこないつもりだる"
+    },
+    {
+      "id": 12,
+      "truth": "なら、しばらくはこっちで生活することにしよう。",
+      "baseline_dist": 2,
+      "det2x_dist": 7,
+      "merged_dist": 4,
+      "baseline_text": "なら、しばらくはこっちで生活することにしよ5",
+      "det2x_text": "しばらなら、らくはこっちで生活することにしよU",
+      "merged_text": "Uなら、しばららくはこっちで生活することにしよ"
+    },
+    {
+      "id": 13,
+      "truth": "晴斗「ただいま。どうしたの、こんな時間まで？」",
+      "baseline_dist": 0,
+      "det2x_dist": 18,
+      "merged_dist": 0,
+      "baseline_text": "晴斗「ただいま。どうしたの、こんな時間まで？」",
+      "det2x_text": "晴斗こんな時間まで？」「ただいま。どうしたの、",
+      "merged_text": "晴斗「ただいま。どうしたの、こんな時間まで？」"
+    },
+    {
+      "id": 14,
+      "truth": "枝彌「ならすぐに用意するわね。食べながら少し話しましょう」",
+      "baseline_dist": 2,
+      "det2x_dist": 2,
+      "merged_dist": 2,
+      "baseline_text": "枝彌「ならすぐに用意するわね。食べながら少し話しまじよう」",
+      "det2x_text": "枝彌「ならすぐに用意するわね。食べながら少し話しまじよう」",
+      "merged_text": "枝彌「ならすぐに用意するわね。食べながら少し話しまじよう」"
+    },
+    {
+      "id": 15,
+      "truth": "晴斗「ありがとう、おばあちゃん」",
+      "baseline_dist": 7,
+      "det2x_dist": 14,
+      "merged_dist": 0,
+      "baseline_text": "晴斗「ありがとう、TYAGOAL",
+      "det2x_text": "晴斗おばあちゃん」「ありがとう、",
+      "merged_text": "晴斗「ありがとう、おばあちゃん」"
+    }
+  ]
+}

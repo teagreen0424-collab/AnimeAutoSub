@@ -1,0 +1,23 @@
+{
+  "total_frames": 100,
+  "total_chars": 2464,
+  "standard": {
+    "p1_time": 130.60100250004325,
+    "p2_time": 19.70680419995915,
+    "p3_time": 20.017278200015426,
+    "diffs_p1_p2": 0,
+    "cer_p1_p2": 0.0,
+    "diffs_p2_p3": 0,
+    "cer_p2_p3": 0.0,
+    "diffs_p1_p3": 0,
+    "cer_p1_p3": 0.0,
+    "diff_records_p1_p2": []
+  },
+  "fixed_padding": {
+    "p1_time": 40.94211760000326,
+    "p2_time": 21.28347209992353,
+    "diffs": 0,
+    "cer": 0.0,
+    "diff_records": []
+  }
+}

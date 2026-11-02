@@ -1,0 +1,19 @@
+{
+  "video": "E:\\translate\\ocr_input\\test_3min.mp4",
+  "total_frames_sampled": 360,
+  "ocr_call_count": 43,
+  "skip_count": 317,
+  "extracted_segments_count": 38,
+  "timings_sec": {
+    "decode_time_s": 3.992,
+    "inference_time_s": 84.337,
+    "other_overhead_s": 1.561,
+    "total_stage1_s": 89.915
+  },
+  "timings_percent": {
+    "decode_pct": 4.4,
+    "inference_pct": 93.8,
+    "other_pct": 1.7
+  },
+  "sec_per_ocr_call": 1.9613
+}
