@@ -26,6 +26,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from core.context import PipelineContext, CancelToken
 from core.pipeline import Pipeline
+from core.manifest import ManifestManager
 from core.gpu_lease import release_ollama_vram
 from lang import get_language, SUPPORTED_LANGUAGES
 
@@ -166,6 +167,79 @@ class QueueManager:
                         "message": "正在请求中断流水线，3 秒内释放 GPU 租约..."
                     })
                     return True
+        return False
+
+    def has_running_tasks(self) -> bool:
+        """Z9: 检查是否有正在运行或排队中的任务"""
+        with self._lock:
+            return self.active_task_id is not None or len(self.queue) > 0
+
+    def get_active_task_summary(self) -> Optional[Dict[str, Any]]:
+        """Z9: 获取当前活跃任务的概要信息"""
+        with self._lock:
+            if not self.active_task_id:
+                return None
+            st = self.task_states.get(self.active_task_id, {})
+            return {
+                "task_id": self.active_task_id,
+                "current_stage": st.get("current_stage", "-"),
+                "stage_pct": st.get("stage_pct", 0.0),
+                "total_pct": st.get("total_pct", 0.0),
+                "queue_length": len(self.queue)
+            }
+
+    def interrupt_active_task(self, task_id: Optional[str] = None, reason: str = "服务停机或重启中断") -> bool:
+        """Z9: 显式中断活跃任务并打上 interrupted 标记（区别于 canceled），保障断点续跑"""
+        with self._lock:
+            target_id = task_id or self.active_task_id
+            if not target_id:
+                return False
+
+            # 若仍在排队队列中
+            if target_id in self.queue:
+                self.queue.remove(target_id)
+                self._update_task_state(target_id, {
+                    "status": "interrupted",
+                    "message": f"服务重启移出队列 ({reason})，可一键续跑"
+                })
+                self.emit_event(target_id, "task_interrupted", {
+                    "task_id": target_id,
+                    "status": "interrupted",
+                    "message": f"任务已安全中断 ({reason})，可一键续跑"
+                })
+                work_dir = self.project_root / "work_tasks" / target_id
+                if not work_dir.exists():
+                    work_dir = self.project_root / target_id
+                if work_dir.exists():
+                    try:
+                        ManifestManager(work_dir).record_interrupted(reason=reason)
+                    except Exception:
+                        pass
+                return True
+
+            # 若正在执行
+            if self.active_task_id == target_id:
+                token = self.active_cancel_tokens.get(target_id)
+                if token:
+                    token.cancel(reason)
+                self._update_task_state(target_id, {
+                    "status": "interrupted",
+                    "message": f"正在安全中断流水线 ({reason}) 并释放资源..."
+                })
+                self.emit_event(target_id, "task_interrupted", {
+                    "task_id": target_id,
+                    "status": "interrupted",
+                    "message": f"正在请求安全中断流水线 ({reason})，已完成阶段已保留以供恢复"
+                })
+                work_dir = self.project_root / "work_tasks" / target_id
+                if not work_dir.exists():
+                    work_dir = self.project_root / target_id
+                if work_dir.exists():
+                    try:
+                        ManifestManager(work_dir).record_interrupted(reason=reason)
+                    except Exception:
+                        pass
+                return True
         return False
 
     def emit_event(self, task_id: str, event_type: str, data: Dict[str, Any]):
@@ -379,14 +453,29 @@ class QueueManager:
             pipeline.log.removeHandler(sse_handler)
 
             if token.is_cancelled():
+                is_interrupted = any(w in token.reason.lower() for w in ["interrupt", "中断", "停机", "重启", "shutdown"])
+                new_status = "interrupted" if is_interrupted else "canceled"
+                msg = f"任务已安全中断 ({token.reason})，可一键续跑" if is_interrupted else "任务已被用户取消，GPU 租约已安全释放"
                 self._update_task_state(task_id, {
-                    "status": "canceled",
-                    "message": "任务已被用户取消，GPU 租约已安全释放"
+                    "status": new_status,
+                    "message": msg
                 })
-                self.emit_event(task_id, "task_canceled", {
+                event_name = "task_interrupted" if is_interrupted else "task_canceled"
+                self.emit_event(task_id, event_name, {
                     "task_id": task_id,
-                    "message": "流水线已中止，GPU 租约已释放，已完成阶段已保留以供后续断点续跑"
+                    "status": new_status,
+                    "message": msg
                 })
+                try:
+                    mf_mgr = ManifestManager(work_dir)
+                    if is_interrupted:
+                        mf_mgr.record_interrupted(reason=token.reason)
+                    else:
+                        mf_mgr._data["is_cancelled"] = True
+                        mf_mgr._data["status"] = "canceled"
+                        mf_mgr.save()
+                except Exception:
+                    pass
             elif success:
                 self._update_task_state(task_id, {
                     "status": "done",
@@ -413,9 +502,22 @@ class QueueManager:
         except Exception as e:
             err_msg = str(e)
             if token.is_cancelled():
-                err_msg = "用户取消操作"
-                self._update_task_state(task_id, {"status": "canceled", "message": err_msg})
-                self.emit_event(task_id, "task_canceled", {"task_id": task_id, "message": err_msg})
+                is_interrupted = any(w in token.reason.lower() for w in ["interrupt", "中断", "停机", "重启", "shutdown"])
+                new_status = "interrupted" if is_interrupted else "canceled"
+                err_msg = f"任务已安全中断: {token.reason}" if is_interrupted else "用户取消操作"
+                self._update_task_state(task_id, {"status": new_status, "message": err_msg})
+                event_name = "task_interrupted" if is_interrupted else "task_canceled"
+                self.emit_event(task_id, event_name, {"task_id": task_id, "status": new_status, "message": err_msg})
+                try:
+                    mf_mgr = ManifestManager(work_dir)
+                    if is_interrupted:
+                        mf_mgr.record_interrupted(reason=token.reason)
+                    else:
+                        mf_mgr._data["is_cancelled"] = True
+                        mf_mgr._data["status"] = "canceled"
+                        mf_mgr.save()
+                except Exception:
+                    pass
             else:
                 self._update_task_state(task_id, {"status": "failed", "message": err_msg})
                 self.emit_event(task_id, "task_error", {

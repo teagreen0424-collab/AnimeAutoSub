@@ -109,6 +109,9 @@ class ManifestManager:
 
     def record_stage_start(self, stage: Stage):
         self._data = self._load()
+        self._data["status"] = "running"
+        self._data.pop("is_interrupted", None)
+        self._data.pop("interrupted_reason", None)
         if "stages" not in self._data:
             self._data["stages"] = {}
         prev = self._data["stages"].get(stage.name, {})
@@ -117,6 +120,25 @@ class ManifestManager:
             "started_at": datetime.now().isoformat()
         })
         self._data["stages"][stage.name] = prev
+        self.save()
+
+    def record_interrupted(self, stage_name: Optional[str] = None, reason: str = "服务停机或重启中断"):
+        """Z9: 记录任务中断状态，区别于用户主动取消 canceled，保障一键断点续跑"""
+        self._data = self._load()
+        self._data["status"] = "interrupted"
+        self._data["is_interrupted"] = True
+        self._data["interrupted_reason"] = reason
+        self._data["interrupted_at"] = datetime.now().isoformat()
+        if "stages" not in self._data:
+            self._data["stages"] = {}
+        if stage_name and stage_name in self._data["stages"]:
+            prev = self._data["stages"][stage_name]
+            if prev.get("status") in ("running", None):
+                prev.update({
+                    "status": "interrupted",
+                    "interrupted_at": datetime.now().isoformat(),
+                    "reason": reason
+                })
         self.save()
 
     def record_stage_completed(self, stage: Stage, ctx: PipelineContext, upstream_hash: str, tool_version: str):

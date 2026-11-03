@@ -20,6 +20,7 @@ import asyncio
 from pathlib import Path
 from typing import Optional, Dict, Any
 from datetime import datetime
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, Response, HTTPException, UploadFile, File
 from fastapi.staticfiles import StaticFiles
@@ -35,13 +36,31 @@ if str(PROJECT_ROOT) not in sys.path:
 import hashlib
 import shutil
 from core.context import get_subtitle_src, get_subtitle_src_raw
+from core.gpu_lease import release_ollama_vram
 from web.task_manager import TaskManager
 from web.queue_manager import queue_manager
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("AnimeAutoSubWeb")
 
-app = FastAPI(title="AnimeAutoSub WebUI", version="1.0.0")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Z9: 应用生命周期管理，优雅停止与在途任务状态保护"""
+    logger.info("AnimeAutoSub WebUI 服务已就绪")
+    yield
+    logger.info("AnimeAutoSub WebUI 服务正在关闭...")
+    if queue_manager.has_running_tasks():
+        active_id = queue_manager.active_task_id
+        logger.warning(f"⚠ 检测到服务停止时存在在途任务 [{active_id}]，正在安全记录 interrupted 状态...")
+        queue_manager.interrupt_active_task(active_id, reason="服务进程退出或停止")
+    try:
+        release_ollama_vram()
+    except Exception:
+        pass
+
+
+app = FastAPI(title="AnimeAutoSub WebUI", version="1.0.0", lifespan=lifespan)
 
 # 启用 CORS 允许本地调试
 app.add_middleware(
@@ -73,7 +92,7 @@ def merge_live_queue_state(task_dict: Dict[str, Any]) -> Dict[str, Any]:
         task_dict["message"] = active.get("message", "")
         if task_dict["status"] in ("running", "waiting_gpu", "queued"):
             task_dict["can_resume"] = False
-        elif task_dict["status"] in ("canceled", "failed"):
+        elif task_dict["status"] in ("canceled", "failed", "interrupted"):
             task_dict["can_resume"] = True
     return task_dict
 
@@ -901,10 +920,76 @@ async def get_gpu_status():
     }
 
 
+@app.get("/api/system/running_check")
+async def system_running_check():
+    """Z9: 查询当前服务是否有在途执行或排队中的任务"""
+    has_running = queue_manager.has_running_tasks()
+    summary = queue_manager.get_active_task_summary()
+    return {
+        "code": 0,
+        "message": "success",
+        "data": {
+            "has_running": has_running,
+            "active_task": summary,
+            "queue_length": len(queue_manager.queue),
+            "pid": os.getpid()
+        }
+    }
+
+
+@app.post("/api/system/interrupt_and_stop")
+async def interrupt_and_stop(force: bool = False):
+    """Z9: 安全中断任务并停止服务"""
+    if queue_manager.has_running_tasks():
+        summary = queue_manager.get_active_task_summary()
+        if not force:
+            raise HTTPException(
+                status_code=400,
+                detail=f"当前有任务正在执行 ({summary.get('task_id') if summary else '排队中'})，若需强制中断停服请携带 force=true"
+            )
+        queue_manager.interrupt_active_task(reason="远程管理强行中断停机")
+
+    async def _delayed_shutdown():
+        await asyncio.sleep(0.5)
+        os._exit(0)
+
+    asyncio.create_task(_delayed_shutdown())
+    return {
+        "code": 0,
+        "message": "服务正在安全停止并释放资源..."
+    }
+
+
 # 挂载前端静态资源目录
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 STATIC_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/", StaticFiles(directory=str(STATIC_DIR), html=True), name="static")
+
+
+def check_remote_running_tasks(host: str = "127.0.0.1", port: int = 8000, timeout: float = 1.0) -> Optional[Dict[str, Any]]:
+    """Z9: 检查指定主机端口上已存在的 AnimeAutoSub 服务运行状态"""
+    try:
+        import urllib.request
+        req = urllib.request.Request(f"http://{host}:{port}/api/system/running_check", headers={"User-Agent": "AnimeAutoSub-CLI"})
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            if resp.status == 200:
+                body = json.loads(resp.read().decode("utf-8"))
+                return body.get("data")
+    except Exception:
+        pass
+    return None
+
+
+def request_remote_stop(host: str = "127.0.0.1", port: int = 8000, force: bool = False, timeout: float = 3.0) -> bool:
+    """Z9: 优雅停止已有服务"""
+    try:
+        import urllib.request
+        url = f"http://{host}:{port}/api/system/interrupt_and_stop?force={'true' if force else 'false'}"
+        req = urllib.request.Request(url, method="POST")
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return resp.status == 200
+    except Exception:
+        return False
 
 
 def find_available_port(host: str = "127.0.0.1", start_port: int = 8000, max_attempts: int = 20) -> int:
@@ -940,5 +1025,62 @@ def start_server(host: str = "127.0.0.1", start_port: int = 8000, open_browser: 
 
 
 if __name__ == "__main__":
-    no_b = "--no-browser" in sys.argv or os.environ.get("NO_BROWSER") == "1"
-    start_server(open_browser=not no_b)
+    import argparse
+    import time
+    parser = argparse.ArgumentParser(description="AnimeAutoSub WebUI")
+    parser.add_argument("--port", type=int, default=8000, help="服务端口 (默认 8000)")
+    parser.add_argument("--host", type=str, default="127.0.0.1", help="绑定地址 (默认 127.0.0.1)")
+    parser.add_argument("--no-browser", action="store_true", help="不自动打开浏览器")
+    parser.add_argument("--force", action="store_true", help="强制重启服务（若有在途任务，安全中断打标后重启）")
+    parser.add_argument("--check-running", action="store_true", help="仅检查当前端口是否有在途任务，有则退出码 2，无则退出码 0")
+    args = parser.parse_args()
+
+    # 1. 预检在途任务 (供重启脚本 / CLI 查询)
+    if args.check_running:
+        status = check_remote_running_tasks(args.host, args.port)
+        if status and status.get("has_running"):
+            task_info = status.get("active_task") or {}
+            task_id = task_info.get("task_id", "未知")
+            stage = task_info.get("current_stage", "-")
+            pct = task_info.get("stage_pct", 0.0)
+            total = task_info.get("total_pct", 0.0)
+            q_len = status.get("queue_length", 0)
+            print(f"[WARN] 发现端口 {args.port} 上有在途任务正在运行:")
+            print(f"       - 活跃任务: {task_id}")
+            print(f"       - 当前阶段: {stage} ({pct}%)，总进度: {total}%")
+            print(f"       - 队列积压: {q_len} 个任务")
+            sys.exit(2)
+        else:
+            print(f"[OK] 端口 {args.port} 无在途运行任务 (服务空闲或离线)")
+            sys.exit(0)
+
+    # 2. 启动前安全检查 (Z9)
+    status = check_remote_running_tasks(args.host, args.port)
+    if status:
+        if status.get("has_running") and not args.force:
+            task_info = status.get("active_task") or {}
+            task_id = task_info.get("task_id", "未知")
+            stage = task_info.get("current_stage", "-")
+            pct = task_info.get("stage_pct", 0.0)
+            total = task_info.get("total_pct", 0.0)
+            q_len = status.get("queue_length", 0)
+            print("=" * 60)
+            print(f"[WARNING] 检测到端口 {args.port} 已有服务正在运行 (PID: {status.get('pid')})，且有在途任务！")
+            print(f"          - 活跃任务: {task_id}")
+            print(f"          - 当前阶段: {stage} ({pct}%)，总进度: {total}%")
+            print(f"          - 排队任务: {q_len} 个")
+            print("[ERROR] 严禁在任务运行中直接重启或强占端口！否则将导致在途任务被强制中断。")
+            print("        若确实需要强行停止并重启，请在命令行传入 --force 参数。")
+            print("=" * 60)
+            sys.exit(1)
+        elif status.get("has_running") and args.force:
+            print(f"[INFO] 收到 --force 指令，正在安全中断端口 {args.port} 上的在途任务并停止旧服务...")
+            request_remote_stop(args.host, args.port, force=True)
+            time.sleep(1.5)
+        elif not status.get("has_running"):
+            print(f"[INFO] 端口 {args.port} 上已有空闲服务 (PID: {status.get('pid')})，正在优雅停止旧实例以重新启动...")
+            request_remote_stop(args.host, args.port, force=False)
+            time.sleep(1.0)
+
+    open_b = not args.no_browser and os.environ.get("NO_BROWSER") != "1"
+    start_server(host=args.host, start_port=args.port, open_browser=open_b)

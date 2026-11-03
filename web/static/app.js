@@ -815,12 +815,14 @@ class WebUIApp {
         statusBadge = `<span class="status-pill status-queued">排队第 ${task.queue_position} 位</span>`;
       } else if (task.status === "failed") {
         statusBadge = `<span class="status-pill status-failed">执行失败 ✕</span>`;
+      } else if (task.status === "interrupted") {
+        statusBadge = `<span class="status-pill status-interrupted" style="background:rgba(245,158,11,0.18);color:#f59e0b;border:1px solid rgba(245,158,11,0.35);">⏸ 中断</span>`;
       }
 
       // 四颗按钮的可用性判定 (E2 规范: 不可用的置灰 disabled，不隐藏)
       const canDownload = Boolean(task.has_video);
       const canEditSubtitles = Boolean(task.has_subtitles || !task.is_legacy);
-      const canResume = Boolean(!task.is_legacy && task.status !== "done" && task.status !== "running" && (task.can_resume || task.status === "failed" || task.status === "canceled"));
+      const canResume = Boolean(!task.is_legacy && task.status !== "done" && task.status !== "running" && (task.can_resume || task.status === "failed" || task.status === "canceled" || task.status === "interrupted"));
       const canRerender = Boolean(!task.is_legacy && task.status !== "running" && (task.has_video || task.has_subtitles || task.status === "done"));
 
       const videoIndicator = task.has_video 
@@ -990,6 +992,17 @@ class WebUIApp {
     this.detailStatusPill.className = `status-pill status-${task.status}`;
     this.detailStatusPill.textContent = task.status;
     this.detailStatusPill.title = task.status_reason || "";
+    if (task.status === "interrupted") {
+      this.detailStatusPill.className = "status-pill status-interrupted";
+      this.detailStatusPill.textContent = "INTERRUPTED (可恢复)";
+      this.detailStatusPill.style.background = "rgba(245,158,11,0.18)";
+      this.detailStatusPill.style.color = "#f59e0b";
+      this.detailStatusPill.style.border = "1px solid rgba(245,158,11,0.35)";
+    } else {
+      this.detailStatusPill.style.background = "";
+      this.detailStatusPill.style.color = "";
+      this.detailStatusPill.style.border = "";
+    }
 
     if (task.status === "running" || task.status === "waiting_gpu") {
       this.btnCancelTask.style.display = "inline-flex";
@@ -1002,7 +1015,7 @@ class WebUIApp {
       } else {
         this.liveStageTitle.textContent = "⚡ 正在执行阶段...";
       }
-    } else if (task.status === "canceled" || (task.can_resume && task.status !== "done")) {
+    } else if (task.status === "canceled" || task.status === "interrupted" || (task.can_resume && task.status !== "done")) {
       this.btnCancelTask.style.display = "none";
       this.btnResumeTask.style.display = "inline-flex";
       this.liveProgressPanel.style.display = "none";
@@ -1566,6 +1579,23 @@ class WebUIApp {
         this.btnResumeTask.style.display = "inline-flex";
         this.liveStageTitle.textContent = "⚠ 任务已取消 (GPU 租约已安全释放)";
         this.stopSSE();
+      } catch (err) {}
+    });
+
+    es.addEventListener("task_interrupted", (e) => {
+      try {
+        const d = JSON.parse(e.data);
+        this.appendLogLine(`[中断提示] ${d.message}`);
+        this.detailStatusPill.className = "status-pill status-interrupted";
+        this.detailStatusPill.textContent = "INTERRUPTED (可恢复)";
+        this.detailStatusPill.style.background = "rgba(245,158,11,0.18)";
+        this.detailStatusPill.style.color = "#f59e0b";
+        this.detailStatusPill.style.border = "1px solid rgba(245,158,11,0.35)";
+        this.btnCancelTask.style.display = "none";
+        this.btnResumeTask.style.display = "inline-flex";
+        this.liveStageTitle.textContent = "⏸ 任务已安全中断 (已保留阶段产物，支持一键断点续跑)";
+        this.stopSSE();
+        this.loadTasks();
       } catch (err) {}
     });
 

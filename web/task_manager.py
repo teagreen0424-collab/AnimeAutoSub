@@ -232,19 +232,28 @@ class TaskManager:
                 return "done", "历史产物，四件套完整"
             return "done", "历史产物"
 
-        # 2. 显式取消
+        # 2. Z9: 检查中断标记 (区别于主动取消 canceled，保障一键续跑)
+        if manifest.get("is_interrupted") is True or manifest.get("status") == "interrupted":
+            return "interrupted", manifest.get("interrupted_reason", "服务重启或进程中断，可一键续跑")
+
+        # 3. 显式取消
         if manifest.get("is_cancelled") is True:
             return "canceled", "用户主动取消流水线"
 
         stages = manifest.get("stages", {})
 
-        # 3. 检查是否有失败阶段
+        # 4. 检查是否有中断阶段
+        for s_name, s_info in stages.items():
+            if s_info.get("status") == "interrupted":
+                return "interrupted", f"阶段 [{s_name}] 在上次服务退出时被中断，可一键续跑"
+
+        # 5. 检查是否有失败阶段
         for s_name, s_info in stages.items():
             if s_info.get("status") == "failed":
                 err = s_info.get("error", "阶段执行失败")
                 return "failed", f"阶段 [{s_name}] 报错: {err}"
 
-        # 4. 检查内存中是否有活动的 Worker 进程
+        # 6. 检查内存中是否有活动的 Worker 进程
         worker = self.active_workers.get(work_dir.name)
         if worker:
             if worker.get("waiting_gpu"):
@@ -254,12 +263,17 @@ class TaskManager:
                 return "failed_timeout", "心跳超时 (>180s)，Worker 可能已僵死"
             return "running", f"阶段 [{worker.get('current_stage')}] 正在执行"
 
-        # 5. 检查是否全流水线完成 (burn_subtitles 成功且成片存在)
+        # 7. Worker 未在内存中活跃，但 manifest 中有阶段处于 running 状态 -> 说明进程在执行该阶段时被异常终止
+        for s_name, s_info in stages.items():
+            if s_info.get("status") == "running":
+                return "interrupted", f"阶段 [{s_name}] 在上次服务退出时异常中断，可一键续跑"
+
+        # 8. 检查是否全流水线完成 (burn_subtitles 成功且成片存在)
         burn_stage = stages.get("burn_subtitles", {})
         if burn_stage.get("status") == "completed" and video_file and video_file.exists():
             return "done", "全部流水线阶段执行完毕，成片就绪"
 
-        # 6. 未在 Worker 中执行，但阶段未全满 -> 断点待命状态
+        # 9. 未在 Worker 中执行，但阶段未全满 -> 断点待命状态
         completed_count = sum(1 for s in stages.values() if s.get("status") == "completed")
         if completed_count > 0:
             return "queued", f"断点待命 (已完成 {completed_count} 个阶段，可一键续跑)"
