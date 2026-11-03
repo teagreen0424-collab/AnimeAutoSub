@@ -170,6 +170,10 @@ class WebUIApp {
     this.selectMode = document.getElementById("selectMode");
     this.inputTaskTitle = document.getElementById("inputTaskTitle");
     this.dragDropOverlay = document.getElementById("dragDropOverlay");
+    this.uploadProgressContainer = document.getElementById("uploadProgressContainer");
+    this.uploadStatusText = document.getElementById("uploadStatusText");
+    this.uploadPercentText = document.getElementById("uploadPercentText");
+    this.uploadProgressBar = document.getElementById("uploadProgressBar");
 
     this.initEventListeners();
     this.loadTasks().then(() => {
@@ -458,7 +462,7 @@ class WebUIApp {
       this.dragDropOverlay.style.display = "none";
       if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
         const file = e.dataTransfer.files[0];
-        this.openNewTaskModal(file.name);
+        this.handleFileDrop(file);
       }
     });
 
@@ -498,7 +502,22 @@ class WebUIApp {
     }
   }
 
+  // 退出原生全屏（浏览器返回键/鼠标侧键切屏时必须调用，否则全屏状态会残留到下一个页面）
+  exitNativeFullscreen() {
+    try {
+      if (document.fullscreenElement && document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    } catch (e) { /* 忽略 */ }
+  }
+
   showScreen(screenName) {
+    // 切屏前：退出全屏 + 暂停所有视频
+    this.exitNativeFullscreen();
+    document.querySelectorAll("video").forEach(v => { try { v.pause(); } catch (e) {} });
+
     if (screenName === "list") {
       this.stopSSE();
       if (window.location.hash) {
@@ -1615,14 +1634,7 @@ class WebUIApp {
     }
   }
 
-  async openNewTaskModal(defaultFilename = "") {
-    this.modalNewTask.style.display = "flex";
-    if (defaultFilename) {
-      this.inputVideoPath.value = defaultFilename;
-      this.inputTaskTitle.value = defaultFilename.substring(0, defaultFilename.lastIndexOf('.')) || defaultFilename;
-    }
-
-    // 动态拉取服务器已有输入片源
+  async loadServerInputFiles() {
     try {
       const resp = await fetch("/api/server/input_files");
       const res = await resp.json();
@@ -1635,9 +1647,139 @@ class WebUIApp {
     }
   }
 
+  async openNewTaskModal(defaultFilename = "") {
+    this.modalNewTask.style.display = "flex";
+    if (this.uploadProgressContainer) {
+      this.uploadProgressContainer.style.display = "none";
+    }
+    if (defaultFilename) {
+      this.inputVideoPath.value = defaultFilename;
+      this.inputTaskTitle.value = defaultFilename.substring(0, defaultFilename.lastIndexOf('.')) || defaultFilename;
+    }
+
+    await this.loadServerInputFiles();
+  }
+
   closeNewTaskModal() {
     this.modalNewTask.style.display = "none";
+    if (this.uploadProgressContainer) {
+      this.uploadProgressContainer.style.display = "none";
+    }
     this.formNewTask.reset();
+  }
+
+  async handleFileDrop(file) {
+    if (!file) return;
+    this.openNewTaskModal(file.name);
+
+    const MAX_4GB = 4 * 1024 * 1024 * 1024;
+    if (file.size > MAX_4GB) {
+      alert(`单文件不能超过 4 GB 限制（当前文件大小: ${formatBytes(file.size)}）`);
+      return;
+    }
+
+    try {
+      await this.uploadFile(file);
+    } catch (e) {
+      console.error("上传片源失败:", e);
+    }
+  }
+
+  uploadFile(file) {
+    return new Promise((resolve, reject) => {
+      const submitBtn = document.getElementById("btnSubmitTask");
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "⏳ 文件正在导入中...";
+      }
+
+      const sizeStr = formatBytes(file.size);
+      if (this.uploadProgressContainer) {
+        this.uploadProgressContainer.style.display = "block";
+        this.uploadProgressBar.style.width = "0%";
+        this.uploadPercentText.textContent = "0%";
+        this.uploadStatusText.textContent = `正在导入 ${file.name} (${sizeStr})…`;
+        this.uploadStatusText.style.color = "#94a3b8";
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/api/upload", true);
+
+      xhr.upload.onprogress = (evt) => {
+        if (evt.lengthComputable && this.uploadProgressBar) {
+          const percent = Math.min(99, Math.round((evt.loaded / evt.total) * 100));
+          this.uploadProgressBar.style.width = `${percent}%`;
+          this.uploadPercentText.textContent = `${percent}%`;
+          this.uploadStatusText.textContent = `正在导入 ${file.name} (${sizeStr})… ${percent}%`;
+        }
+      };
+
+      xhr.onload = async () => {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "🚀 开始运行流水线";
+        }
+
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            const res = JSON.parse(xhr.responseText);
+            if (res.code === 0 && res.data) {
+              if (this.uploadProgressBar) {
+                this.uploadProgressBar.style.width = "100%";
+                this.uploadPercentText.textContent = "100%";
+                this.uploadStatusText.textContent = `✓ 已成功导入至 ${res.data.rel_path}`;
+                this.uploadStatusText.style.color = "#10b981";
+              }
+              // 把返回的 rel_path 填进输入框
+              this.inputVideoPath.value = res.data.rel_path;
+              // 自动刷新下拉框列表
+              await this.loadServerInputFiles();
+              this.selectQuickFile.value = res.data.rel_path;
+              resolve(res.data);
+            } else {
+              throw new Error(res.message || "上传失败");
+            }
+          } catch (err) {
+            this.onUploadError(err.message);
+            reject(err);
+          }
+        } else {
+          let errMsg = `上传失败 (${xhr.status})`;
+          try {
+            const errJson = JSON.parse(xhr.responseText);
+            errMsg = errJson.detail || errJson.message || errMsg;
+          } catch (_) {}
+          this.onUploadError(errMsg);
+          reject(new Error(errMsg));
+        }
+      };
+
+      xhr.onerror = () => {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "🚀 开始运行流水线";
+        }
+        const errMsg = "网络异常，文件上传失败";
+        this.onUploadError(errMsg);
+        reject(new Error(errMsg));
+      };
+
+      xhr.send(formData);
+    });
+  }
+
+  onUploadError(msg) {
+    if (this.uploadStatusText) {
+      this.uploadStatusText.textContent = `✗ 导入失败: ${msg}`;
+      this.uploadStatusText.style.color = "#ef4444";
+    }
+    if (this.uploadProgressBar) {
+      this.uploadProgressBar.style.width = "0%";
+    }
+    alert("导入片源失败: " + msg);
   }
 
   async submitNewTask() {
@@ -1708,6 +1850,14 @@ function formatSeconds(secs) {
   const mStr = String(mins).padStart(2, "0");
   const sStr = String(remSecs).padStart(5, "0");
   return `${mStr}:${sStr}`;
+}
+
+function formatBytes(bytes) {
+  if (!bytes || bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 }
 
 function escapeHtml(str) {

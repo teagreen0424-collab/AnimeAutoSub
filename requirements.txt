@@ -5,3 +5,4 @@ faster-whisper>=1.0.0
 demucs>=4.0.0
 pysubs2>=1.7.0
 requests>=2.28.0
+python-multipart>=0.0.9

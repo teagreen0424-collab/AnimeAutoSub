@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import Optional, Dict, Any
 from datetime import datetime
 
-from fastapi import FastAPI, Request, Response, HTTPException
+from fastapi import FastAPI, Request, Response, HTTPException, UploadFile, File
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse, FileResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -151,7 +151,10 @@ async def create_new_task(req: Request):
                 break
 
     if not video_path.exists():
-        raise HTTPException(status_code=400, detail=f"片源文件不存在: {video_path}")
+        raise HTTPException(
+            status_code=400,
+            detail=f"片源文件不存在: {video_path}。请填写完整路径（如 D:\\视频\\a.mp4），或先把文件复制到 ocr_input 目录后从下拉框选择。"
+        )
 
     # 模式推导
     mode = body.get("mode", "auto")
@@ -312,6 +315,120 @@ async def list_server_input_files():
         "code": 0,
         "message": "success",
         "data": files
+    }
+
+
+@app.post("/api/upload")
+async def upload_video_file(file: UploadFile = File(...), request: Request = None):
+    """
+    Z4: 片源文件流式上传接口
+    - 限制: 单文件 > 4 GB 拒绝; 磁盘剩余 < 文件大小 * 2 拒绝
+    - 命名: 同名存在时递增改名 (xxx_1.mp4) 而非覆盖
+    - 存储: 使用 shutil.copyfileobj 流式写入 ocr_input/，杜绝全量加载入内存
+    """
+    MAX_FILE_SIZE = 4 * 1024 * 1024 * 1024  # 4 GB
+    ocr_input_dir = PROJECT_ROOT / "ocr_input"
+    ocr_input_dir.mkdir(parents=True, exist_ok=True)
+
+    # 1. 预检请求头与 Content-Length
+    content_length_header = request.headers.get("content-length") if request else None
+    estimated_size = None
+    if content_length_header:
+        try:
+            estimated_size = int(content_length_header)
+            if estimated_size > MAX_FILE_SIZE:
+                raise HTTPException(status_code=400, detail="单文件大小超过 4 GB 限制，拒绝上传")
+        except ValueError:
+            pass
+
+    # 2. 预检磁盘剩余空间: 磁盘剩余 < 文件大小 * 2 拒绝并提示
+    total_space, used_space, free_space = shutil.disk_usage(ocr_input_dir)
+    if estimated_size:
+        needed_free = estimated_size * 2
+        if free_space < needed_free:
+            free_gb = round(free_space / (1024 ** 3), 2)
+            needed_gb = round(needed_free / (1024 ** 3), 2)
+            raise HTTPException(
+                status_code=400,
+                detail=f"磁盘剩余空间不足: 剩余可用 {free_gb} GB，导入该文件需要至少 {needed_gb} GB (文件大小 × 2)"
+            )
+
+    # 3. 避免同名覆盖，自动重命名 (xxx_1.mp4, xxx_2.mp4)
+    raw_filename = Path(file.filename or "uploaded_video.mp4").name
+    dest_path = ocr_input_dir / raw_filename
+    if dest_path.exists():
+        stem = dest_path.stem
+        suffix = dest_path.suffix
+        counter = 1
+        while True:
+            candidate = ocr_input_dir / f"{stem}_{counter}{suffix}"
+            if not candidate.exists():
+                dest_path = candidate
+                break
+            counter += 1
+
+    # 4. 使用 shutil.copyfileobj 流式写入临时文件，杜绝内存堆积
+    class BoundedWriter:
+        def __init__(self, target_fp, max_bytes):
+            self.target_fp = target_fp
+            self.max_bytes = max_bytes
+            self.written = 0
+
+        def write(self, data):
+            self.written += len(data)
+            if self.written > self.max_bytes:
+                raise ValueError("file_exceeds_4gb")
+            return self.target_fp.write(data)
+
+    tmp_dest = dest_path.with_suffix(dest_path.suffix + f".upload_tmp_{os.getpid()}_{int(datetime.now().timestamp()*1000)}")
+    try:
+        with open(tmp_dest, "wb") as f_out:
+            bounded = BoundedWriter(f_out, MAX_FILE_SIZE)
+            shutil.copyfileobj(file.file, bounded, length=1024 * 1024)
+
+        actual_size = tmp_dest.stat().st_size
+        # 复核实际写入后的磁盘剩余空间限制
+        total_curr, used_curr, free_curr = shutil.disk_usage(ocr_input_dir)
+        orig_free = free_curr + actual_size
+        if orig_free < actual_size * 2:
+            tmp_dest.unlink(missing_ok=True)
+            free_gb = round(orig_free / (1024 ** 3), 2)
+            needed_gb = round((actual_size * 2) / (1024 ** 3), 2)
+            raise HTTPException(
+                status_code=400,
+                detail=f"磁盘剩余空间不足: 剩余可用 {free_gb} GB，导入该文件需要至少 {needed_gb} GB (文件大小 × 2)"
+            )
+
+        os.replace(tmp_dest, dest_path)
+    except ValueError as ve:
+        tmp_dest.unlink(missing_ok=True)
+        if str(ve) == "file_exceeds_4gb":
+            raise HTTPException(status_code=400, detail="单文件大小超过 4 GB 限制，拒绝上传")
+        raise HTTPException(status_code=400, detail=f"文件写入失败: {ve}")
+    except Exception as e:
+        tmp_dest.unlink(missing_ok=True)
+        if isinstance(e, HTTPException):
+            raise
+        raise HTTPException(status_code=500, detail=f"上传写入失败: {e}")
+    finally:
+        try:
+            file.file.close()
+        except Exception:
+            pass
+
+    final_size = dest_path.stat().st_size
+    rel_path = str(dest_path.relative_to(PROJECT_ROOT)).replace("\\", "/")
+
+    return {
+        "code": 0,
+        "message": "success",
+        "data": {
+            "filename": dest_path.name,
+            "rel_path": rel_path,
+            "abs_path": str(dest_path.resolve()),
+            "size": final_size,
+            "size_human": TaskManager._human_size(final_size)
+        }
     }
 
 
