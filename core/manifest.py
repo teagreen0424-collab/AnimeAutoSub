@@ -108,33 +108,42 @@ class ManifestManager:
         return True
 
     def record_stage_start(self, stage: Stage):
+        self._data = self._load()
         if "stages" not in self._data:
             self._data["stages"] = {}
-        self._data["stages"][stage.name] = {
+        prev = self._data["stages"].get(stage.name, {})
+        prev.update({
             "status": "running",
             "started_at": datetime.now().isoformat()
-        }
+        })
+        self._data["stages"][stage.name] = prev
         self.save()
 
     def record_stage_completed(self, stage: Stage, ctx: PipelineContext, upstream_hash: str, tool_version: str):
+        self._data = self._load()
         if "stages" not in self._data:
             self._data["stages"] = {}
-        self._data["stages"][stage.name] = {
+        prev = self._data["stages"].get(stage.name, {})
+        prev.update({
             "status": "completed",
             "fingerprint": stage.fingerprint(ctx),
             "upstream_hash": upstream_hash,
             "tool_version": tool_version,
             "produces": stage.produces,
             "completed_at": datetime.now().isoformat()
-        }
+        })
+        self._data["stages"][stage.name] = prev
         self.save()
 
     def record_stage_failed(self, stage: Stage, error_msg: str):
+        self._data = self._load()
         if "stages" not in self._data:
             self._data["stages"] = {}
-        self._data["stages"][stage.name] = {
+        prev = self._data["stages"].get(stage.name, {})
+        prev.update({
             "status": "failed",
             "error": error_msg,
             "failed_at": datetime.now().isoformat()
-        }
+        })
+        self._data["stages"][stage.name] = prev
         self.save()

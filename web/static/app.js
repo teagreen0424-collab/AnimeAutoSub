@@ -1169,6 +1169,9 @@ class WebUIApp {
         const isDirty = (originalItems[globalIdx] && originalItems[globalIdx].zh !== item.zh);
         const timeRangeStr = `${item.start_str || item.start} - ${item.end_str || item.end}`;
         const srcText = item.src || item.ja || "";
+        const dupBadge = item.duplicate_translation 
+          ? `<span class="tag-badge tag-warning" style="margin-left: 6px; font-size: 11px; background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);" title="Z2 标记: 源文本差异明显但输出了重复译文，待人工复核">⚠️ 待复核</span>` 
+          : "";
 
         return `
           <tr class="sub-row ${isSelected ? 'selected-row' : ''}" data-global-idx="${globalIdx}">
@@ -1178,7 +1181,10 @@ class WebUIApp {
             </td>
             <td class="sub-src">${escapeHtml(srcText)}</td>
             <td>
-              <input type="text" class="zh-edit-input ${isDirty ? 'is-dirty' : ''}" data-global-idx="${globalIdx}" value="${escapeHtml(item.zh || '')}" placeholder="输入中文译文...">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <input type="text" class="zh-edit-input ${isDirty ? 'is-dirty' : ''}" data-global-idx="${globalIdx}" value="${escapeHtml(item.zh || '')}" placeholder="输入中文译文...">
+                ${dupBadge}
+              </div>
             </td>
           </tr>
         `;
@@ -1193,6 +1199,9 @@ class WebUIApp {
         const isDirty = (originalItems[globalIdx] && originalItems[globalIdx].zh !== item.zh);
         const timeRangeStr = `${formatTimeShort(item.start)} - ${formatTimeShort(item.end)}`;
         const srcText = item.src || item.ja || "";
+        const dupBadge = item.duplicate_translation 
+          ? `<span class="tag-badge tag-warning" style="margin-left: 6px; font-size: 11px; background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);" title="Z2 标记: 源文本差异明显但输出了重复译文，待人工复核">⚠️ 待复核</span>` 
+          : "";
 
         return `
           <tr class="editor-sub-row ${isSelected ? 'selected-row' : ''}" data-global-idx="${globalIdx}">
@@ -1201,7 +1210,10 @@ class WebUIApp {
             </td>
             <td class="editor-sub-src">${escapeHtml(srcText)}</td>
             <td class="editor-sub-zh">
-              <input type="text" class="zh-edit-input ${isDirty ? 'is-dirty' : ''}" data-global-idx="${globalIdx}" value="${escapeHtml(item.zh || '')}" placeholder="输入中文译文...">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <input type="text" class="zh-edit-input ${isDirty ? 'is-dirty' : ''}" data-global-idx="${globalIdx}" value="${escapeHtml(item.zh || '')}" placeholder="输入中文译文...">
+                ${dupBadge}
+              </div>
             </td>
           </tr>
         `;
@@ -1629,7 +1641,7 @@ class WebUIApp {
   }
 
   async submitNewTask() {
-    const videoPath = this.inputVideoPath.value.trim();
+    let videoPath = this.inputVideoPath.value.trim().replace(/^["']|["']$/g, '');
     if (!videoPath) {
       alert("请填写视频片源路径！");
       return;
@@ -1643,15 +1655,23 @@ class WebUIApp {
       auto_start: true
     };
 
+    const submitBtn = document.getElementById("btnSubmitTask");
+    const origBtnText = submitBtn ? submitBtn.textContent : "";
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "⏳ 正在创建并加入队列...";
+    }
+
     try {
       const resp = await fetch("/api/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
-      const res = await resp.json();
-      if (res.code !== 0) {
-        alert("创建任务失败: " + res.message);
+      const res = await resp.json().catch(() => ({}));
+      if (!resp.ok || res.code !== 0) {
+        const errDetail = res.detail || res.message || `HTTP ${resp.status}`;
+        alert("创建任务失败: " + errDetail);
         return;
       }
 
@@ -1663,6 +1683,11 @@ class WebUIApp {
       window.location.hash = `#task=${newTask.task_id}`;
     } catch (e) {
       alert("创建任务异常: " + e.message);
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = origBtnText;
+      }
     }
   }
 }

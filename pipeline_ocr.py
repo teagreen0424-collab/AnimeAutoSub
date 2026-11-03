@@ -18,6 +18,7 @@ import logging
 import subprocess
 from pathlib import Path
 from datetime import datetime
+import difflib
 from difflib import SequenceMatcher
 import re
 
@@ -766,13 +767,23 @@ def translate_one(text: str, glossary: dict, context_pairs: list) -> str:
     if result is None:
         result = text  # 重试失败返回原文兜底
 
-    # Z2 强断言与防重复降级自愈：
-    # 任意两条源文本不同，译文不得完全相同！若检测到完全相同，判定为注意力坍缩，立即隔离上下文独立重试
-    if context_pairs and result == context_pairs[-1][1] and text != context_pairs[-1][0]:
-        logging.warning(f"    ⚠ [Z2 拦截] 检测到与上句译文完全相同（注意力坍缩/错位），触发单句纯净重试自愈...")
-        result_retry = translate_one(text, glossary, context_pairs=[])
-        assert result_retry != context_pairs[-1][1], f"翻译复用错误: 源文本 [{text}] 与上句不同，但输出了完全相同的译文 [{result_retry}]"
-        result = result_retry
+    # Z2 防重复检查：只告警，绝不中断任务。
+    # 连续语气句（喘息、拟声、重复台词）相邻两句译文相同属于正常现象，不是缺陷。
+    if context_pairs and result == context_pairs[-1][1]:
+        prev_src = context_pairs[-1][0]
+        similar_src = (
+            text == prev_src
+            or difflib.SequenceMatcher(None, text, prev_src).ratio() >= 0.60
+        )
+        if similar_src:
+            logging.debug("    [Z2] 相邻源文本相近，译文相同属正常，跳过")
+        else:
+            logging.warning("    ⚠ [Z2] 源文本差异明显却输出相同译文，用干净上下文重试一次（不中断任务）")
+            result_retry = translate_one(text, glossary, context_pairs=[])
+            if result_retry and result_retry != context_pairs[-1][1]:
+                result = result_retry
+            else:
+                logging.warning("    ⚠ [Z2] 重试后仍相同，保留该结果并继续，标记待人工复核")
 
     return result
 

@@ -125,21 +125,33 @@ async def create_new_task(req: Request):
     新建任务 (支持拖拽/表单指定路径、语言、模式)，并自动加入独占队列
     """
     body = await req.json()
-    video_path_str = body.get("video_path", "").strip()
+    video_path_str = body.get("video_path", "").strip().strip('"\'')
     if not video_path_str:
         raise HTTPException(status_code=400, detail="请提供有效的视频/音频片源路径")
 
-    # 路径解析
+    # 路径解析与容错寻找
     video_path = Path(video_path_str)
     if not video_path.is_absolute():
-        # 尝试在已知输入目录寻找
-        for d in [PROJECT_ROOT / "input", PROJECT_ROOT / "ocr_input", PROJECT_ROOT]:
-            if (d / video_path_str).exists():
-                video_path = (d / video_path_str).resolve()
+        found = False
+        for d in [PROJECT_ROOT / "ocr_input", PROJECT_ROOT / "input", PROJECT_ROOT]:
+            cand = d / video_path_str
+            if cand.exists() and cand.is_file():
+                video_path = cand.resolve()
+                found = True
+                break
+            # 兼容省略扩展名的情况 (如 21684-720p 自动补全 .mp4/.mkv 等)
+            if not video_path.suffix:
+                for ext in [".mp4", ".mkv", ".avi", ".wav", ".mp3"]:
+                    cand_ext = d / f"{video_path_str}{ext}"
+                    if cand_ext.exists() and cand_ext.is_file():
+                        video_path = cand_ext.resolve()
+                        found = True
+                        break
+            if found:
                 break
 
     if not video_path.exists():
-        raise HTTPException(status_code=404, detail=f"片源文件不存在: {video_path}")
+        raise HTTPException(status_code=400, detail=f"片源文件不存在: {video_path}")
 
     # 模式推导
     mode = body.get("mode", "auto")
