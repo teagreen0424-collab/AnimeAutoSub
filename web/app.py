@@ -250,6 +250,15 @@ async def start_or_resume_task(task_id: str):
 async def cancel_task_endpoint(task_id: str):
     """3 秒内安全取消任务，释放 GPU 租约"""
     canceled = queue_manager.cancel_task(task_id)
+    # 若任务未在队列中执行，但用户显式对该任务发起了取消请求，依然将其持久化标记为 canceled
+    if not canceled:
+        work_dir = PROJECT_ROOT / "work_tasks" / task_id
+        if not work_dir.exists():
+            work_dir = PROJECT_ROOT / task_id
+        if work_dir.exists():
+            from core.manifest import ManifestManager
+            ManifestManager(work_dir).record_cancelled(reason="用户主动取消")
+            canceled = True
     task_manager.refresh_tasks()
     return {
         "code": 0,
