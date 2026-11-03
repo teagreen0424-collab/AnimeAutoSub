@@ -625,12 +625,12 @@ def is_garbled_number(match, full_text: str) -> bool:
 
 def sanitize_japanese_text(raw_text: str) -> tuple:
     """
-    U2: 切除乱码片段、保留前后文本后拼接。
-    规则：
-      1. 匹配字母/符号混杂乱码（如 LC972M192「LOEUACES, [L972432, &22c115）
-      2. 匹配孤立/非假名数字（如 97211112, 80080）
-      3. 切除乱码片段并拼接前后文本
-      4. 仅当剩余有效文本长度 < 原长度 40% 或不足 4 字符时整句拒识
+    日语专用文本清洗规则:
+    1. 乱码片段过滤 (N5/U2/Z1)
+    2. 切除尾部乱码 (Z1: 匹配连续拉丁/希腊字母/数字/点号，切除后剩余 < 50% 拒识)
+    3. 字母数字混杂碎片过滤 (如 iz2 等 OCR 劣化残渣)
+    4. 助词浊点误识正规化 (Z3: 誰がに -> 誰かに)
+    5. 整理标点与未闭合截断
     返回: (cleaned_text: str, is_rejected: bool, action_info: str)
     """
     if not raw_text:
@@ -664,16 +664,39 @@ def sanitize_japanese_text(raw_text: str) -> tuple:
 
     cleaned = re.sub(r'\d{3,4}', replace_isolated_digits, cleaned)
 
-    # 3. 整理标点与常见助词浊点误识规整 (Z3: 修复 誰がに -> 誰かに 等 OCR 浊点误识)
+    # 3. 尾部乱码切除 (Z1 标准规则)
+    has_cjk = bool(re.search(r'[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]', cleaned))
+    if has_cjk:
+        # a) 匹配尾部退化希腊字母混杂段与标点组合尾部
+        greek_tail_pattern = re.compile(r'(?:……|…|\.{2,})?[0-9α-ωΑ-Ωぁ-んァ-ヶ]*[α-ωΑ-Ω]+[0-9A-Za-zα-ωΑ-Ωぁ-んァ-ヶ\.…\s]*$')
+        tail_pattern = re.compile(r'[0-9A-Za-zα-ωΑ-Ω\.·\s…\?!~¿]{3,}$')
+
+        m_greek = greek_tail_pattern.search(cleaned)
+        if m_greek and m_greek.group():
+            removed_snippets.append(m_greek.group())
+            cleaned = greek_tail_pattern.sub('', cleaned).rstrip()
+
+        m_tail = tail_pattern.search(cleaned)
+        if m_tail and m_tail.group():
+            removed_snippets.append(m_tail.group())
+            cleaned = tail_pattern.sub('', cleaned).rstrip()
+
+        # 标准 Z1 正则切除
+        cleaned = re.sub(r'[0-9A-Za-zα-ωΑ-Ω\.·\s]{3,}$', '', cleaned).rstrip()
+        # 清除台词中绝无可能的希腊字母与混杂字母数字碎片
+        cleaned = re.sub(r'[α-ωΑ-Ω]+', '', cleaned)
+        cleaned = re.sub(r'[a-zA-Z]+[0-9]+|[0-9]+[a-zA-Z]+', '', cleaned)
+
+    # 4. 整理标点与常见助词浊点误识规整 (Z3: 修复 誰がに -> 誰かに 等 OCR 浊点误识)
     cleaned = re.sub(r'誰がに', '誰かに', cleaned)
     cleaned = re.sub(r'[\s「」\[\]&]+$', '', cleaned).strip()
 
     rem_len = len(cleaned)
     rem_ratio = rem_len / max(1, orig_len)
 
-    # 4. 仅当剩余有效文本 < 45% 或剩余有效文本不足 3 字符时整句拒识 (U2: 目标拒识率 <= 3.0%)
-    if rem_ratio < 0.45:
-        return cleaned, True, f"remaining_ratio_{rem_ratio:.2f}_lt_0.45"
+    # 5. 仅当剩余有效文本 < 50% 或剩余有效文本不足 3 字符时整句拒识 (Z1: 门禁 < 0.50)
+    if rem_ratio < 0.50:
+        return cleaned, True, f"remaining_ratio_{rem_ratio:.2f}_lt_0.50"
     if rem_len < 3:
         return cleaned, True, f"rem_len_{rem_len}_lt_3"
 

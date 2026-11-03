@@ -417,6 +417,7 @@ async def get_task_subtitles(task_id: str):
             "zh": item.get("zh", ""),
             "rejected": item.get("rejected", False),
             "incomplete": item.get("incomplete_translation", False),
+            "duplicate_translation": item.get("duplicate_translation", False),
             "box": item.get("box")
         })
 

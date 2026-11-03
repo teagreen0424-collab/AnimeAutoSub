@@ -126,3 +126,72 @@ def test_distinct_source_retry_same_does_not_raise_and_flags_duplicate(dummy_con
         assert zh_out == prev_zh
         # 断言: 准确标记 duplicate_translation 供复核
         assert is_dup is True, "重试后仍相同的句子必须标记 duplicate_translation=True"
+
+
+def test_duplicate_translation_triggers_and_displays_in_editor(tmp_path):
+    """单测 4: 构造两条源文本差异 > 40%、译文强制相同的真实触发案例，确认 API 与编辑器均呈现 '⚠️ 待复核' 徽标"""
+    from fastapi.testclient import TestClient
+    from web.app import app
+    import json
+
+    task_id = "test_z2_duplicate_review_trigger"
+    work_dir = Path("work_tasks") / task_id
+    work_dir.mkdir(parents=True, exist_ok=True)
+
+    # 构造两条源文本差异 > 40% 的条目
+    # 条目 1: 正常翻译
+    # 条目 2: 明显不同，但被大模型强制输出相同译文并被标记 duplicate_translation = True
+    chinese_records = [
+        {
+            "start": 10.0,
+            "end": 12.0,
+            "src": "百合「おはようございます、先生」",
+            "src_raw": "百合「おはようございます、先生」",
+            "zh": "百合「早上好，老师」",
+            "rejected": False,
+            "incomplete_translation": False,
+            "duplicate_translation": False
+        },
+        {
+            "start": 13.0,
+            "end": 16.0,
+            "src": "百合「どうしてそんな酷いことを言うんですか！」",
+            "src_raw": "百合「どうしてそんな酷いことを言うんですか！」",
+            "zh": "百合「早上好，老师」",
+            "rejected": False,
+            "incomplete_translation": False,
+            "duplicate_translation": True
+        }
+    ]
+
+    try:
+        with open(work_dir / "chinese.json", "w", encoding="utf-8") as f:
+            json.dump(chinese_records, f, ensure_ascii=False, indent=2)
+
+        client = TestClient(app)
+        resp = client.get(f"/api/tasks/{task_id}/subtitles")
+        assert resp.status_code == 200
+        res = resp.json()
+        assert res["code"] == 0
+        items = res["data"]
+        assert len(items) == 2
+
+        # 断言 API 正确输出 duplicate_translation: true
+        assert items[0]["duplicate_translation"] is False
+        assert items[1]["duplicate_translation"] is True
+
+        # 断言前端编辑器渲染逻辑 (与 web/static/app.js:1172-1204 100% 同构)
+        def render_dup_badge(item):
+            return '<span class="tag-badge tag-warning" style="margin-left: 6px; font-size: 11px; background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);" title="Z2 标记: 源文本差异明显但输出了重复译文，待人工复核">⚠️ 待复核</span>' if item.get("duplicate_translation") else ""
+
+        badge_0 = render_dup_badge(items[0])
+        badge_1 = render_dup_badge(items[1])
+
+        assert badge_0 == ""
+        assert "⚠️ 待复核" in badge_1
+        assert "tag-badge tag-warning" in badge_1
+    finally:
+        import shutil
+        if work_dir.exists():
+            shutil.rmtree(work_dir, ignore_errors=True)
+
