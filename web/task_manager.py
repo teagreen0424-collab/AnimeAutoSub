@@ -214,6 +214,15 @@ class TaskManager:
             "updated_at": datetime.fromtimestamp(mtime).isoformat()
         }
 
+    def is_task_in_queue(self, task_id: str) -> bool:
+        """检查任务是否在活跃队列或正在执行中"""
+        try:
+            from web.queue_manager import queue_manager
+            with queue_manager._lock:
+                return task_id in queue_manager.queue or queue_manager.active_task_id == task_id
+        except Exception:
+            return False
+
     def derive_task_status(
         self,
         manifest: Dict[str, Any],
@@ -224,7 +233,7 @@ class TaskManager:
         """
         M4 任务状态机推导
         推导依据: manifest 字段 + 阶段完成标记 + 产物存在性 + worker 心跳
-        覆盖: queued / running / waiting_gpu / failed / failed_timeout / canceled / done
+        覆盖: queued / running / waiting_gpu / failed / failed_timeout / canceled / interrupted / done
         """
         # 1. 历史产物 (只读任务)
         if is_legacy:
@@ -232,28 +241,17 @@ class TaskManager:
                 return "done", "历史产物，四件套完整"
             return "done", "历史产物"
 
-        # 2. Z9: 检查中断标记 (区别于主动取消 canceled，保障一键续跑)
-        if manifest.get("is_interrupted") is True or manifest.get("status") == "interrupted":
-            return "interrupted", manifest.get("interrupted_reason", "服务重启或进程中断，可一键续跑")
+        # 2. 显式取消 (用户主动操作)
+        if manifest.get("is_cancelled") is True or manifest.get("status") == "canceled":
+            return "canceled", manifest.get("cancelled_reason", "用户主动取消流水线")
 
-        # 3. 显式取消
-        if manifest.get("is_cancelled") is True:
-            return "canceled", "用户主动取消流水线"
-
+        # 3. 检查是否全流水线完成 (burn_subtitles 成功且成片存在)
         stages = manifest.get("stages", {})
+        burn_stage = stages.get("burn_subtitles", {})
+        if burn_stage.get("status") == "completed" and video_file and video_file.exists():
+            return "done", "全部流水线阶段执行完毕，成片就绪"
 
-        # 4. 检查是否有中断阶段
-        for s_name, s_info in stages.items():
-            if s_info.get("status") == "interrupted":
-                return "interrupted", f"阶段 [{s_name}] 在上次服务退出时被中断，可一键续跑"
-
-        # 5. 检查是否有失败阶段
-        for s_name, s_info in stages.items():
-            if s_info.get("status") == "failed":
-                err = s_info.get("error", "阶段执行失败")
-                return "failed", f"阶段 [{s_name}] 报错: {err}"
-
-        # 6. 检查内存中是否有活动的 Worker 进程
+        # 4. 检查内存中是否有活动的 Worker 进程
         worker = self.active_workers.get(work_dir.name)
         if worker:
             if worker.get("waiting_gpu"):
@@ -263,22 +261,46 @@ class TaskManager:
                 return "failed_timeout", "心跳超时 (>180s)，Worker 可能已僵死"
             return "running", f"阶段 [{worker.get('current_stage')}] 正在执行"
 
-        # 7. Worker 未在内存中活跃，但 manifest 中有阶段处于 running 状态 -> 说明进程在执行该阶段时被异常终止
+        # 5. 检查全局任务队列状态 (仅当任务真实在队列中时才允许返回 queued / running / waiting_gpu)
+        in_queue = self.is_task_in_queue(work_dir.name)
+        if in_queue:
+            try:
+                from web.queue_manager import queue_manager
+                with queue_manager._lock:
+                    if queue_manager.active_task_id == work_dir.name:
+                        st = queue_manager.task_states.get(work_dir.name, {})
+                        if st.get("waiting_gpu"):
+                            return "waiting_gpu", "正在等待 GPU 独占租约分配"
+                        return "running", f"阶段 [{st.get('current_stage', 'init')}] 正在执行"
+                    elif work_dir.name in queue_manager.queue:
+                        pos = queue_manager.queue.index(work_dir.name) + 1
+                        return "queued", f"排队等待执行 (第 {pos} 位)"
+            except Exception:
+                pass
+
+        # 6. 未在队列中运行 (非 queued): 统一出口判定 (Z11 a)
+        # Z9: 显式标记了中断
+        if manifest.get("is_interrupted") is True or manifest.get("status") == "interrupted":
+            return "interrupted", manifest.get("interrupted_reason", "服务重启或进程中断，可一键续跑")
+
+        # 阶段标记了中断或有上次遗留未完成的 running 阶段 (模拟被 kill -9 或异常崩溃)
         for s_name, s_info in stages.items():
-            if s_info.get("status") == "running":
-                return "interrupted", f"阶段 [{s_name}] 在上次服务退出时异常中断，可一键续跑"
+            if s_info.get("status") in ("interrupted", "running"):
+                return "interrupted", f"阶段 [{s_name}] 在上次服务退出时被中断，可一键续跑"
 
-        # 8. 检查是否全流水线完成 (burn_subtitles 成功且成片存在)
-        burn_stage = stages.get("burn_subtitles", {})
-        if burn_stage.get("status") == "completed" and video_file and video_file.exists():
-            return "done", "全部流水线阶段执行完毕，成片就绪"
+        # 检查是否有失败阶段
+        for s_name, s_info in stages.items():
+            if s_info.get("status") == "failed":
+                err = s_info.get("error", "阶段执行失败")
+                return "failed", f"阶段 [{s_name}] 报错: {err}"
 
-        # 9. 未在 Worker 中执行，但阶段未全满 -> 断点待命状态
+        # 7. Z11 (b) 终极兜底：目录存在但 manifest 无任何 completed 阶段、且队列中不存在该任务
+        # 禁止显示 queued，统一判定为 interrupted，点亮「▶ 恢复」允许一键启动/断点续跑
         completed_count = sum(1 for s in stages.values() if s.get("status") == "completed")
         if completed_count > 0:
-            return "queued", f"断点待命 (已完成 {completed_count} 个阶段，可一键续跑)"
+            return "interrupted", f"断点中断待命 (已完成 {completed_count} 个阶段，可一键续跑)"
 
-        return "queued", "等待进入执行队列"
+        return "interrupted", "任务未在队列中执行 (已中断待命，可一键启动)"
 
     def _extract_stages_info(
         self,

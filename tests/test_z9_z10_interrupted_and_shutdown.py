@@ -196,3 +196,64 @@ def test_z9_cli_check_running_detects_active_task_and_returns_code_2():
     finally:
         server.server_close()
         t.join(timeout=2)
+
+
+def test_z11_source_1_user_explicit_cancel_persisted_as_canceled(tmp_path):
+    """Z11: 中止来源 1 (cancel) -> 用户显式取消必须记录 is_cancelled=True，状态为 canceled"""
+    mgr = ManifestManager(tmp_path)
+    mgr.record_cancelled(reason="用户主动取消排队")
+    assert mgr._data["status"] == "canceled"
+    assert mgr._data["is_cancelled"] is True
+    assert mgr._data.get("is_interrupted") is not True
+
+    tm = TaskManager(PROJECT_ROOT)
+    task_info = tm._parse_task_directory(tmp_path)
+    assert task_info is not None
+    assert task_info["status"] == "canceled"
+
+
+def test_z11_source_2_shutdown_persisted_as_interrupted(tmp_path):
+    """Z11: 中止来源 2 (shutdown) -> 优雅停机必须记录 interrupted，状态为 interrupted 且可续跑"""
+    mgr = ManifestManager(tmp_path)
+    mgr.record_interrupted(reason="服务停机或重启中断")
+    assert mgr._data["status"] == "interrupted"
+    assert mgr._data["is_interrupted"] is True
+    assert mgr._data.get("is_cancelled") is not True
+
+    tm = TaskManager(PROJECT_ROOT)
+    task_info = tm._parse_task_directory(tmp_path)
+    assert task_info is not None
+    assert task_info["status"] == "interrupted"
+    assert task_info["can_resume"] is True
+
+
+def test_z11_source_3_kill_fallback_no_completed_stages_never_queued(tmp_path):
+    """Z11: 中止来源 3 (kill 强杀/断电遗留) -> 目录存在但无 completed 阶段且不在队列中，严禁显示 queued，必须兜底为 interrupted"""
+    # 模拟新建任务目录 (含 task_meta.json 但无任何阶段完成)
+    meta_path = tmp_path / "task_meta.json"
+    meta_path.write_text(json.dumps({"task_id": tmp_path.name, "lang": "ja", "mode": "ocr"}), encoding="utf-8")
+
+    tm = TaskManager(PROJECT_ROOT)
+    # 确保不在队列中
+    assert not tm.is_task_in_queue(tmp_path.name)
+
+    task_info = tm._parse_task_directory(tmp_path)
+    assert task_info is not None
+    # 强断言: 绝对禁止显示 queued，必须判定为 interrupted！
+    assert task_info["status"] == "interrupted", f"期望 interrupted，实际推导为 {task_info['status']}"
+    assert task_info["status"] != "queued"
+    assert task_info["can_resume"] is True
+
+
+def test_z11_source_4_pipeline_exception_uniform_exit_as_interrupted(tmp_path):
+    """Z11: 中止来源 4 (异常崩溃) -> 统一落到 interrupted 出口，保留阶段账本供一键续跑"""
+    mgr = ManifestManager(tmp_path)
+    mgr.record_interrupted(reason="阶段异常中断: CUDA Out of Memory")
+    assert mgr._data["status"] == "interrupted"
+    assert mgr._data["is_interrupted"] is True
+
+    tm = TaskManager(PROJECT_ROOT)
+    task_info = tm._parse_task_directory(tmp_path)
+    assert task_info["status"] == "interrupted"
+    assert task_info["can_resume"] is True
+

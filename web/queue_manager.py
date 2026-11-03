@@ -149,8 +149,18 @@ class QueueManager:
                 self._update_task_state(task_id, {"status": "canceled", "message": "用户取消排队"})
                 self.emit_event(task_id, "task_canceled", {
                     "task_id": task_id,
+                    "status": "canceled",
                     "message": "已从队列中移除，任务已取消"
                 })
+                # Z11: 显式写盘记录 canceled 状态，防止落单目录被误判
+                work_dir = self.project_root / "work_tasks" / task_id
+                if not work_dir.exists():
+                    work_dir = self.project_root / task_id
+                if work_dir.exists():
+                    try:
+                        ManifestManager(work_dir).record_cancelled(reason="用户取消排队")
+                    except Exception:
+                        pass
                 return True
 
             # 2. 若正在执行
@@ -158,15 +168,24 @@ class QueueManager:
                 token = self.active_cancel_tokens.get(task_id)
                 if token:
                     token.cancel("用户主动点击取消")
-                    self._update_task_state(task_id, {
-                        "status": "canceled",
-                        "message": "正在中止阶段执行并释放 GPU 租约..."
-                    })
-                    self.emit_event(task_id, "task_canceling", {
-                        "task_id": task_id,
-                        "message": "正在请求中断流水线，3 秒内释放 GPU 租约..."
-                    })
-                    return True
+                self._update_task_state(task_id, {
+                    "status": "canceled",
+                    "message": "正在中止阶段执行并释放 GPU 租约..."
+                })
+                self.emit_event(task_id, "task_canceling", {
+                    "task_id": task_id,
+                    "status": "canceled",
+                    "message": "正在请求中断流水线，3 秒内释放 GPU 租约..."
+                })
+                work_dir = self.project_root / "work_tasks" / task_id
+                if not work_dir.exists():
+                    work_dir = self.project_root / task_id
+                if work_dir.exists():
+                    try:
+                        ManifestManager(work_dir).record_cancelled(reason="用户主动点击取消")
+                    except Exception:
+                        pass
+                return True
         return False
 
     def has_running_tasks(self) -> bool:
@@ -490,41 +509,54 @@ class QueueManager:
                     "message": "🎉 全部流水线阶段执行完毕！最终成片就绪，正在自动跳转到详情播放..."
                 })
             else:
+                # Z11 (a): 非用户显式取消一律为 interrupted
                 self._update_task_state(task_id, {
-                    "status": "failed",
-                    "message": "流水线返回失败状态"
+                    "status": "interrupted",
+                    "message": "流水线未完成中断 (已保留断点，可一键恢复续跑)"
                 })
-                self.emit_event(task_id, "task_error", {
+                self.emit_event(task_id, "task_interrupted", {
                     "task_id": task_id,
-                    "message": "流水线执行失败，详情请查看日志"
+                    "status": "interrupted",
+                    "message": "流水线异常中断，已保留阶段产物，可一键恢复断点续跑"
                 })
+                try:
+                    ManifestManager(work_dir).record_interrupted(reason="流水线未完成异常退出")
+                except Exception:
+                    pass
 
         except Exception as e:
             err_msg = str(e)
             if token.is_cancelled():
-                is_interrupted = any(w in token.reason.lower() for w in ["interrupt", "中断", "停机", "重启", "shutdown"])
-                new_status = "interrupted" if is_interrupted else "canceled"
-                err_msg = f"任务已安全中断: {token.reason}" if is_interrupted else "用户取消操作"
+                is_user_cancel = "用户" in token.reason or ("cancel" in token.reason.lower() and not any(w in token.reason.lower() for w in ["interrupt", "中断", "停机", "重启", "shutdown"]))
+                new_status = "canceled" if is_user_cancel else "interrupted"
+                err_msg = "用户取消操作" if is_user_cancel else f"任务已安全中断: {token.reason}"
                 self._update_task_state(task_id, {"status": new_status, "message": err_msg})
-                event_name = "task_interrupted" if is_interrupted else "task_canceled"
+                event_name = "task_canceled" if is_user_cancel else "task_interrupted"
                 self.emit_event(task_id, event_name, {"task_id": task_id, "status": new_status, "message": err_msg})
                 try:
                     mf_mgr = ManifestManager(work_dir)
-                    if is_interrupted:
-                        mf_mgr.record_interrupted(reason=token.reason)
+                    if is_user_cancel:
+                        mf_mgr.record_cancelled(reason=token.reason)
                     else:
-                        mf_mgr._data["is_cancelled"] = True
-                        mf_mgr._data["status"] = "canceled"
-                        mf_mgr.save()
+                        mf_mgr.record_interrupted(reason=token.reason)
                 except Exception:
                     pass
             else:
-                self._update_task_state(task_id, {"status": "failed", "message": err_msg})
-                self.emit_event(task_id, "task_error", {
-                    "task_id": task_id,
-                    "error": err_msg,
-                    "message": f"阶段崩溃: {err_msg}"
+                # Z11 (a): 异常中断统一出口：未完成且非用户显式取消 -> 标记 interrupted 并保留已完成阶段供续跑
+                self._update_task_state(task_id, {
+                    "status": "interrupted",
+                    "message": f"阶段异常中断: {err_msg} (已保留断点，可一键恢复续跑)"
                 })
+                self.emit_event(task_id, "task_interrupted", {
+                    "task_id": task_id,
+                    "status": "interrupted",
+                    "error": err_msg,
+                    "message": f"阶段异常中断: {err_msg} (可一键恢复断点续跑)"
+                })
+                try:
+                    ManifestManager(work_dir).record_interrupted(reason=f"阶段异常中断: {err_msg}")
+                except Exception:
+                    pass
         finally:
             # 任务进入 done/failed/canceled 时主动释放 Ollama 模型显存并断言回落
             try:

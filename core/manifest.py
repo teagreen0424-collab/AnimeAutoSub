@@ -129,6 +129,8 @@ class ManifestManager:
         self._data["is_interrupted"] = True
         self._data["interrupted_reason"] = reason
         self._data["interrupted_at"] = datetime.now().isoformat()
+        self._data.pop("is_cancelled", None)
+        self._data.pop("cancelled_reason", None)
         if "stages" not in self._data:
             self._data["stages"] = {}
         if stage_name and stage_name in self._data["stages"]:
@@ -139,6 +141,17 @@ class ManifestManager:
                     "interrupted_at": datetime.now().isoformat(),
                     "reason": reason
                 })
+        self.save()
+
+    def record_cancelled(self, reason: str = "用户主动取消"):
+        """Z11: 记录用户显式取消状态，区别于异常或停机中断"""
+        self._data = self._load()
+        self._data["status"] = "canceled"
+        self._data["is_cancelled"] = True
+        self._data["cancelled_reason"] = reason
+        self._data["cancelled_at"] = datetime.now().isoformat()
+        self._data.pop("is_interrupted", None)
+        self._data.pop("interrupted_reason", None)
         self.save()
 
     def record_stage_completed(self, stage: Stage, ctx: PipelineContext, upstream_hash: str, tool_version: str):
