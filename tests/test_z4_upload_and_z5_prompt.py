@@ -138,3 +138,73 @@ def test_z4_frontend_label_and_progress_dom():
     assert 'id="uploadProgressContainer"' in content
     assert 'id="uploadProgressBar"' in content
     assert 'id="uploadStatusText"' in content
+
+
+def test_z7_duplicate_upload_bypass_and_no_redundant_write(client):
+    """Z7: 测试上传同名且大小相同的文件时，直接复用已有片源，杜绝冗余落盘生成 _1 副本"""
+    ocr_input = PROJECT_ROOT / "ocr_input"
+    ocr_input.mkdir(parents=True, exist_ok=True)
+
+    test_filename = "z7_dedup_test.mp4"
+    target_original = ocr_input / test_filename
+    target_duplicate = ocr_input / "z7_dedup_test_1.mp4"
+
+    # 清理残留
+    target_original.unlink(missing_ok=True)
+    target_duplicate.unlink(missing_ok=True)
+
+    try:
+        content = b"fixed content for z7 deduplication test 12345678"
+        
+        # 1. 首次上传写入文件
+        resp1 = client.post(
+            "/api/upload",
+            files={"file": (test_filename, io.BytesIO(content), "video/mp4")}
+        )
+        assert resp1.status_code == 200
+        res1 = resp1.json()
+        assert res1["code"] == 0
+        assert res1.get("existed") is not True
+        assert target_original.exists()
+        assert not target_duplicate.exists()
+
+        # 2. 第二次上传同名同大小文件 -> 命中 Z7 判重机制，免传复用
+        resp2 = client.post(
+            "/api/upload",
+            files={"file": (test_filename, io.BytesIO(content), "video/mp4")}
+        )
+        assert resp2.status_code == 200
+        res2 = resp2.json()
+        assert res2["code"] == 0
+        assert res2.get("existed") is True
+        assert "该片源已存在，已为你选中" in res2["message"]
+        assert res2["data"]["rel_path"] == f"ocr_input/{test_filename}"
+        # 强断言: 严禁产生 _1.mp4 冗余文件
+        assert not target_duplicate.exists(), "命中判重时不应产生 _1.mp4 副本"
+
+        # 3. 校验 /api/server/input_files 返回包含 size_bytes 字段，供前端毫秒级预检
+        list_resp = client.get("/api/server/input_files")
+        assert list_resp.status_code == 200
+        items = list_resp.json()["data"]
+        matched_item = next((item for item in items if item["name"] == test_filename), None)
+        assert matched_item is not None
+        assert matched_item["size_bytes"] == len(content)
+        assert matched_item["folder"] == "ocr_input"
+
+        # 4. 上传同名但大小不同的文件 -> 不命中 Z7，正常生成 _1.mp4 防覆盖
+        diff_content = b"different content length"
+        resp3 = client.post(
+            "/api/upload",
+            files={"file": (test_filename, io.BytesIO(diff_content), "video/mp4")}
+        )
+        assert resp3.status_code == 200
+        res3 = resp3.json()
+        assert res3["code"] == 0
+        assert res3.get("existed") is not True
+        assert res3["data"]["filename"] == "z7_dedup_test_1.mp4"
+        assert target_duplicate.exists()
+        assert target_duplicate.read_bytes() == diff_content
+
+    finally:
+        target_original.unlink(missing_ok=True)
+        target_duplicate.unlink(missing_ok=True)

@@ -1639,6 +1639,7 @@ class WebUIApp {
       const resp = await fetch("/api/server/input_files");
       const res = await resp.json();
       if (res.code === 0 && res.data) {
+        this.serverInputFiles = res.data;
         this.selectQuickFile.innerHTML = `<option value="">-- 点击选择 input / ocr_input 目录中的片源 --</option>` +
           res.data.map(f => `<option value="${f.rel_path}">[${f.folder}] ${f.name} (${f.size_human})</option>`).join("");
       }
@@ -1676,6 +1677,25 @@ class WebUIApp {
     if (file.size > MAX_4GB) {
       alert(`单文件不能超过 4 GB 限制（当前文件大小: ${formatBytes(file.size)}）`);
       return;
+    }
+
+    // Z7 客户端毫秒级预检: 若服务器已有同名且大小完全一致的片源，直接选中免传
+    if (this.serverInputFiles && Array.isArray(this.serverInputFiles)) {
+      const matched = this.serverInputFiles.find(
+        f => f.name === file.name && f.size_bytes === file.size && f.folder === "ocr_input"
+      );
+      if (matched) {
+        if (this.uploadProgressContainer) {
+          this.uploadProgressContainer.style.display = "block";
+          this.uploadProgressBar.style.width = "100%";
+          this.uploadPercentText.textContent = "100%";
+          this.uploadStatusText.textContent = `✓ 该片源已存在，已为你选中: ${matched.rel_path}`;
+          this.uploadStatusText.style.color = "#10b981";
+        }
+        this.inputVideoPath.value = matched.rel_path;
+        this.selectQuickFile.value = matched.rel_path;
+        return;
+      }
     }
 
     try {
@@ -1727,10 +1747,14 @@ class WebUIApp {
           try {
             const res = JSON.parse(xhr.responseText);
             if (res.code === 0 && res.data) {
+              const msg = (res.existed || (res.message && res.message.includes("已存在")))
+                ? `✓ 该片源已存在，已为你选中: ${res.data.rel_path}`
+                : `✓ 已成功导入至 ${res.data.rel_path}`;
+
               if (this.uploadProgressBar) {
                 this.uploadProgressBar.style.width = "100%";
                 this.uploadPercentText.textContent = "100%";
-                this.uploadStatusText.textContent = `✓ 已成功导入至 ${res.data.rel_path}`;
+                this.uploadStatusText.textContent = msg;
                 this.uploadStatusText.style.color = "#10b981";
               }
               // 把返回的 rel_path 填进输入框

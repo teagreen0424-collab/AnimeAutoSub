@@ -60,3 +60,26 @@ if actual_algo != "HEURISTIC":
    仅当切除后的有效文本长度不足原长度的 **40% ~ 45%**，或有效字数不足 3 字符时，方可整句拒识留空。
 3. **断句状态客观标注 (Truncation Transparency)**：
    若原文本身在画面边缘被截断（如停留在动词未连词），翻译模型输出半句为忠实翻译，**严禁脑补补全**。且在质检报告中必须如实标记为 `incomplete_translation = true`，不得列入无瑕疵的“完美修复”。
+
+---
+
+## 四、测试与调试命令行规范 (CLI Testing & PowerShell Escaping Convention)
+
+### 4.1 Windows PowerShell 下 curl POST JSON 引号剥离陷阱
+- **事实与根因**:
+  在 Windows PowerShell 环境下直接执行 `curl.exe -s -X POST http://127.0.0.1:8000/api/... -H "Content-Type: application/json" -d '{"key": "value"}'` 时，PowerShell 在向底层原生进程传递参数之前会解析并剥离所有单/双引号。最终服务端接收到的原始 Body 变为 `{key: value}`，直接导致服务端的 `json.loads` 或 FastAPI / Starlette `request.json()` 抛出 `json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes`，并返回 HTTP 500 内部服务错误。
+- **排查误导教训**:
+  该异常极其隐蔽，极易误导排查方向，让人误以为服务内部路由或业务逻辑崩溃，花费大量时间排查服务端代码。
+
+### 4.2 强制规范与标准测试范式
+1. **本机命令行 curl 测试 POST JSON**:
+   - 严禁在 PowerShell 中使用直接内联的 `-d '{...}'` 或 `-d "{\"key\": \"val\"}"`；
+   - 必须将 JSON 写入临时文件，使用 `--data-binary '@payload.json'`（注意在 PowerShell 中 `@` 必须用单引号包裹 `'@...'`，否则会被 PowerShell 误判为变量 Splatting 运算符）：
+     ```powershell
+     # 写入标准 JSON 文件
+     '{"video_path": "ocr_input/sample.mp4"}' | Out-File -Encoding utf8 payload.json
+     # 使用 --data-binary 避免 shell 剥离引号 (注意 '@payload.json' 必须加引号)
+     curl.exe -s -X POST "http://127.0.0.1:8000/api/tasks" -H "Content-Type: application/json" --data-binary '@payload.json'
+     ```
+2. **自动化脚本与回归测试**:
+   - 优先使用 Python `requests.post(..., json={...})` 或 FastAPI `TestClient(app).post(..., json={...})`，由底层库严密控制请求头与序列化字节流，杜绝 Shell 解析干扰。

@@ -309,6 +309,7 @@ async def list_server_input_files():
                         "folder": d.name,
                         "rel_path": str(p.relative_to(PROJECT_ROOT)).replace("\\", "/"),
                         "abs_path": str(p.resolve()),
+                        "size_bytes": p.stat().st_size,
                         "size_human": TaskManager._human_size(p.stat().st_size)
                     })
     return {
@@ -330,21 +331,28 @@ async def upload_video_file(file: UploadFile = File(...), request: Request = Non
     ocr_input_dir = PROJECT_ROOT / "ocr_input"
     ocr_input_dir.mkdir(parents=True, exist_ok=True)
 
-    # 1. 预检请求头与 Content-Length
+    # 1. 预检请求大小与 4GB 限制
+    file.file.seek(0, 2)
+    incoming_size = file.file.tell()
+    file.file.seek(0)
+
+    header_size = None
     content_length_header = request.headers.get("content-length") if request else None
-    estimated_size = None
     if content_length_header:
         try:
-            estimated_size = int(content_length_header)
-            if estimated_size > MAX_FILE_SIZE:
-                raise HTTPException(status_code=400, detail="单文件大小超过 4 GB 限制，拒绝上传")
+            header_size = int(content_length_header)
         except ValueError:
-            pass
+            header_size = None
+
+    # 若请求头或实际大小任一超过 4GB，立即拦截
+    if (header_size and header_size > MAX_FILE_SIZE) or incoming_size > MAX_FILE_SIZE:
+        raise HTTPException(status_code=400, detail="单文件大小超过 4 GB 限制，拒绝上传")
 
     # 2. 预检磁盘剩余空间: 磁盘剩余 < 文件大小 * 2 拒绝并提示
+    file_size_for_disk = max(incoming_size, header_size or 0)
     total_space, used_space, free_space = shutil.disk_usage(ocr_input_dir)
-    if estimated_size:
-        needed_free = estimated_size * 2
+    if file_size_for_disk > 0:
+        needed_free = file_size_for_disk * 2
         if free_space < needed_free:
             free_gb = round(free_space / (1024 ** 3), 2)
             needed_gb = round(needed_free / (1024 ** 3), 2)
@@ -353,9 +361,27 @@ async def upload_video_file(file: UploadFile = File(...), request: Request = Non
                 detail=f"磁盘剩余空间不足: 剩余可用 {free_gb} GB，导入该文件需要至少 {needed_gb} GB (文件大小 × 2)"
             )
 
-    # 3. 避免同名覆盖，自动重命名 (xxx_1.mp4, xxx_2.mp4)
+    # 3. Z7 判重优化: 若 ocr_input 下已存在同名且大小相同的文件，直接复用已有路径并提示，杜绝重复写盘
     raw_filename = Path(file.filename or "uploaded_video.mp4").name
     dest_path = ocr_input_dir / raw_filename
+    if dest_path.exists() and dest_path.is_file():
+        existing_size = dest_path.stat().st_size
+        if existing_size == incoming_size:
+            rel_path = str(dest_path.relative_to(PROJECT_ROOT)).replace("\\", "/")
+            return {
+                "code": 0,
+                "message": "该片源已存在，已为你选中",
+                "existed": True,
+                "data": {
+                    "filename": dest_path.name,
+                    "rel_path": rel_path,
+                    "abs_path": str(dest_path.resolve()),
+                    "size": existing_size,
+                    "size_human": TaskManager._human_size(existing_size)
+                }
+            }
+
+    # 若文件名相同但大小不同，避免覆盖，自动递增重命名 (xxx_1.mp4, xxx_2.mp4)
     if dest_path.exists():
         stem = dest_path.stem
         suffix = dest_path.suffix
