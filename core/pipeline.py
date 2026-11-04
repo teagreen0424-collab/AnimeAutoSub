@@ -143,6 +143,7 @@ class Pipeline:
         self.log.info("=" * 60)
 
         for stage in self.stages:
+            stage.ctx = self.ctx
             if self.ctx.cancel_token.is_cancelled():
                 self.log.warning(f"  ⚠ 任务已取消: {self.ctx.cancel_token.reason}")
                 return False

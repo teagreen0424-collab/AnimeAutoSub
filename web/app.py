@@ -187,7 +187,7 @@ async def create_new_task(req: Request):
 
     lang = body.get("lang", "ja")
     title = body.get("title", "").strip() or video_path.stem
-    engine_id = body.get("engine_id", "sakura-14b")
+    engine_id = body.get("engine_id", "deepseek-flash")
 
     from core.translation_engine import load_engine_configs
     available_engines = load_engine_configs()
@@ -196,6 +196,19 @@ async def create_new_task(req: Request):
             status_code=400,
             detail=f"不支持的翻译引擎 [{engine_id}]，可选引擎: {list(available_engines.keys())}"
         )
+
+    asr_engine_id = body.get("asr_engine_id")
+    if asr_engine_id:
+        from core.asr_engine import load_asr_engine_configs
+        available_asr = load_asr_engine_configs()
+        if asr_engine_id not in available_asr:
+            raise HTTPException(
+                status_code=400,
+                detail=f"不支持的 ASR 引擎 [{asr_engine_id}]，可选引擎: {list(available_asr.keys())}"
+            )
+    elif mode == "asr":
+        from core.asr_engine import get_asr_engine_config
+        asr_engine_id = get_asr_engine_config().id
 
     # 生成规范任务目录
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -213,6 +226,7 @@ async def create_new_task(req: Request):
         "lang": lang,
         "mode": mode,
         "engine_id": engine_id,
+        "asr_engine_id": asr_engine_id,
         "created_at": datetime.now().isoformat()
     }
     with open(work_dir / "task_meta.json", "w", encoding="utf-8") as f:
@@ -882,11 +896,25 @@ async def get_system_engines():
     }
 
 
+@app.get("/api/system/asr_engines")
+async def get_system_asr_engines():
+    """获取所有可用 ASR 语音转写引擎配置与状态 (密钥脱敏)"""
+    from core.asr_engine import load_asr_engine_configs
+    asr_engines = load_asr_engine_configs()
+    data = [cfg.to_dict(mask_secrets=True) for cfg in asr_engines.values()]
+    return {
+        "code": 0,
+        "message": "success",
+        "data": data
+    }
+
+
 @app.get("/api/system/settings")
 async def get_system_settings():
     """P4: 系统只读设置与运行环境"""
     import os
     from core.translation_engine import load_engine_configs
+    from core.asr_engine import load_asr_engine_configs
     ollama_models = os.environ.get("OLLAMA_MODELS", r"D:\Dev\ollama\models")
     ffmpeg_path = r"D:\Dev\ffmpeg\bin\ffmpeg.exe" if Path(r"D:\Dev\ffmpeg\bin\ffmpeg.exe").exists() else "ffmpeg"
     return {
@@ -902,7 +930,8 @@ async def get_system_settings():
             "ffmpeg_path": str(ffmpeg_path),
             "workspace_root": str(PROJECT_ROOT),
             "schema_version": 2,
-            "engines": [cfg.to_dict(mask_secrets=True) for cfg in load_engine_configs().values()]
+            "engines": [cfg.to_dict(mask_secrets=True) for cfg in load_engine_configs().values()],
+            "asr_engines": [cfg.to_dict(mask_secrets=True) for cfg in load_asr_engine_configs().values()]
         }
     }
 

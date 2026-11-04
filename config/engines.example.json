@@ -1,5 +1,6 @@
 {
-  "default_engine": "sakura-14b",
+  "default_engine": "deepseek-flash",
+  "default_asr_engine": "siliconflow-sensevoice",
   "engines": {
     "sakura-14b": {
       "id": "sakura-14b",
@@ -100,6 +101,40 @@
         "currency": "CNY"
       },
       "description": "OpenAI 官方小模型，响应极快，语义理解扎实"
+    }
+  },
+  "asr_engines": {
+    "siliconflow-sensevoice": {
+      "id": "siliconflow-sensevoice",
+      "name": "硅基流动 SenseVoice (云端 API)",
+      "type": "api",
+      "api_url": "https://api.siliconflow.cn/v1/audio/transcriptions",
+      "model_name": "FunAudioLLM/SenseVoiceSmall",
+      "api_key_env": "SILICONFLOW_API_KEY",
+      "api_key_file": "config/siliconflow_key.txt",
+      "requires_gpu": false,
+      "response_format": "verbose_json",
+      "pricing": {
+        "per_minute": 0.002,
+        "currency": "CNY"
+      },
+      "description": "阿里云通义实验室开源多语种富文本语音识别，极度轻量低延迟，原生支持日中韩英"
+    },
+    "local-whisper": {
+      "id": "local-whisper",
+      "name": "本地 Whisper (large-v3)",
+      "type": "local",
+      "api_url": "",
+      "model_name": "large-v3",
+      "api_key_env": "",
+      "api_key_file": "",
+      "requires_gpu": true,
+      "response_format": "",
+      "pricing": {
+        "per_minute": 0.0,
+        "currency": "CNY"
+      },
+      "description": "本地离线推理，需 4GB+ 显存"
     }
   }
 }

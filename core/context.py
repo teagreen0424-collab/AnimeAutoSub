@@ -39,6 +39,7 @@ class PipelineContext:
     data: Dict[str, Any] = field(default_factory=dict)
     cancel_token: CancelToken = field(default_factory=CancelToken)
     engine_id: Optional[str] = None
+    asr_engine_id: Optional[str] = None
 
     def __post_init__(self):
         self.video_path = Path(self.video_path).resolve()

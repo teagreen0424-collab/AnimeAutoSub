@@ -142,6 +142,8 @@ class TaskManager:
         mode = meta_data.get("mode") or "ocr"
         title = meta_data.get("title") or d.name
         engine_id = meta_data.get("engine_id") or manifest_data.get("engine_id") or manifest_data.get("stages", {}).get("translate", {}).get("engine_id") or "sakura-14b"
+        asr_stage = manifest_data.get("stages", {}).get("asr", {})
+        asr_engine_id = meta_data.get("asr_engine_id") or manifest_data.get("asr_engine_id") or asr_stage.get("asr_engine_id")
 
         name_lower = d.name.lower()
         if "ko" in name_lower and not meta_data.get("lang"):
@@ -212,6 +214,7 @@ class TaskManager:
             "lang": lang,
             "mode": mode,
             "engine_id": engine_id,
+            "asr_engine_id": asr_engine_id,
             "token_usage": token_usage,
             "cost_estimate": cost_estimate,
             "status": status,
