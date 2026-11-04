@@ -7,7 +7,9 @@ AnimeAutoSub 流水线调度引擎与 CLI 入口 (core/pipeline.py)
   - 幂等、可取消、阶段错误阻断
 """
 
+import os
 import sys
+import time
 import argparse
 import logging
 from pathlib import Path
@@ -58,14 +60,24 @@ def get_tool_version(stage: Stage) -> str:
     return "v1.0"
 
 
-def check_environment(log: logging.Logger) -> bool:
-    """环境自检与 Ollama 服务自愈"""
+def check_environment(log: logging.Logger, ctx: Optional[PipelineContext] = None) -> bool:
+    """环境自检与 Ollama 服务自愈 (仅当使用本地 Ollama 引擎时才触发检查)"""
     import requests
     import subprocess
-    import os
+
+    # 若当前任务使用的是云端 API 翻译引擎，则无需唤醒本地 Ollama
+    if ctx and hasattr(ctx, "engine_id") and ctx.engine_id:
+        try:
+            from .translation_engine import get_engine_config
+            eng = get_engine_config(ctx.engine_id)
+            if eng.type != "ollama":
+                return True
+        except Exception:
+            pass
+
     ollama_ok = False
     try:
-        r = requests.get("http://127.0.0.1:11434/api/tags", timeout=3)
+        r = requests.get("http://127.0.0.1:11434/api/tags", timeout=2)
         if r.status_code == 200:
             ollama_ok = True
     except Exception:
@@ -98,7 +110,7 @@ class Pipeline:
         self.ctx = ctx
         self.manifest = ManifestManager(ctx.work_dir)
         self.log = setup_pipeline_logging(ctx.work_dir)
-        check_environment(self.log)
+        check_environment(self.log, self.ctx)
 
         if stages is not None:
             self.stages = stages
