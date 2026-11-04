@@ -108,13 +108,13 @@ body {
 }
 
 .cyber-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 0;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
 }
 
 /* 顶部导航条 TopBar */
@@ -310,6 +310,8 @@ body {
 
 /* 主体容器 */
 .main-container {
+  position: relative;
+  z-index: 1;
   flex: 1;
   padding: 24px;
   max-width: 1480px;

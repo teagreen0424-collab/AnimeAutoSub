@@ -4,12 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AnimeAutoSub WebUI</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20261104_cyber2">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body class="dark-theme">
+  <!-- 赛博朋克粒子流动背景 (原生内联样式确保绝不脱离视图/绝不产生推挤) -->
+  <canvas id="cyberCanvas" class="cyber-canvas" style="position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; pointer-events: none !important; z-index: 0 !important;"></canvas>
+
   <!-- 全局拖拽提示蒙层 -->
   <div class="drag-drop-overlay" id="dragDropOverlay" style="display:none;">
     <div class="drag-drop-box">
@@ -809,7 +812,7 @@
     </div>
   </div>
 
-  <script type="module" src="cyber-fx.js"></script>
-  <script type="module" src="app.js"></script>
+  <script type="module" src="cyber-fx.js?v=20261104_cyber2"></script>
+  <script type="module" src="app.js?v=20261104_cyber2"></script>
 </body>
 </html>

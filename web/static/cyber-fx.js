@@ -34,6 +34,15 @@ class CyberFXEngine {
       document.body.prepend(this.canvas);
     }
 
+    // 强内联样式兜底：确保脱离正常文档流，绝不影响或推挤页面正常结构
+    this.canvas.style.position = "fixed";
+    this.canvas.style.top = "0";
+    this.canvas.style.left = "0";
+    this.canvas.style.width = "100vw";
+    this.canvas.style.height = "100vh";
+    this.canvas.style.pointerEvents = "none";
+    this.canvas.style.zIndex = "0";
+
     this.ctx = this.canvas.getContext("2d", { alpha: true });
     this.resizeCanvas();
 

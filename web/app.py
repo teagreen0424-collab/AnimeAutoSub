@@ -71,6 +71,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 全局静态资源禁用强缓存，确保前端重构及脚本热更时即时生效
+@app.middleware("http")
+async def add_no_cache_header_for_static(request: Request, call_next):
+    response = await call_next(request)
+    path = request.url.path
+    if path in ("/", "/index.html") or any(path.endswith(ext) for ext in (".css", ".js", ".html")):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
+
+
 # 初始化任务管理器
 task_manager = TaskManager(PROJECT_ROOT)
 
