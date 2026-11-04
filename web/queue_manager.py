@@ -140,6 +140,16 @@ class QueueManager:
 
             return self.submit_task(task_id)
 
+    def purge_task(self, task_id: str) -> None:
+        """从队列、事件缓冲和监听器中彻底注销任务 (配合任务物理删除)"""
+        with self._lock:
+            if task_id in self.queue:
+                self.queue.remove(task_id)
+            self.task_states.pop(task_id, None)
+            self.event_buffers.pop(task_id, None)
+            self.active_cancel_tokens.pop(task_id, None)
+            self.listeners.pop(task_id, None)
+
     def cancel_task(self, task_id: str) -> bool:
         """安全取消任务 (3 秒内生效并释放 GPU 租约)"""
         with self._lock:

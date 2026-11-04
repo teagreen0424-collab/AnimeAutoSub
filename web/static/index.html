@@ -138,6 +138,9 @@
           <button class="btn btn-danger btn-sm" id="btnCancelTask" style="display:none;">
             ✕ 取消流水线 (释放GPU)
           </button>
+          <button class="btn btn-outline-danger btn-sm" id="btnDeleteTask" title="删除当前任务及关联资源">
+            🗑️ 删除任务
+          </button>
           <span class="status-pill status-done" id="detailStatusPill">DONE</span>
         </div>
       </div>
@@ -727,6 +730,82 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- 删除任务确认弹窗 (Modal) -->
+  <div class="modal-backdrop" id="modalDeleteTask" style="display:none;">
+    <div class="modal-card" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: #f43f5e; display: flex; align-items: center; gap: 8px;">
+          <span>🗑️</span> <span>删除任务确认</span>
+        </h3>
+        <button class="modal-close-btn" id="modalCloseDeleteBtn">✕</button>
+      </div>
+
+      <div class="modal-body" style="padding: 16px 20px;">
+        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px;">
+          <div style="font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 4px;" id="delModalTaskTitle">-</div>
+          <div style="font-size: 12px; font-family: var(--font-mono); color: var(--text-dim);" id="delModalTaskId">-</div>
+        </div>
+
+        <!-- 存储空间分析卡片 -->
+        <div id="delStorageAnalysisBox" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px;">
+          <div style="font-size: 12px; font-weight: 600; color: #38bdf8; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+            <span>📊 关联磁盘空间占用</span>
+            <span id="delTotalSizeBadge" style="font-size: 13px; font-family: var(--font-mono); color: #facc15; font-weight: 700;">计算中...</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px;">
+            <div style="background: rgba(255, 255, 255, 0.03); padding: 8px 10px; border-radius: 6px;">
+              <div style="color: var(--text-dim);">🎬 压制成片视频:</div>
+              <div style="font-weight: 600; color: #10b981; font-family: var(--font-mono);" id="delVideoSizeText">-</div>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.03); padding: 8px 10px; border-radius: 6px;">
+              <div style="color: var(--text-dim);">🎙️ 抠出语音与缓存:</div>
+              <div style="font-weight: 600; color: #f59e0b; font-family: var(--font-mono);" id="delCacheSizeText">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 原始片源安全保护声明 -->
+        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 6px; padding: 10px 12px; margin-bottom: 14px; font-size: 12px; color: #10b981; display: flex; align-items: center; gap: 8px;">
+          <span>🛡️</span>
+          <span><strong>原始片源绝对安全</strong>：系统仅清理该任务私有的衍生工作文件，绝对不会删除位于 <code>ocr_input/</code> 的原始视频。</span>
+        </div>
+
+        <!-- 删除模式选项 -->
+        <div class="form-group" style="margin-bottom: 6px;">
+          <label class="form-label" style="font-weight: 600; color: #fff; margin-bottom: 8px;">请选择删除模式:</label>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; background: rgba(244, 63, 94, 0.06); border: 1px solid rgba(244, 63, 94, 0.25); border-radius: 8px; padding: 10px 12px;">
+              <input type="radio" name="deleteMode" value="full" checked style="margin-top: 3px;">
+              <div>
+                <div style="font-size: 13px; font-weight: 600; color: #fda4af;">彻底删除任务与全部关联资源 (推荐)</div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                  物理删除该任务的工作目录，清除抠出来的语音、切片图片、帧缓存、字幕和成片，从列表彻底移除，释放全部磁盘空间。
+                </div>
+              </div>
+            </label>
+
+            <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; background: rgba(56, 189, 248, 0.06); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px; padding: 10px 12px;">
+              <input type="radio" name="deleteMode" value="clean_cache" style="margin-top: 3px;">
+              <div>
+                <div style="font-size: 13px; font-weight: 600; color: #7dd3fc;">仅清理中间消耗品 (任务瘦身)</div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                  保留压制成片与最终字幕，仅删除抠出来的语音音频、OCR切片图片与帧缓存。任务仍保留在列表中。
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 12px 20px;">
+        <button type="button" class="btn btn-secondary" id="btnCancelDeleteModal">取消</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmDeleteTask" style="background: #e11d48; border-color: #f43f5e; color: #fff;">
+          确认执行
+        </button>
+      </div>
     </div>
   </div>
 

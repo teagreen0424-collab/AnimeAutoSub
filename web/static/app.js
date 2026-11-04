@@ -61,6 +61,19 @@ class WebUIApp {
     this.detailStatusPill = document.getElementById("detailStatusPill");
     this.btnResumeTask = document.getElementById("btnResumeTask");
     this.btnCancelTask = document.getElementById("btnCancelTask");
+    this.btnDeleteTask = document.getElementById("btnDeleteTask");
+
+    // 删除任务弹窗 DOM
+    this.modalDeleteTask = document.getElementById("modalDeleteTask");
+    this.modalCloseDeleteBtn = document.getElementById("modalCloseDeleteBtn");
+    this.btnCancelDeleteModal = document.getElementById("btnCancelDeleteModal");
+    this.btnConfirmDeleteTask = document.getElementById("btnConfirmDeleteTask");
+    this.delModalTaskTitle = document.getElementById("delModalTaskTitle");
+    this.delModalTaskId = document.getElementById("delModalTaskId");
+    this.delTotalSizeBadge = document.getElementById("delTotalSizeBadge");
+    this.delVideoSizeText = document.getElementById("delVideoSizeText");
+    this.delCacheSizeText = document.getElementById("delCacheSizeText");
+    this.taskToDelete = null;
     this.liveProgressPanel = document.getElementById("liveProgressPanel");
     this.liveStageTitle = document.getElementById("liveStageTitle");
     this.liveTotalPctText = document.getElementById("liveTotalPctText");
@@ -487,6 +500,20 @@ class WebUIApp {
     // 断点续跑与取消操作
     this.btnResumeTask.addEventListener("click", () => this.resumeCurrentTask());
     this.btnCancelTask.addEventListener("click", () => this.cancelCurrentTask());
+    if (this.btnDeleteTask) {
+      this.btnDeleteTask.addEventListener("click", () => {
+        if (this.currentTask) this.openDeleteTaskModal(this.currentTask);
+      });
+    }
+    if (this.modalCloseDeleteBtn) {
+      this.modalCloseDeleteBtn.addEventListener("click", () => this.closeDeleteTaskModal());
+    }
+    if (this.btnCancelDeleteModal) {
+      this.btnCancelDeleteModal.addEventListener("click", () => this.closeDeleteTaskModal());
+    }
+    if (this.btnConfirmDeleteTask) {
+      this.btnConfirmDeleteTask.addEventListener("click", () => this.executeDeleteTask());
+    }
   }
 
   handleHashChange() {
@@ -900,6 +927,14 @@ class WebUIApp {
             </div>
             <div class="task-card-status-wrap">
               ${statusBadge}
+              ${!task.is_legacy ? `
+                <button class="btn-card-delete" 
+                        data-task-id="${escapeHtml(task.task_id)}" 
+                        title="${task.status === 'running' ? '任务正在执行中，不可删除' : '删除此任务及关联资源'}"
+                        ${task.status === 'running' ? 'disabled' : ''}>
+                  🗑️
+                </button>
+              ` : ''}
             </div>
           </div>
 
@@ -949,6 +984,18 @@ class WebUIApp {
       card.addEventListener("click", () => {
         const taskId = card.dataset.taskId;
         this.openTaskDetail(taskId);
+      });
+    });
+
+    this.tasksListContainer.querySelectorAll(".btn-card-delete").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (btn.disabled) return;
+        const taskId = btn.dataset.taskId;
+        const task = this.tasks.find(t => t.task_id === taskId);
+        if (task) {
+          this.openDeleteTaskModal(task);
+        }
       });
     });
 
@@ -2042,6 +2089,81 @@ class WebUIApp {
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.textContent = origBtnText;
+      }
+    }
+  }
+
+async openDeleteTaskModal(task) {
+    this.taskToDelete = task;
+    if (this.delModalTaskTitle) this.delModalTaskTitle.textContent = task.title || task.task_id;
+    if (this.delModalTaskId) this.delModalTaskId.textContent = task.task_id;
+    if (this.delTotalSizeBadge) this.delTotalSizeBadge.textContent = "计算中...";
+    if (this.delVideoSizeText) this.delVideoSizeText.textContent = "读取中...";
+    if (this.delCacheSizeText) this.delCacheSizeText.textContent = "读取中...";
+
+    const fullRadio = document.querySelector('input[name="deleteMode"][value="full"]');
+    if (fullRadio) fullRadio.checked = true;
+
+    if (this.modalDeleteTask) this.modalDeleteTask.style.display = "flex";
+
+    try {
+      const resp = await fetch(`/api/tasks/${task.task_id}/storage`);
+      const res = await resp.json();
+      if (res.code === 0 && res.data) {
+        const d = res.data;
+        if (this.delTotalSizeBadge) this.delTotalSizeBadge.textContent = d.total_human;
+        if (this.delVideoSizeText) this.delVideoSizeText.textContent = d.video_human;
+        if (this.delCacheSizeText) this.delCacheSizeText.textContent = d.cache_human;
+      } else {
+        if (this.delTotalSizeBadge) this.delTotalSizeBadge.textContent = "未知";
+      }
+    } catch (err) {
+      if (this.delTotalSizeBadge) this.delTotalSizeBadge.textContent = "无法获取";
+    }
+  }
+
+  closeDeleteTaskModal() {
+    if (this.modalDeleteTask) this.modalDeleteTask.style.display = "none";
+    this.taskToDelete = null;
+  }
+
+  async executeDeleteTask() {
+    if (!this.taskToDelete) return;
+    const taskId = this.taskToDelete.task_id;
+    const selectedMode = document.querySelector('input[name="deleteMode"]:checked')?.value || 'full';
+
+    const btn = this.btnConfirmDeleteTask;
+    const oldText = btn ? btn.textContent : "确认执行";
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "正在处理...";
+    }
+
+    try {
+      const resp = await fetch(`/api/tasks/${taskId}?mode=${selectedMode}`, {
+        method: "DELETE"
+      });
+      const res = await resp.json();
+      if (res.code !== 0) {
+        alert("删除失败: " + (res.message || res.detail));
+        return;
+      }
+
+      this.closeDeleteTaskModal();
+
+      // 若当前在详情页且选择的是彻底删除，退回任务列表
+      if (selectedMode === "full" && this.currentTask && this.currentTask.task_id === taskId) {
+        this.showScreen("list");
+      }
+
+      // 刷新全量任务与统计
+      await this.loadTasks();
+    } catch (err) {
+      alert("网络请求异常: " + err);
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = oldText;
       }
     }
   }

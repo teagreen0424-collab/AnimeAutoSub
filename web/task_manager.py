@@ -12,6 +12,8 @@ AnimeAutoSub WebUI 任务管理与状态机推导 (web/task_manager.py)
 import json
 import os
 import time
+import shutil
+import stat
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 from datetime import datetime
@@ -388,3 +390,190 @@ class TaskManager:
                 return f"{num_bytes:3.1f} {unit}"
             num_bytes /= 1024.0
         return f"{num_bytes:.1f} TB"
+
+    def get_task_storage_stats(self, task_id: str) -> Dict[str, Any]:
+        """
+        计算任务的磁盘占用统计 (区分成片、中间资源/缓存、字幕与文本)
+        """
+        task = self.tasks.get(task_id)
+        if not task:
+            work_dir = self.project_root / "work_tasks" / task_id
+            if not work_dir.exists():
+                work_dir = self.project_root / task_id
+            if not work_dir.exists():
+                raise FileNotFoundError(f"未找到任务工作目录: {task_id}")
+            is_legacy = False
+        else:
+            work_dir = Path(task["work_dir"])
+            is_legacy = task.get("is_legacy", False)
+
+        total_bytes = 0
+        video_bytes = 0
+        cache_bytes = 0
+        subtitle_bytes = 0
+        other_bytes = 0
+
+        # 临时/可清理中间资源判定规则
+        cache_names = {
+            "extracted_speech_16k.mp3",
+            "extracted_audio.wav",
+            "n5_rejection_report.json",
+        }
+        cache_dirs = {".frame_cache", "crops", "ocr_crops"}
+        subtitle_names = {
+            "subtitle.ass", "subtitle.srt", "chinese.json",
+            "japanese.json", "ocr_raw.json", "asr_raw.json"
+        }
+
+        if work_dir.exists() and work_dir.is_dir():
+            for p in work_dir.rglob("*"):
+                if p.is_file():
+                    try:
+                        sz = p.stat().st_size
+                    except OSError:
+                        continue
+                    total_bytes += sz
+                    name_lower = p.name.lower()
+                    is_in_cache_dir = any(part in cache_dirs for part in p.parts)
+
+                    if name_lower.endswith((".mp4", ".mkv")) and ("output" in name_lower or "字幕" in name_lower or p.name == "output.mp4"):
+                        video_bytes += sz
+                    elif is_in_cache_dir or p.name in cache_names or name_lower.endswith((".wav", ".pcm")):
+                        cache_bytes += sz
+                    elif p.name in subtitle_names:
+                        subtitle_bytes += sz
+                    else:
+                        other_bytes += sz
+
+        return {
+            "task_id": task_id,
+            "work_dir": str(work_dir),
+            "total_bytes": total_bytes,
+            "total_human": self._human_size(total_bytes),
+            "video_bytes": video_bytes,
+            "video_human": self._human_size(video_bytes),
+            "cache_bytes": cache_bytes,
+            "cache_human": self._human_size(cache_bytes),
+            "subtitle_bytes": subtitle_bytes,
+            "subtitle_human": self._human_size(subtitle_bytes),
+            "other_bytes": other_bytes,
+            "other_human": self._human_size(other_bytes),
+            "is_legacy": is_legacy,
+        }
+
+    def delete_task(self, task_id: str, mode: str = "full") -> Dict[str, Any]:
+        """
+        删除任务或清理中间资源
+        mode:
+          - "full": 彻底删除任务工作目录及其所有产物与中间资源 (释放全部空间)
+          - "clean_cache": 仅清理中间资源 (抠出的音频、切片图片、帧缓存)，保留成片与字幕 (瘦身)
+        """
+        if task_id not in self.tasks:
+            self.refresh_tasks()
+
+        task = self.tasks.get(task_id)
+        if not task:
+            work_dir = self.project_root / "work_tasks" / task_id
+            if not work_dir.exists():
+                work_dir = self.project_root / task_id
+            if not work_dir.exists():
+                raise FileNotFoundError(f"任务不存在: {task_id}")
+            is_legacy = False
+        else:
+            work_dir = Path(task["work_dir"])
+            is_legacy = task.get("is_legacy", False)
+
+        # 保护 1: 历史基准产物受保护
+        if is_legacy:
+            raise PermissionError("历史基准产物受系统保护，不可删除")
+
+        # 保护 2: 正在运行的任务不可直接物理删除 (防止 WinError 32 和线程崩溃)
+        from web.queue_manager import queue_manager
+        with queue_manager._lock:
+            if queue_manager.active_task_id == task_id:
+                raise RuntimeError("任务当前正在执行中，请先取消停止任务后再执行删除")
+            if task_id in queue_manager.queue:
+                queue_manager.queue.remove(task_id)
+
+        # 保护 3: 严格校验路径，防止误删工作区外部目录或输入片源目录
+        work_dir = work_dir.resolve()
+        safe_bases = [
+            (self.project_root / "work_tasks").resolve(),
+            self.project_root.resolve()
+        ]
+        forbidden_dirs = [
+            self.project_root.resolve(),
+            (self.project_root / "ocr_input").resolve(),
+            (self.project_root / "input").resolve(),
+            (self.project_root / "core").resolve(),
+            (self.project_root / "web").resolve(),
+            (self.project_root / "venv").resolve(),
+            (self.project_root / "tests").resolve(),
+        ]
+        if work_dir in forbidden_dirs or not any(str(work_dir).startswith(str(base)) for base in safe_bases):
+            raise PermissionError(f"目标目录受到系统安全保护，禁止删除: {work_dir}")
+
+        stats_before = self.get_task_storage_stats(task_id)
+
+        if mode == "clean_cache":
+            # 仅清理中间缓存
+            cache_names = {
+                "extracted_speech_16k.mp3",
+                "extracted_audio.wav",
+                "n5_rejection_report.json",
+            }
+            cache_dirs = {".frame_cache", "crops", "ocr_crops"}
+
+            freed_bytes = 0
+            for p in list(work_dir.rglob("*")):
+                if p.is_file():
+                    name_lower = p.name.lower()
+                    is_in_cache_dir = any(part in cache_dirs for part in p.parts)
+                    if is_in_cache_dir or p.name in cache_names or name_lower.endswith((".wav", ".pcm")):
+                        try:
+                            freed_bytes += p.stat().st_size
+                            p.unlink(missing_ok=True)
+                        except Exception:
+                            pass
+
+            for c_dir_name in cache_dirs:
+                c_dir = work_dir / c_dir_name
+                if c_dir.exists() and c_dir.is_dir():
+                    shutil.rmtree(c_dir, ignore_errors=True)
+
+            self.refresh_tasks()
+            return {
+                "task_id": task_id,
+                "mode": "clean_cache",
+                "freed_bytes": freed_bytes,
+                "freed_human": self._human_size(freed_bytes),
+                "message": f"任务中间缓存已成功清理，释放空间 {self._human_size(freed_bytes)}"
+            }
+
+        else:
+            # mode == "full": 彻底删除整个任务工作目录
+            freed_bytes = stats_before["total_bytes"]
+
+            def _onerror_remove_readonly(func, path, exc_info):
+                try:
+                    os.chmod(path, stat.S_IWRITE)
+                    func(path)
+                except Exception:
+                    pass
+
+            shutil.rmtree(work_dir, onerror=_onerror_remove_readonly)
+
+            # 清理 queue_manager 内部缓存
+            queue_manager.purge_task(task_id)
+
+            # 从 task_manager 字典中移除并刷新全量列表
+            self.tasks.pop(task_id, None)
+            self.refresh_tasks()
+
+            return {
+                "task_id": task_id,
+                "mode": "full",
+                "freed_bytes": freed_bytes,
+                "freed_human": self._human_size(freed_bytes),
+                "message": f"任务及关联资源已彻底删除，释放空间 {self._human_size(freed_bytes)}"
+            }

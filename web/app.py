@@ -295,6 +295,49 @@ async def cancel_task_endpoint(task_id: str):
     }
 
 
+
+
+@app.get("/api/tasks/{task_id}/storage")
+async def get_task_storage_endpoint(task_id: str):
+    """获取任务及其关联资源的磁盘占用分析 (成片、临时语音、图片切片与缓存)"""
+    try:
+        stats = task_manager.get_task_storage_stats(task_id)
+        return {
+            "code": 0,
+            "message": "success",
+            "data": stats
+        }
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"获取任务存储统计失败: {e}")
+
+
+@app.delete("/api/tasks/{task_id}")
+async def delete_task_endpoint(task_id: str, mode: str = "full"):
+    """
+    删除任务及关联资源接口
+    mode:
+      - "full": 彻底删除任务工作目录及其所有产物与中间资源 (释放全部空间)
+      - "clean_cache": 仅清理中间资源 (抠出的音频、切片图片、帧缓存)，保留成片与字幕 (瘦身)
+    """
+    try:
+        res = task_manager.delete_task(task_id, mode=mode)
+        return {
+            "code": 0,
+            "message": res["message"],
+            "data": res
+        }
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except PermissionError as e:
+        raise HTTPException(status_code=403, detail=str(e))
+    except RuntimeError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"删除任务失败: {e}")
+
+
 @app.get("/api/tasks/{task_id}/events")
 async def sse_task_events(task_id: str, request: Request):
     """
