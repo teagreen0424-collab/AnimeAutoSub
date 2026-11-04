@@ -1,84 +1,87 @@
 /* ==========================================================================
-   AnimeAutoSub WebUI 现代暗色主题样式表 (web/static/style.css)
+   AnimeAutoSub Active Theory Avant-Garde Editorial Architecture (style.css)
+   Award-Winning Creative Direction: Active Theory / Locomotive / Awwwards
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 :root, body.light-theme {
-  --bg-page: #f8fafc;
+  --bg-page: #f6f6f9;
   --bg-page-mesh: 
-    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 45%),
-    radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.10) 0px, transparent 45%),
-    radial-gradient(at 50% 100%, rgba(14, 165, 233, 0.12) 0px, transparent 50%);
-  --bg-card: rgba(255, 255, 255, 0.82);
-  --bg-card-hover: rgba(255, 255, 255, 0.95);
+    radial-gradient(at 0% 0%, rgba(0, 71, 255, 0.08) 0px, transparent 45%),
+    radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.06) 0px, transparent 45%),
+    radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.07) 0px, transparent 50%),
+    radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  --bg-card: rgba(255, 255, 255, 0.88);
+  --bg-card-hover: #ffffff;
   --bg-card-active: #ffffff;
-  --bg-input: rgba(255, 255, 255, 0.92);
-  --bg-terminal: #0f172a;
+  --bg-input: #ffffff;
+  --bg-terminal: #09090b;
   
-  --border-color: rgba(226, 232, 240, 0.85);
-  --border-shine: rgba(255, 255, 255, 0.95);
-  --border-focus: #4f46e5;
-  --border-hover: rgba(99, 102, 241, 0.45);
+  --border-color: rgba(0, 0, 0, 0.085);
+  --border-shine: rgba(255, 255, 255, 1);
+  --border-focus: #0047ff;
+  --border-hover: rgba(0, 71, 255, 0.45);
 
-  --text-main: #0f172a;
-  --text-muted: #475569;
-  --text-dim: #94a3b8;
+  --text-main: #09090b;
+  --text-muted: #52525b;
+  --text-dim: #71717a;
 
   --cyan: #0284c7;
-  --cyan-glow: rgba(14, 165, 233, 0.22);
+  --cyan-glow: rgba(14, 165, 233, 0.18);
   --cyan-deep: #0369a1;
 
   --emerald: #059669;
-  --emerald-glow: rgba(16, 185, 129, 0.22);
+  --emerald-glow: rgba(16, 185, 129, 0.18);
 
   --amber: #d97706;
-  --amber-glow: rgba(245, 158, 11, 0.22);
+  --amber-glow: rgba(245, 158, 11, 0.18);
 
   --purple: #7c3aed;
-  --purple-glow: rgba(124, 58, 237, 0.22);
+  --purple-glow: rgba(124, 58, 237, 0.18);
 
   --rose: #e11d48;
-  --rose-glow: rgba(244, 63, 94, 0.22);
+  --rose-glow: rgba(244, 63, 94, 0.18);
 
-  --indigo: #4f46e5;
-  --pink: #db2777;
+  --indigo: #0047ff;
+  --pink: #ec4899;
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
 
-  --font-sans: 'Outfit', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', Consolas, "Courier New", monospace;
 
-  --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 12px 28px -4px rgba(99, 102, 241, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
-  --glass-shadow-hover: 0 20px 42px -8px rgba(99, 102, 241, 0.16), 0 0 0 1px rgba(255, 255, 255, 1) inset;
+  --glass-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 8px 24px -4px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --glass-shadow-hover: 0 16px 36px -6px rgba(0, 71, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 1);
 
-  --topbar-bg: rgba(255, 255, 255, 0.85);
-  --topbar-border: rgba(226, 232, 240, 0.85);
-  --topbar-shadow: 0 4px 20px -2px rgba(99, 102, 241, 0.06), inset 0 -1px 0 rgba(255, 255, 255, 0.9);
+  --topbar-bg: rgba(255, 255, 255, 0.92);
+  --topbar-border: rgba(0, 0, 0, 0.08);
+  --topbar-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.03), inset 0 -1px 0 rgba(0, 0, 0, 0.04);
 }
 
 body.dark-theme {
-  --bg-page: #06090f;
+  --bg-page: #08080a;
   --bg-page-mesh: 
-    radial-gradient(at 0% 0%, rgba(0, 240, 255, 0.10) 0px, transparent 45%),
-    radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.10) 0px, transparent 45%),
-    radial-gradient(at 50% 100%, rgba(244, 63, 94, 0.08) 0px, transparent 50%);
-  --bg-card: rgba(13, 20, 36, 0.76);
-  --bg-card-hover: rgba(19, 30, 56, 0.90);
-  --bg-card-active: rgba(25, 40, 75, 0.95);
-  --bg-input: rgba(9, 14, 26, 0.85);
-  --bg-terminal: #04070d;
+    radial-gradient(at 0% 0%, rgba(0, 240, 255, 0.08) 0px, transparent 45%),
+    radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.08) 0px, transparent 45%),
+    radial-gradient(at 50% 100%, rgba(244, 63, 94, 0.06) 0px, transparent 50%),
+    radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  --bg-card: rgba(18, 18, 22, 0.85);
+  --bg-card-hover: rgba(24, 24, 30, 0.95);
+  --bg-card-active: rgba(30, 30, 38, 1);
+  --bg-input: rgba(14, 14, 18, 0.95);
+  --bg-terminal: #050507;
   
-  --border-color: rgba(56, 189, 248, 0.18);
+  --border-color: rgba(255, 255, 255, 0.10);
   --border-shine: rgba(0, 240, 255, 0.35);
   --border-focus: #00f0ff;
-  --border-hover: rgba(0, 240, 255, 0.45);
+  --border-hover: rgba(0, 240, 255, 0.5);
 
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
+  --text-main: #fafafa;
+  --text-muted: #a1a1aa;
+  --text-dim: #71717a;
 
   --cyan: #00f0ff;
   --cyan-glow: rgba(0, 240, 255, 0.22);
@@ -96,16 +99,121 @@ body.dark-theme {
   --rose: #f43f5e;
   --rose-glow: rgba(244, 63, 94, 0.22);
 
-  --indigo: #6366f1;
+  --indigo: #0047ff;
   --pink: #ec4899;
 
   --glass-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   --glass-shadow-hover: 0 20px 45px -5px rgba(0, 240, 255, 0.25), inset 0 1px 0 rgba(0, 240, 255, 0.35);
 
-  --topbar-bg: rgba(10, 15, 28, 0.78);
-  --topbar-border: rgba(56, 189, 248, 0.22);
+  --topbar-bg: rgba(12, 12, 15, 0.88);
+  --topbar-border: rgba(255, 255, 255, 0.10);
   --topbar-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 -1px 0 rgba(0, 240, 255, 0.15);
 }
+
+
+/* ==========================================================================
+   Active Theory 动效光标与技术 HUD (Kinetic Cursor & Telemetry)
+   ========================================================================== */
+.at-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 71, 255, 0.55);
+  pointer-events: none;
+  z-index: 99999;
+  margin-left: -16px;
+  margin-top: -16px;
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+              height 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.25s ease, 
+              background-color 0.25s ease;
+  will-change: transform;
+}
+
+body.dark-theme .at-cursor-ring {
+  border-color: rgba(0, 240, 255, 0.65);
+}
+
+.at-cursor-ring.hover {
+  width: 52px;
+  height: 52px;
+  margin-left: -26px;
+  margin-top: -26px;
+  border-color: #0047ff;
+  background-color: rgba(0, 71, 255, 0.08);
+}
+
+body.dark-theme .at-cursor-ring.hover {
+  border-color: #00f0ff;
+  background-color: rgba(0, 240, 255, 0.12);
+}
+
+.at-cursor-ring.click {
+  transform: scale(0.85) !important;
+}
+
+.at-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #0047ff;
+  pointer-events: none;
+  z-index: 99999;
+  margin-left: -2.5px;
+  margin-top: -2.5px;
+  will-change: transform;
+}
+
+body.dark-theme .at-cursor-dot {
+  background: #00f0ff;
+}
+
+.at-cursor-dot.hover {
+  background: #ec4899;
+}
+
+/* 实时遥测仪表标牌 */
+.at-telemetry-hud {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 9px;
+  background: rgba(0, 71, 255, 0.05);
+  border: 1px solid rgba(0, 71, 255, 0.18);
+  border-radius: 4px;
+  color: var(--text-main);
+  user-select: none;
+}
+
+body.dark-theme .at-telemetry-hud {
+  background: rgba(0, 240, 255, 0.08);
+  border-color: rgba(0, 240, 255, 0.25);
+  color: #00f0ff;
+}
+
+.hud-tag {
+  color: #0047ff;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+body.dark-theme .hud-tag {
+  color: #00f0ff;
+}
+
+.hud-fps {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
 
 @keyframes radarPing {
   0% { transform: scale(0.9); opacity: 0.9; }

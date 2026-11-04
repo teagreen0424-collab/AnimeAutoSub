@@ -1,45 +1,78 @@
 /**
- * AnimeAutoSub Luminous Aurora & Multi-Sensory FX Engine (web/static/cyber-fx.js)
- * 2026/2027 Cutting-Edge Visual & Interactive Showcase:
- * 1. Fluid Aurora Plasma Wave Canvas (流动极光流体画布与鼠标水波引力涟漪)
- * 2. Prismatic Holographic 3D Tilt Cards (全息彩虹折射光芒与三维物理悬浮)
- * 3. Crystal Sparkle Click Explosions (微晶爆裂交互微粒子)
- * 4. Procedural Web Audio Synthesizer Haptics (原生纯微合成拟真触觉声效)
- * 5. Smooth Odometer Counter Animation (核心指标数字流式滚动)
- * 6. Dynamic Theme & Sound Control (支持 ☀️ 极光浅色 / 🌙 深空暗色 无缝切换，默认极光浅色)
+ * AnimeAutoSub Active Theory Avant-Garde Creative Engine (web/static/cyber-fx.js)
+ * Inspired by Active Theory, Locomotive & Awwwards Studio Standards:
+ * 1. Interactive Fluid Velocity Field & Chromatic Particle Streamlines (60FPS 流体动力学速度场与色散流线)
+ * 2. Active Theory Kinetic Custom Spring Cursor (具有惯性弹簧吸附与物理缩放的动态光标)
+ * 3. Real-Time Performance & Telemetry Engine (实时 FPS 帧率遥测、视口坐标与系统心跳)
+ * 4. Procedural Mechanical Sound Synthesizer (高阶机械微触感声波合成，零外部资源)
+ * 5. Architectural Glare & Bento Hover Physics (极简瑞士解构主义全息折射与悬浮)
+ * 6. Smooth Odometer Metric Rollers (高阶流式数字计数器)
  */
 
-class CyberFXEngine {
+class ActiveTheoryEngine {
   constructor() {
     this.canvas = null;
     this.ctx = null;
     this.width = 0;
     this.height = 0;
-    this.time = 0;
-    this.mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000, down: false };
-    this.sparkles = [];
-    this.animId = null;
-    this.isPaused = false;
+    this.dpr = 1;
 
-    // 音频合成器状态
+    // 流体动力学速度网格 (Fluid Velocity Grid)
+    this.gridSize = 36;
+    this.cols = 0;
+    this.rows = 0;
+    this.velocities = [];
+    this.density = [];
+
+    // 鼠标物理运动状态 (Mouse Spring Physics)
+    this.mouse = {
+      x: -1000,
+      y: -1000,
+      prevX: -1000,
+      prevY: -1000,
+      vx: 0,
+      vy: 0,
+      speed: 0,
+      targetX: -1000,
+      targetY: -1000,
+      isHoveringInteractive: false
+    };
+
+    // 流体粒子追踪 (Fluid Streamline Particles)
+    this.particles = [];
+    this.particleCount = 55;
+
+    // 实时遥测指标 (Live Telemetry: FPS, Delta Time)
+    this.lastFrameTime = performance.now();
+    this.frameCount = 0;
+    this.fps = 60.0;
+    this.fpsTimer = performance.now();
+
+    // 纯合成声效引擎
     this.audioCtx = null;
     this.soundEnabled = localStorage.getItem("aas_sound") !== "0";
 
-    // 主题状态 (默认 100% 极光浅色)
+    // 主题体系 (默认 100% 极简浅色骨白 Alabaster Light)
     this.currentTheme = localStorage.getItem("aas_theme") || "light";
+
+    this.animId = null;
+    this.isPaused = false;
 
     this.initTheme();
     this.initCanvas();
+    this.initFluidGrid();
+    this.initParticles();
+    this.initKineticCursor();
     this.initAudioSynthesizer();
-    this.initSparkleSystem();
-    this.initCardInteractions();
+    this.initTelemetryHUD();
+    this.initCardPhysics();
     this.initOdometerCounters();
     this.initVisibilityListener();
     this.bindControls();
   }
 
   /* ==========================================================================
-     1. 主题与声效状态管理 (默认极光亮色)
+     1. 顶级双主题管理 (默认 100% 极简高雅白境 Alabaster)
      ========================================================================== */
   initTheme() {
     this.applyTheme(this.currentTheme);
@@ -57,14 +90,14 @@ class CyberFXEngine {
     }
     const themeBtn = document.getElementById("btnThemeToggle");
     if (themeBtn) {
-      themeBtn.title = theme === "dark" ? "当前: 深空暗色 (点击切换为极光浅色)" : "当前: 极光浅色 (点击切换为深空暗色)";
+      themeBtn.title = theme === "dark" ? "主题: 深空赛博 (点击切换极简白境)" : "主题: 极简白境 (点击切换深空赛博)";
     }
   }
 
   toggleTheme() {
     const nextTheme = this.currentTheme === "dark" ? "light" : "dark";
     this.applyTheme(nextTheme);
-    this.playHapticSound("toggle");
+    this.playMechanicalHaptic("toggle");
   }
 
   toggleSound() {
@@ -76,10 +109,10 @@ class CyberFXEngine {
     }
     const soundBtn = document.getElementById("btnSoundToggle");
     if (soundBtn) {
-      soundBtn.title = this.soundEnabled ? "触觉按键音效: 已开启 (点击静音)" : "触觉按键音效: 已静音 (点击开启)";
+      soundBtn.title = this.soundEnabled ? "机械触觉音效: 已开启 (点击静音)" : "机械触觉音效: 已静音 (点击开启)";
     }
     if (this.soundEnabled) {
-      this.playHapticSound("success");
+      this.playMechanicalHaptic("confirm");
     }
   }
 
@@ -96,93 +129,161 @@ class CyberFXEngine {
   }
 
   /* ==========================================================================
-     2. 纯原生 Web Audio 合成器 (0 音频文件，纯声波物理合成次世代声效)
+     2. Active Theory 机械微触感声波合成器 (Web Audio API Procedural Synth)
      ========================================================================== */
   initAudioSynthesizer() {
-    // 首次用户交互时安全激活 AudioContext
-    const unlockAudio = () => {
+    const unlock = () => {
       if (!this.audioCtx) {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (AudioContextClass) {
-          this.audioCtx = new AudioContextClass();
-        }
+        if (AudioContextClass) this.audioCtx = new AudioContextClass();
       }
       if (this.audioCtx && this.audioCtx.state === "suspended") {
         this.audioCtx.resume();
       }
-      window.removeEventListener("pointerdown", unlockAudio);
+      window.removeEventListener("pointerdown", unlock);
     };
-    window.addEventListener("pointerdown", unlockAudio, { passive: true });
+    window.addEventListener("pointerdown", unlock, { passive: true });
   }
 
-  playHapticSound(type = "tick") {
+  playMechanicalHaptic(type = "tick") {
     if (!this.soundEnabled || !this.audioCtx) return;
     try {
-      if (this.audioCtx.state === "suspended") {
-        this.audioCtx.resume();
-      }
+      if (this.audioCtx.state === "suspended") this.audioCtx.resume();
       const now = this.audioCtx.currentTime;
 
       if (type === "tick") {
-        // 轻盈拟真触觉微击 (800Hz -> 200Hz 40ms)
+        // Active Theory 标志性高频精密机械微击 (带带通滤波的微秒脉冲，类似高端快门/微动开关)
+        const osc = this.audioCtx.createOscillator();
+        const filter = this.audioCtx.createBiquadFilter();
+        const gain = this.audioCtx.createGain();
+
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(1800, now);
+        osc.frequency.exponentialRampToValueAtTime(320, now + 0.035);
+
+        filter.type = "bandpass";
+        filter.frequency.setValueAtTime(2400, now);
+        filter.Q.setValueAtTime(3.0, now);
+
+        gain.gain.setValueAtTime(0.045, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.04);
+      } else if (type === "hover") {
+        // 微型亚音速磁吸接触 (极低电平 1200Hz 20ms)
         const osc = this.audioCtx.createOscillator();
         const gain = this.audioCtx.createGain();
         osc.type = "sine";
-        osc.frequency.setValueAtTime(800, now);
-        osc.frequency.exponentialRampToValueAtTime(180, now + 0.04);
-        gain.gain.setValueAtTime(0.04, now);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+        osc.frequency.setValueAtTime(2200, now);
+        osc.frequency.exponentialRampToValueAtTime(1200, now + 0.02);
+        gain.gain.setValueAtTime(0.012, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.02);
         osc.connect(gain);
         gain.connect(this.audioCtx.destination);
         osc.start(now);
-        osc.stop(now + 0.045);
-      } else if (type === "pop" || type === "primary") {
-        // 清脆微晶质感双音 (1200Hz / 1600Hz)
-        const osc = this.audioCtx.createOscillator();
-        const gain = this.audioCtx.createGain();
-        osc.type = "triangle";
-        osc.frequency.setValueAtTime(1400, now);
-        osc.frequency.exponentialRampToValueAtTime(450, now + 0.07);
-        gain.gain.setValueAtTime(0.06, now);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
-        osc.connect(gain);
-        gain.connect(this.audioCtx.destination);
-        osc.start(now);
-        osc.stop(now + 0.08);
-      } else if (type === "success") {
-        // 水晶和弦泛音 (双音和弦 E6 -> B6)
-        [1318.51, 1975.53].forEach((freq, idx) => {
+        osc.stop(now + 0.025);
+      } else if (type === "confirm" || type === "primary") {
+        // 极简工业双音和弦 (F#5 -> C#6 纯净正弦波)
+        [739.99, 1108.73].forEach((f, idx) => {
           const osc = this.audioCtx.createOscillator();
           const gain = this.audioCtx.createGain();
-          const startTime = now + idx * 0.06;
+          const t = now + idx * 0.045;
           osc.type = "sine";
-          osc.frequency.setValueAtTime(freq, startTime);
-          gain.gain.setValueAtTime(0.04, startTime);
-          gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.22);
+          osc.frequency.setValueAtTime(f, t);
+          gain.gain.setValueAtTime(0.04, t);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
           osc.connect(gain);
           gain.connect(this.audioCtx.destination);
-          osc.start(startTime);
-          osc.stop(startTime + 0.23);
+          osc.start(t);
+          osc.stop(t + 0.17);
         });
       } else if (type === "toggle") {
-        // 模式切换微动弹响 (600Hz -> 900Hz)
         const osc = this.audioCtx.createOscillator();
         const gain = this.audioCtx.createGain();
         osc.type = "sine";
-        osc.frequency.setValueAtTime(550, now);
-        osc.frequency.exponentialRampToValueAtTime(950, now + 0.06);
-        gain.gain.setValueAtTime(0.045, now);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(1100, now + 0.05);
+        gain.gain.setValueAtTime(0.035, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
         osc.connect(gain);
         gain.connect(this.audioCtx.destination);
         osc.start(now);
-        osc.stop(now + 0.065);
+        osc.stop(now + 0.055);
       }
     } catch (_) {}
   }
 
   /* ==========================================================================
-     3. 流体极光波浪 Canvas (Fluid Aurora Plasma Waves)
+     3. Active Theory 标志性动效光标 (Kinetic Custom Spring Cursor)
+     ========================================================================== */
+  initKineticCursor() {
+    this.cursorRing = document.getElementById("atCursorRing");
+    this.cursorDot = document.getElementById("atCursorDot");
+
+    if (!this.cursorRing) {
+      this.cursorRing = document.createElement("div");
+      this.cursorRing.id = "atCursorRing";
+      this.cursorRing.className = "at-cursor-ring";
+      document.body.appendChild(this.cursorRing);
+    }
+    if (!this.cursorDot) {
+      this.cursorDot = document.createElement("div");
+      this.cursorDot.id = "atCursorDot";
+      this.cursorDot.className = "at-cursor-dot";
+      document.body.appendChild(this.cursorDot);
+    }
+
+    this.cursorPos = { x: -100, y: -100, ringX: -100, ringY: -100 };
+
+    window.addEventListener("mousemove", (e) => {
+      this.cursorPos.x = e.clientX;
+      this.cursorPos.y = e.clientY;
+      this.mouse.targetX = e.clientX;
+      this.mouse.targetY = e.clientY;
+
+      // 实时计算鼠标速度矢量 (Velocity Vector)
+      if (this.mouse.prevX !== -1000) {
+        this.mouse.vx = e.clientX - this.mouse.prevX;
+        this.mouse.vy = e.clientY - this.mouse.prevY;
+        this.mouse.speed = Math.hypot(this.mouse.vx, this.mouse.vy);
+        this.injectFluidVelocity(e.clientX, e.clientY, this.mouse.vx, this.mouse.vy);
+      }
+      this.mouse.prevX = e.clientX;
+      this.mouse.prevY = e.clientY;
+
+      // 检测光标吸附与悬停状态
+      const target = e.target.closest("button, .btn, .filter-btn, .task-card, .stat-card, input, select, a");
+      if (target) {
+        if (!this.mouse.isHoveringInteractive) {
+          this.mouse.isHoveringInteractive = true;
+          this.cursorRing.classList.add("hover");
+          this.cursorDot.classList.add("hover");
+          this.playMechanicalHaptic("hover");
+        }
+      } else {
+        if (this.mouse.isHoveringInteractive) {
+          this.mouse.isHoveringInteractive = false;
+          this.cursorRing.classList.remove("hover");
+          this.cursorDot.classList.remove("hover");
+        }
+      }
+    }, { passive: true });
+
+    document.addEventListener("click", (e) => {
+      this.cursorRing.classList.add("click");
+      setTimeout(() => this.cursorRing.classList.remove("click"), 180);
+      const isPrimary = e.target.closest(".btn-primary, #btnConfirmDeleteTask");
+      this.playMechanicalHaptic(isPrimary ? "confirm" : "tick");
+    });
+  }
+
+  /* ==========================================================================
+     4. 交互式流体动力学速度网格 (Interactive Fluid Velocity Field)
      ========================================================================== */
   initCanvas() {
     this.canvas = document.getElementById("cyberCanvas");
@@ -193,7 +294,7 @@ class CyberFXEngine {
       document.body.prepend(this.canvas);
     }
 
-    // 强内联样式兜底：确保绝对不脱离固定背景层
+    // 强内联样式兜底：全屏底层绝对固定
     this.canvas.style.position = "fixed";
     this.canvas.style.top = "0";
     this.canvas.style.left = "0";
@@ -205,212 +306,208 @@ class CyberFXEngine {
     this.ctx = this.canvas.getContext("2d", { alpha: true });
     this.resizeCanvas();
 
-    window.addEventListener("resize", () => this.resizeCanvas(), { passive: true });
-    window.addEventListener("mousemove", (e) => {
-      this.mouse.targetX = e.clientX;
-      this.mouse.targetY = e.clientY;
+    window.addEventListener("resize", () => {
+      this.resizeCanvas();
+      this.initFluidGrid();
     }, { passive: true });
-
-    window.addEventListener("mousedown", (e) => {
-      this.mouse.down = true;
-      this.spawnSparkles(e.clientX, e.clientY, 14);
-    }, { passive: true });
-
-    window.addEventListener("mouseup", () => {
-      this.mouse.down = false;
-    }, { passive: true });
-
-    window.addEventListener("mouseout", () => {
-      this.mouse.targetX = -1000;
-      this.mouse.targetY = -1000;
-    });
 
     this.render();
   }
 
   resizeCanvas() {
-    if (!this.canvas) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2);
     this.width = window.innerWidth;
     this.height = window.innerHeight;
-    this.canvas.width = this.width * dpr;
-    this.canvas.height = this.height * dpr;
-    this.ctx.scale(dpr, dpr);
+    this.canvas.width = this.width * this.dpr;
+    this.canvas.height = this.height * this.dpr;
+    this.ctx.scale(this.dpr, this.dpr);
+  }
+
+  initFluidGrid() {
+    this.cols = Math.ceil(this.width / this.gridSize) + 1;
+    this.rows = Math.ceil(this.height / this.gridSize) + 1;
+    const count = this.cols * this.rows;
+    this.velocities = new Float32Array(count * 2);
+    this.density = new Float32Array(count);
+  }
+
+  injectFluidVelocity(x, y, vx, vy) {
+    const col = Math.floor(x / this.gridSize);
+    const row = Math.floor(y / this.gridSize);
+    const radius = 2;
+
+    for (let r = -radius; r <= radius; r++) {
+      for (let c = -radius; c <= radius; c++) {
+        const gc = col + c;
+        const gr = row + r;
+        if (gc >= 0 && gc < this.cols && gr >= 0 && gr < this.rows) {
+          const idx = (gr * this.cols + gc) * 2;
+          const factor = 1 - Math.hypot(c, r) / (radius + 1);
+          if (factor > 0) {
+            this.velocities[idx] += vx * factor * 0.35;
+            this.velocities[idx + 1] += vy * factor * 0.35;
+            this.density[gr * this.cols + gc] = Math.min(1.0, this.density[gr * this.cols + gc] + factor * 0.5);
+          }
+        }
+      }
+    }
+  }
+
+  initParticles() {
+    this.particles = [];
+    for (let i = 0; i < this.particleCount; i++) {
+      this.particles.push({
+        x: Math.random() * this.width,
+        y: Math.random() * this.height,
+        vx: 0,
+        vy: 0,
+        life: Math.random() * 100,
+        maxLife: Math.random() * 120 + 80,
+        size: Math.random() * 2.2 + 1.2
+      });
+    }
   }
 
   render() {
     if (this.isPaused) return;
 
-    this.time += 0.015;
-    // 鼠标坐标弹簧平滑插值
-    this.mouse.x += (this.mouse.targetX - this.mouse.x) * 0.12;
-    this.mouse.y += (this.mouse.targetY - this.mouse.y) * 0.12;
+    // 1. 实时性能遥测计算 (FPS & Telemetry)
+    const now = performance.now();
+    const dt = now - this.lastFrameTime;
+    this.lastFrameTime = now;
+    this.frameCount++;
+    if (now - this.fpsTimer >= 500) {
+      this.fps = (this.frameCount * 1000) / (now - this.fpsTimer);
+      this.frameCount = 0;
+      this.fpsTimer = now;
+      this.updateTelemetryDisplay();
+    }
 
+    // 2. 动效光标平滑弹簧插值 (Spring Lerp)
+    this.cursorPos.ringX += (this.cursorPos.x - this.cursorPos.ringX) * 0.18;
+    this.cursorPos.ringY += (this.cursorPos.y - this.cursorPos.ringY) * 0.18;
+
+    if (this.cursorRing && this.cursorDot) {
+      this.cursorDot.style.transform = `translate3d(${this.cursorPos.x}px, ${this.cursorPos.y}px, 0)`;
+      this.cursorRing.style.transform = `translate3d(${this.cursorPos.ringX}px, ${this.cursorPos.ringY}px, 0)`;
+    }
+
+    // 3. 画布清空与流体衰减更新
     this.ctx.clearRect(0, 0, this.width, this.height);
+    this.updateFluidGrid();
 
-    const isDark = document.body.classList.contains("dark-theme");
-
-    // 绘制 4 层流体极光彩缎 (Fluid Aurora Ribbons)
-    this.drawAuroraWaves(isDark);
-
-    // 绘制微晶爆裂粒子系统
-    this.drawSparkles();
+    // 4. 绘制流体色散流线与动效粒子
+    this.drawFluidField();
 
     this.animId = requestAnimationFrame(() => this.render());
   }
 
-  drawAuroraWaves(isDark) {
-    const waves = isDark
-      ? [
-          { yRatio: 0.35, amp: 70, freq: 0.0022, speed: 0.8, color1: "rgba(0, 240, 255, 0.16)", color2: "rgba(168, 85, 247, 0.0)" },
-          { yRatio: 0.55, amp: 90, freq: 0.0018, speed: -0.6, color1: "rgba(168, 85, 247, 0.14)", color2: "rgba(244, 63, 94, 0.0)" },
-          { yRatio: 0.75, amp: 60, freq: 0.0026, speed: 0.7, color1: "rgba(0, 255, 136, 0.12)", color2: "rgba(0, 240, 255, 0.0)" },
-          { yRatio: 0.90, amp: 80, freq: 0.0015, speed: -0.5, color1: "rgba(56, 189, 248, 0.15)", color2: "rgba(168, 85, 247, 0.0)" }
-        ]
-      : [
-          // 极光亮色：高贵雅致的青瓷、鸢尾紫、樱粉、珊瑚金流光渐变
-          { yRatio: 0.28, amp: 85, freq: 0.0020, speed: 0.9, color1: "rgba(79, 70, 229, 0.18)", color2: "rgba(14, 165, 233, 0.0)" },
-          { yRatio: 0.48, amp: 105, freq: 0.0016, speed: -0.7, color1: "rgba(236, 72, 153, 0.15)", color2: "rgba(124, 58, 237, 0.0)" },
-          { yRatio: 0.68, amp: 90, freq: 0.0024, speed: 0.8, color1: "rgba(14, 165, 233, 0.16)", color2: "rgba(16, 185, 129, 0.0)" },
-          { yRatio: 0.88, amp: 110, freq: 0.0014, speed: -0.6, color1: "rgba(245, 158, 11, 0.13)", color2: "rgba(236, 72, 153, 0.0)" }
-        ];
-
-    const step = 28;
-    waves.forEach((w, idx) => {
-      this.ctx.beginPath();
-      const baseY = this.height * w.yRatio;
-
-      this.ctx.moveTo(0, this.height);
-      this.ctx.lineTo(0, baseY);
-
-      for (let x = 0; x <= this.width + step; x += step) {
-        // 多谐波干涉正弦波合成
-        let y = baseY +
-          Math.sin(x * w.freq + this.time * w.speed) * w.amp +
-          Math.cos(x * w.freq * 0.5 + this.time * w.speed * 0.7) * (w.amp * 0.45);
-
-        // 鼠标涟漪与引力交互 (水波扰动)
-        const dx = x - this.mouse.x;
-        const dy = y - this.mouse.y;
-        const dist = Math.hypot(dx, dy);
-        if (dist < 260) {
-          const force = (1 - dist / 260);
-          y += Math.sin(dist * 0.05 - this.time * 4) * 22 * force;
-        }
-
-        this.ctx.lineTo(x, y);
-      }
-
-      this.ctx.lineTo(this.width, this.height);
-      this.ctx.closePath();
-
-      // 垂直渐变填充
-      const grad = this.ctx.createLinearGradient(0, baseY - w.amp, 0, baseY + w.amp * 1.5);
-      grad.addColorStop(0, w.color1);
-      grad.addColorStop(1, w.color2);
-      this.ctx.fillStyle = grad;
-      this.ctx.fill();
-    });
-  }
-
-  /* ==========================================================================
-     4. 微晶爆裂交互粒子系统 (Crystal Sparkles)
-     ========================================================================== */
-  initSparkleSystem() {
-    // 监听全局交互按钮微点击爆裂
-    document.addEventListener("click", (e) => {
-      const target = e.target.closest("button, .btn, .filter-btn, .task-card");
-      if (target) {
-        const isPrimary = target.classList.contains("btn-primary") || target.id === "btnConfirmDeleteTask";
-        this.spawnSparkles(e.clientX, e.clientY, isPrimary ? 20 : 10);
-        this.playHapticSound(isPrimary ? "primary" : "tick");
-      }
-    });
-  }
-
-  spawnSparkles(x, y, count = 12) {
-    const isDark = document.body.classList.contains("dark-theme");
-    const colors = isDark
-      ? ["#00f0ff", "#a855f7", "#00ff88", "#facc15", "#ffffff"]
-      : ["#4f46e5", "#7c3aed", "#ec4899", "#0ea5e9", "#f59e0b", "#10b981"];
-
+  updateFluidGrid() {
+    const count = this.cols * this.rows;
     for (let i = 0; i < count; i++) {
-      const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.6;
-      const speed = Math.random() * 4.5 + 2.0;
-      this.sparkles.push({
-        x: x,
-        y: y,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 1.0,
-        size: Math.random() * 3.5 + 2.0,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        alpha: 1.0,
-        decay: Math.random() * 0.025 + 0.02,
-        rotation: Math.random() * Math.PI,
-        rotSpeed: (Math.random() - 0.5) * 0.2
-      });
+      const idx = i * 2;
+      // 速度粘滞阻尼衰减
+      this.velocities[idx] *= 0.94;
+      this.velocities[idx + 1] *= 0.94;
+      this.density[i] *= 0.94;
     }
   }
 
-  drawSparkles() {
-    for (let i = this.sparkles.length - 1; i >= 0; i--) {
-      const s = this.sparkles[i];
-      s.x += s.vx;
-      s.y += s.vy;
-      s.vy += 0.12; // 微引力下坠
-      s.vx *= 0.96;
-      s.alpha -= s.decay;
-      s.rotation += s.rotSpeed;
+  drawFluidField() {
+    const isDark = document.body.classList.contains("dark-theme");
 
-      if (s.alpha <= 0) {
-        this.sparkles.splice(i, 1);
-        continue;
+    // 绘制流线微网格与粒子动量跟踪
+    for (let i = 0; i < this.particles.length; i++) {
+      const p = this.particles[i];
+      p.life++;
+
+      // 从网格采样流体速度 (Grid Sample)
+      const col = Math.floor(p.x / this.gridSize);
+      const row = Math.floor(p.y / this.gridSize);
+      if (col >= 0 && col < this.cols && row >= 0 && row < this.rows) {
+        const idx = (row * this.cols + col) * 2;
+        p.vx = p.vx * 0.9 + this.velocities[idx] * 0.15;
+        p.vy = p.vy * 0.9 + this.velocities[idx + 1] * 0.15;
       }
 
-      this.ctx.save();
-      this.ctx.translate(s.x, s.y);
-      this.ctx.rotate(s.rotation);
-      this.ctx.globalAlpha = Math.max(0, s.alpha);
-      this.ctx.fillStyle = s.color;
+      // 自然微扰流漂移
+      p.x += p.vx + Math.sin(p.life * 0.02) * 0.4;
+      p.y += p.vy - 0.25; // 整体微向上浮升
 
-      // 绘制闪耀四芒星微晶
+      if (p.x < 0 || p.x > this.width || p.y < 0 || p.y > this.height || p.life > p.maxLife) {
+        p.x = Math.random() * this.width;
+        p.y = this.height + 10;
+        p.vx = 0;
+        p.vy = 0;
+        p.life = 0;
+      }
+
+      // 粒子光晕透明度
+      const progress = p.life / p.maxLife;
+      const alpha = Math.sin(progress * Math.PI) * (isDark ? 0.35 : 0.22);
+      const fluidSpeed = Math.hypot(p.vx, p.vy);
+
+      // 色散流光
       this.ctx.beginPath();
-      const r = s.size;
-      this.ctx.moveTo(0, -r);
-      this.ctx.lineTo(r * 0.35, -r * 0.35);
-      this.ctx.lineTo(r, 0);
-      this.ctx.lineTo(r * 0.35, r * 0.35);
-      this.ctx.lineTo(0, r);
-      this.ctx.lineTo(-r * 0.35, r * 0.35);
-      this.ctx.lineTo(-r, 0);
-      this.ctx.lineTo(-r * 0.35, -r * 0.35);
-      this.ctx.closePath();
+      this.ctx.arc(p.x, p.y, p.size + fluidSpeed * 0.5, 0, Math.PI * 2);
+      this.ctx.fillStyle = isDark
+        ? `rgba(0, 240, 255, ${alpha})`
+        : `rgba(0, 71, 255, ${alpha})`;
       this.ctx.fill();
 
-      this.ctx.restore();
+      // 速度激波拖尾 (Shockwave Trails)
+      if (fluidSpeed > 1.2) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(p.x, p.y);
+        this.ctx.lineTo(p.x - p.vx * 3.5, p.y - p.vy * 3.5);
+        this.ctx.strokeStyle = isDark
+          ? `rgba(168, 85, 247, ${alpha * 0.8})`
+          : `rgba(236, 72, 153, ${alpha * 0.8})`;
+        this.ctx.lineWidth = 1.0;
+        this.ctx.stroke();
+      }
     }
   }
 
   /* ==========================================================================
-     5. 全息 3D 悬浮倾角与彩虹折射光芒 (3D Tilt & Holographic Rainbow Sheen)
+     5. 实时 HUD 性能遥测与技术标牌 (Live Telemetry HUD)
      ========================================================================== */
-  initCardInteractions() {
-    this.attachCardEffects();
+  initTelemetryHUD() {
+    this.hudEl = document.getElementById("atTelemetryHUD");
+    if (!this.hudEl) {
+      this.hudEl = document.createElement("div");
+      this.hudEl.id = "atTelemetryHUD";
+      this.hudEl.className = "at-telemetry-hud";
+      const topbarActions = document.querySelector(".topbar-actions");
+      if (topbarActions) {
+        topbarActions.prepend(this.hudEl);
+      }
+    }
+  }
 
+  updateTelemetryDisplay() {
+    if (!this.hudEl) return;
+    const fpsText = this.fps.toFixed(1);
+    this.hudEl.innerHTML = `<span class="hud-tag">SYS // LIVE</span><span class="hud-fps">${fpsText} FPS</span>`;
+  }
+
+  /* ==========================================================================
+     6. 瑞士解构主义 Bento 卡片物理学 (Architectural Glare & Tilt)
+     ========================================================================== */
+  initCardPhysics() {
+    this.attachCardEvents();
     const container = document.getElementById("tasksListContainer");
     if (container) {
-      const observer = new MutationObserver(() => {
-        this.attachCardEffects();
-      });
+      const observer = new MutationObserver(() => this.attachCardEvents());
       observer.observe(container, { childList: true, subtree: false });
     }
   }
 
-  attachCardEffects() {
-    const cards = document.querySelectorAll(".task-card, .stat-card, .modal-card");
+  attachCardEvents() {
+    const cards = document.querySelectorAll(".task-card, .stat-card, .panel-card, .modal-card");
     cards.forEach(card => {
-      if (card.__cyberFxBound) return;
-      card.__cyberFxBound = true;
+      if (card.__atBound) return;
+      card.__atBound = true;
 
       card.addEventListener("mousemove", (e) => {
         const rect = card.getBoundingClientRect();
@@ -423,20 +520,20 @@ class CyberFXEngine {
         if (card.classList.contains("task-card") || card.classList.contains("stat-card")) {
           const centerX = rect.width / 2;
           const centerY = rect.height / 2;
-          const rotateX = ((y - centerY) / centerY) * -4.5;
-          const rotateY = ((x - centerX) / centerX) * 4.5;
-          card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px)`;
+          const rotateX = ((y - centerY) / centerY) * -3.5;
+          const rotateY = ((x - centerX) / centerX) * 3.5;
+          card.style.transform = `perspective(1200px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-2px)`;
         }
       });
 
       card.addEventListener("mouseleave", () => {
-        card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)";
+        card.style.transform = "perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0)";
       });
     });
   }
 
   /* ==========================================================================
-     6. 核心指标流式数字滚动动画 (Smooth Odometer Numbers)
+     7. 流式数字滚轮动效 (Smooth Odometer Rollers)
      ========================================================================== */
   initOdometerCounters() {
     const ids = ["statTotal", "statFormal", "statLegacy", "statDone"];
@@ -449,7 +546,7 @@ class CyberFXEngine {
         const text = el.innerText.trim();
         const num = parseInt(text, 10);
         if (!isNaN(num) && num !== lastVal && !el.__isAnimating) {
-          this.animateNumber(el, lastVal, num, 600);
+          this.animateNumber(el, lastVal, num, 500);
           lastVal = num;
         }
       });
@@ -463,7 +560,6 @@ class CyberFXEngine {
     const update = (now) => {
       const elapsed = now - startTime;
       const progress = Math.min(1, elapsed / duration);
-      // easeOutExpo 缓动曲线
       const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
       const current = Math.round(start + (end - start) * ease);
       el.textContent = current;
@@ -484,6 +580,7 @@ class CyberFXEngine {
         if (this.animId) cancelAnimationFrame(this.animId);
       } else {
         this.isPaused = false;
+        this.lastFrameTime = performance.now();
         this.render();
       }
     });
@@ -493,6 +590,6 @@ class CyberFXEngine {
 // 自动安全实例化
 if (typeof window !== "undefined") {
   window.addEventListener("DOMContentLoaded", () => {
-    window.cyberFX = new CyberFXEngine();
+    window.activeTheoryFX = new ActiveTheoryEngine();
   });
 }

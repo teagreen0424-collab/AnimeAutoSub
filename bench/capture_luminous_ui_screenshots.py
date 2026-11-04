@@ -15,11 +15,11 @@ import websockets
 PORT = 8096
 BASE_URL = f"http://127.0.0.1:{PORT}"
 EDGE_EXE = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
-TEMP_PROFILE = r"C:\Users\10932\AppData\Local\Temp\edge_temp_cdp_luminous_verif2"
+TEMP_PROFILE = r"C:\Users\10932\AppData\Local\Temp\edge_temp_cdp_at_verif"
 ARTIFACT_DIR = Path(r"C:\Users\10932\.gemini\antigravity\brain\c1431835-b8d6-4e48-8544-6afb74257c21")
 
 
-async def run_luminous_captures():
+async def run_at_captures():
     uvicorn_cmd = [
         str(PROJECT_ROOT / "venv" / "Scripts" / "python.exe"),
         "-m", "uvicorn", "web.app:app",
@@ -41,7 +41,7 @@ async def run_luminous_captures():
 
         print("WebUI server is ready on port", PORT)
 
-        cdp_port = 9239
+        cdp_port = 9248
         edge_cmd = [
             EDGE_EXE,
             "--headless=new",
@@ -98,7 +98,20 @@ async def run_luminous_captures():
 
                 print("Navigating to", f"{BASE_URL}/?no_sse=1")
                 await send_cmd("Page.navigate", {"url": f"{BASE_URL}/?no_sse=1"})
-                await asyncio.sleep(2.0)
+                await asyncio.sleep(2.5)
+
+                # 模拟鼠标移动以激活 Active Theory 光标与流体涟漪
+                await send_cmd("Runtime.evaluate", {
+                    "expression": """
+                    const evt = new MouseEvent('mousemove', {
+                        clientX: 400,
+                        clientY: 260,
+                        bubbles: true
+                    });
+                    window.dispatchEvent(evt);
+                    """
+                })
+                await asyncio.sleep(0.6)
 
                 async def capture_screenshot(path: Path):
                     shot = await send_cmd("Page.captureScreenshot", {"format": "png"})
@@ -106,15 +119,15 @@ async def run_luminous_captures():
                     path.write_bytes(data)
                     print(f"Captured: {path.name} ({len(data)} bytes)")
 
-                # 截图 1: 极光白境主工作台
-                await capture_screenshot(ARTIFACT_DIR / "webui_luminous_task_list.png")
+                # 截图 1: Active Theory 架构主工作台
+                await capture_screenshot(ARTIFACT_DIR / "webui_at_task_list.png")
 
                 # 截图 2: 新建任务弹窗
                 await send_cmd("Runtime.evaluate", {
                     "expression": "document.getElementById('btnNewTask').click()"
                 })
                 await asyncio.sleep(1.0)
-                await capture_screenshot(ARTIFACT_DIR / "webui_luminous_new_task_modal.png")
+                await capture_screenshot(ARTIFACT_DIR / "webui_at_new_task_modal.png")
 
                 # 关闭弹窗
                 await send_cmd("Runtime.evaluate", {
@@ -127,9 +140,9 @@ async def run_luminous_captures():
                     "expression": "window.app.switchScreen('detail')"
                 })
                 await asyncio.sleep(1.0)
-                await capture_screenshot(ARTIFACT_DIR / "webui_luminous_task_detail.png")
+                await capture_screenshot(ARTIFACT_DIR / "webui_at_task_detail.png")
 
-                print("All Luminous UI screenshots captured successfully!")
+                print("All Active Theory style screenshots captured successfully!")
 
         finally:
             edge_proc.terminate()
@@ -146,4 +159,4 @@ async def run_luminous_captures():
 
 
 if __name__ == "__main__":
-    asyncio.run(run_luminous_captures())
+    asyncio.run(run_at_captures())
