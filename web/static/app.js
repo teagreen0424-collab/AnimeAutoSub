@@ -860,20 +860,79 @@ class WebUIApp {
     if (filtered.length === 0) {
       if (this.tasks.length === 0) {
         this.tasksListContainer.innerHTML = `
-          <div class="empty-state-wrap">
-            <div class="empty-state-icon">🎬</div>
-            <div class="empty-state-title">暂无视频翻译压制任务</div>
-            <div class="empty-state-desc">点击右上角「+ 新建任务」或直接将视频拖入页面任意位置即可开始。</div>
-            <button class="btn btn-primary" onclick="window.app.openNewTaskModal()">✨ 立即创建第一个任务</button>
+          <div class="empty-state-wrap at-launchpad-wrap">
+            <div class="at-launchpad-reticle">
+              <span class="at-reticle-corner tl">⌜</span>
+              <span class="at-reticle-corner tr">⌝</span>
+              <span class="at-reticle-corner bl">⌞</span>
+              <span class="at-reticle-corner br">⌟</span>
+              <div class="at-launchpad-icon-wrap">
+                <svg class="at-launchpad-svg" viewBox="0 0 48 48" fill="none">
+                  <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3" class="at-svg-spin"/>
+                  <circle cx="24" cy="24" r="11" stroke="currentColor" stroke-width="1.5"/>
+                  <path d="M24 18V30M18 24H30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="at-launchpad-header">
+              <div class="at-launchpad-badge">SYS // 001 STANDBY • ZERO PIPELINES IN QUEUE</div>
+              <h2 class="at-launchpad-title">DRAG & DROP MEDIA TO ENGAGE PIPELINE</h2>
+              <p class="at-launchpad-desc">直接拖拽本地视频 / 音频文件至此区域，或点击下方按钮初始化全新智能流水线</p>
+            </div>
+            <div class="at-launchpad-actions">
+              <button class="btn btn-primary at-launchpad-btn" onclick="window.app.openNewTaskModal()">
+                <span class="btn-icon">+</span> 初始化新任务流水线
+              </button>
+            </div>
+            <div class="at-launchpad-grid">
+              <div class="at-grid-cell">
+                <span class="at-cell-num">01 //</span>
+                <span class="at-cell-title">DUAL ASR ENGINE</span>
+                <span class="at-cell-desc">SenseVoice & Whisper Large-V3 双引擎毫秒级识别</span>
+              </div>
+              <div class="at-grid-cell">
+                <span class="at-cell-num">02 //</span>
+                <span class="at-cell-title">OFFICIAL LLM TRANSLATE</span>
+                <span class="at-cell-desc">官方大模型并行中日韩精准翻译与标点重建</span>
+              </div>
+              <div class="at-grid-cell">
+                <span class="at-cell-num">03 //</span>
+                <span class="at-cell-title">GPU MEMORY ARBITER</span>
+                <span class="at-cell-desc">显存独占租约调度，零内存泄漏与崩溃防御</span>
+              </div>
+              <div class="at-grid-cell">
+                <span class="at-cell-num">04 //</span>
+                <span class="at-cell-title">HARD SUBTITLE OCR</span>
+                <span class="at-cell-desc">无损切片硬字幕提取与 ASS/SRT 双格式压制</span>
+              </div>
+            </div>
           </div>
         `;
       } else {
         this.tasksListContainer.innerHTML = `
-          <div class="empty-state-wrap">
-            <div class="empty-state-icon">🔍</div>
-            <div class="empty-state-title">未找到匹配的任务</div>
-            <div class="empty-state-desc">当前关键词或过滤条件下没有任务，请尝试重置筛选或搜索。</div>
-            <button class="btn btn-secondary btn-sm" onclick="window.app.resetFilters()">清空搜索与筛选</button>
+          <div class="empty-state-wrap at-launchpad-wrap at-empty-filter">
+            <div class="at-launchpad-reticle">
+              <span class="at-reticle-corner tl">⌜</span>
+              <span class="at-reticle-corner tr">⌝</span>
+              <span class="at-reticle-corner bl">⌞</span>
+              <span class="at-reticle-corner br">⌟</span>
+              <div class="at-launchpad-icon-wrap">
+                <svg class="at-launchpad-svg" viewBox="0 0 48 48" fill="none">
+                  <path d="M20 20L28 28M28 20L20 28" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3"/>
+                </svg>
+              </div>
+            </div>
+            <div class="at-launchpad-header">
+              <div class="at-launchpad-badge">SYS // 000 SCOPE EMPTY</div>
+              <h2 class="at-launchpad-title">未在当前检索范围内检索到任务</h2>
+              <p class="at-launchpad-desc">当前关键词、类别筛选或调试标记已滤除所有任务条目</p>
+            </div>
+            <div class="at-launchpad-actions">
+              <button class="btn btn-secondary at-launchpad-btn" onclick="window.app.resetFilters()">
+                <span class="btn-icon">↺</span> 重置检索与筛选范围
+              </button>
+            </div>
           </div>
         `;
       }
@@ -931,7 +990,7 @@ class WebUIApp {
                       data-task-id="${escapeHtml(task.task_id)}" 
                       title="${task.status === 'running' ? '任务正在执行中，不可删除' : (task.is_legacy ? '删除历史产物目录及全部关联资源' : '删除此任务及关联资源')}"
                       ${task.status === 'running' ? 'disabled' : ''}>
-                🗑️
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/></svg>
               </button>
             </div>
           </div>

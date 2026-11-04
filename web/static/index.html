@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AnimeAutoSub WebUI</title>
-  <link rel="stylesheet" href="style.css?v=20261104_activetheory_v3">
+  <link rel="stylesheet" href="style.css?v=20261104_activetheory_v4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
@@ -82,21 +82,58 @@
 
     <!-- 屏幕 1: 任务列表 (Screen 1: Task List) -->
     <section id="screenTaskList" class="screen-view">
-      <!-- 汇总指标卡 -->
+      <!-- Active Theory 建筑学社论标头 (Architectural Editorial Hero) -->
+      <div class="hero-editorial-strip">
+        <div class="hero-editorial-left">
+          <div class="hero-micro-tag">
+            <span class="hero-pulse-dot"></span>
+            <span>SYSTEM // WORKSTATION 01</span>
+            <span class="hero-coord-tag">LAT 35.6895° N, 139.6917° E</span>
+          </div>
+          <h1 class="hero-title">
+            <span class="hero-title-main">AUTONOMOUS SUBTITLE PIPELINE</span>
+            <span class="hero-title-sub">多语言智能语音识别 • 硬字幕提取 • 官方大模型翻译流水线</span>
+          </h1>
+        </div>
+        <div class="hero-editorial-right">
+          <div class="hero-spec-pill">
+            <span class="hero-spec-label">CORE ASR</span>
+            <span class="hero-spec-val">SENSEVOICE // WHISPER LARGE-V3</span>
+          </div>
+          <div class="hero-spec-pill">
+            <span class="hero-spec-label">ACCELERATION</span>
+            <span class="hero-spec-val">NVIDIA RTX 4060 // VRAM ARBITER</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 汇总指标卡 (Active Theory 联立 Bento 建筑网格) -->
       <div class="stats-grid">
         <div class="stat-card">
+          <div class="stat-card-reticle tl">+</div>
+          <div class="stat-card-reticle tr">+</div>
+          <div class="stat-index">01 // SCAN METRIC</div>
           <div class="stat-num" id="statTotal">--</div>
           <div class="stat-title">已扫描任务总数</div>
         </div>
         <div class="stat-card highlight-cyan">
+          <div class="stat-card-reticle tl">+</div>
+          <div class="stat-card-reticle tr">+</div>
+          <div class="stat-index">02 // ACTIVE PIPELINE</div>
           <div class="stat-num" id="statFormal">--</div>
           <div class="stat-title">正式任务 (可续跑 / 重渲染)</div>
         </div>
         <div class="stat-card highlight-amber">
+          <div class="stat-card-reticle tl">+</div>
+          <div class="stat-card-reticle tr">+</div>
+          <div class="stat-index">03 // ARCHIVED ASSETS</div>
           <div class="stat-num" id="statLegacy">--</div>
           <div class="stat-title">历史产物 (只读展示)</div>
         </div>
         <div class="stat-card highlight-emerald">
+          <div class="stat-card-reticle tl">+</div>
+          <div class="stat-card-reticle tr">+</div>
+          <div class="stat-index">04 // PRODUCTION READY</div>
           <div class="stat-num" id="statDone">--</div>
           <div class="stat-title">成片已就绪 (可播放)</div>
         </div>
@@ -821,7 +858,7 @@
     </div>
   </div>
 
-  <script type="module" src="cyber-fx.js?v=20261104_activetheory_v3"></script>
-  <script type="module" src="app.js?v=20261104_activetheory_v3"></script>
+  <script type="module" src="cyber-fx.js?v=20261104_activetheory_v4"></script>
+  <script type="module" src="app.js?v=20261104_activetheory_v4"></script>
 </body>
 </html>

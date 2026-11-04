@@ -40,7 +40,7 @@ class ActiveTheoryEngine {
 
     // 流体粒子追踪 (Fluid Streamline Particles)
     this.particles = [];
-    this.particleCount = 55;
+    this.particleCount = 95;
 
     // 实时遥测指标 (Live Telemetry: FPS, Delta Time)
     this.lastFrameTime = performance.now();
@@ -277,6 +277,7 @@ class ActiveTheoryEngine {
     document.addEventListener("click", (e) => {
       this.cursorRing.classList.add("click");
       setTimeout(() => this.cursorRing.classList.remove("click"), 180);
+      this.injectRadialShockwave(e.clientX, e.clientY, 22);
       const isPrimary = e.target.closest(".btn-primary, #btnConfirmDeleteTask");
       this.playMechanicalHaptic(isPrimary ? "confirm" : "tick");
     });
@@ -347,6 +348,29 @@ class ActiveTheoryEngine {
             this.velocities[idx] += vx * factor * 0.35;
             this.velocities[idx + 1] += vy * factor * 0.35;
             this.density[gr * this.cols + gc] = Math.min(1.0, this.density[gr * this.cols + gc] + factor * 0.5);
+          }
+        }
+      }
+    }
+  }
+
+  injectRadialShockwave(x, y, strength = 18) {
+    const col = Math.floor(x / this.gridSize);
+    const row = Math.floor(y / this.gridSize);
+    const radius = 5;
+    for (let r = -radius; r <= radius; r++) {
+      for (let c = -radius; c <= radius; c++) {
+        const gc = col + c;
+        const gr = row + r;
+        if (gc >= 0 && gc < this.cols && gr >= 0 && gr < this.rows) {
+          const dist = Math.hypot(c, r);
+          if (dist > 0.4 && dist <= radius) {
+            const idx = (gr * this.cols + gc) * 2;
+            const factor = (1 - dist / radius);
+            const nx = c / dist;
+            const ny = r / dist;
+            this.velocities[idx] += nx * strength * factor;
+            this.velocities[idx + 1] += ny * strength * factor;
           }
         }
       }
@@ -442,28 +466,28 @@ class ActiveTheoryEngine {
         p.life = 0;
       }
 
-      // 粒子光晕透明度
+      // 粒子光晕透明度 (显著增强明度与流速响应)
       const progress = p.life / p.maxLife;
-      const alpha = Math.sin(progress * Math.PI) * (isDark ? 0.35 : 0.22);
+      const alpha = Math.sin(progress * Math.PI) * (isDark ? 0.45 : 0.42);
       const fluidSpeed = Math.hypot(p.vx, p.vy);
 
       // 色散流光
       this.ctx.beginPath();
-      this.ctx.arc(p.x, p.y, p.size + fluidSpeed * 0.5, 0, Math.PI * 2);
+      this.ctx.arc(p.x, p.y, p.size + fluidSpeed * 0.6, 0, Math.PI * 2);
       this.ctx.fillStyle = isDark
         ? `rgba(0, 240, 255, ${alpha})`
         : `rgba(0, 71, 255, ${alpha})`;
       this.ctx.fill();
 
-      // 速度激波拖尾 (Shockwave Trails)
-      if (fluidSpeed > 1.2) {
+      // 速度激波与动力学流线拖尾 (Active Theory 经典流光线)
+      if (fluidSpeed > 0.6) {
         this.ctx.beginPath();
         this.ctx.moveTo(p.x, p.y);
-        this.ctx.lineTo(p.x - p.vx * 3.5, p.y - p.vy * 3.5);
+        this.ctx.lineTo(p.x - p.vx * 4.0, p.y - p.vy * 4.0);
         this.ctx.strokeStyle = isDark
-          ? `rgba(168, 85, 247, ${alpha * 0.8})`
-          : `rgba(236, 72, 153, ${alpha * 0.8})`;
-        this.ctx.lineWidth = 1.0;
+          ? `rgba(168, 85, 247, ${alpha * 0.9})`
+          : `rgba(124, 58, 237, ${alpha * 0.85})`;
+        this.ctx.lineWidth = Math.min(2.5, 0.8 + fluidSpeed * 0.25);
         this.ctx.stroke();
       }
     }
