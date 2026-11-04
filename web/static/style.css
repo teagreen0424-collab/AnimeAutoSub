@@ -4,17 +4,77 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
 
-:root {
+:root, body.light-theme {
+  --bg-page: #f8fafc;
+  --bg-page-mesh: 
+    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 45%),
+    radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.10) 0px, transparent 45%),
+    radial-gradient(at 50% 100%, rgba(14, 165, 233, 0.12) 0px, transparent 50%);
+  --bg-card: rgba(255, 255, 255, 0.82);
+  --bg-card-hover: rgba(255, 255, 255, 0.95);
+  --bg-card-active: #ffffff;
+  --bg-input: rgba(255, 255, 255, 0.92);
+  --bg-terminal: #0f172a;
+  
+  --border-color: rgba(226, 232, 240, 0.85);
+  --border-shine: rgba(255, 255, 255, 0.95);
+  --border-focus: #4f46e5;
+  --border-hover: rgba(99, 102, 241, 0.45);
+
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #94a3b8;
+
+  --cyan: #0284c7;
+  --cyan-glow: rgba(14, 165, 233, 0.22);
+  --cyan-deep: #0369a1;
+
+  --emerald: #059669;
+  --emerald-glow: rgba(16, 185, 129, 0.22);
+
+  --amber: #d97706;
+  --amber-glow: rgba(245, 158, 11, 0.22);
+
+  --purple: #7c3aed;
+  --purple-glow: rgba(124, 58, 237, 0.22);
+
+  --rose: #e11d48;
+  --rose-glow: rgba(244, 63, 94, 0.22);
+
+  --indigo: #4f46e5;
+  --pink: #db2777;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+
+  --font-sans: 'Outfit', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', Consolas, "Courier New", monospace;
+
+  --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 12px 28px -4px rgba(99, 102, 241, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  --glass-shadow-hover: 0 20px 42px -8px rgba(99, 102, 241, 0.16), 0 0 0 1px rgba(255, 255, 255, 1) inset;
+
+  --topbar-bg: rgba(255, 255, 255, 0.85);
+  --topbar-border: rgba(226, 232, 240, 0.85);
+  --topbar-shadow: 0 4px 20px -2px rgba(99, 102, 241, 0.06), inset 0 -1px 0 rgba(255, 255, 255, 0.9);
+}
+
+body.dark-theme {
   --bg-page: #06090f;
-  --bg-card: rgba(13, 20, 36, 0.72);
-  --bg-card-hover: rgba(19, 30, 56, 0.85);
-  --bg-card-active: rgba(25, 40, 75, 0.9);
+  --bg-page-mesh: 
+    radial-gradient(at 0% 0%, rgba(0, 240, 255, 0.10) 0px, transparent 45%),
+    radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.10) 0px, transparent 45%),
+    radial-gradient(at 50% 100%, rgba(244, 63, 94, 0.08) 0px, transparent 50%);
+  --bg-card: rgba(13, 20, 36, 0.76);
+  --bg-card-hover: rgba(19, 30, 56, 0.90);
+  --bg-card-active: rgba(25, 40, 75, 0.95);
   --bg-input: rgba(9, 14, 26, 0.85);
   --bg-terminal: #04070d;
   
-  --border-color: rgba(56, 189, 248, 0.16);
+  --border-color: rgba(56, 189, 248, 0.18);
+  --border-shine: rgba(0, 240, 255, 0.35);
   --border-focus: #00f0ff;
-  --border-hover: rgba(0, 240, 255, 0.4);
+  --border-hover: rgba(0, 240, 255, 0.45);
 
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
@@ -39,14 +99,12 @@
   --indigo: #6366f1;
   --pink: #ec4899;
 
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-
-  --font-sans: 'Outfit', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', Consolas, "Courier New", monospace;
-
   --glass-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --glass-shadow-hover: 0 20px 45px -5px rgba(0, 240, 255, 0.25), inset 0 1px 0 rgba(0, 240, 255, 0.35);
+
+  --topbar-bg: rgba(10, 15, 28, 0.78);
+  --topbar-border: rgba(56, 189, 248, 0.22);
+  --topbar-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 -1px 0 rgba(0, 240, 255, 0.15);
 }
 
 @keyframes radarPing {
@@ -58,6 +116,11 @@
 @keyframes gpuStripeMove {
   0% { background-position: 0 0; }
   100% { background-position: 24px 0; }
+}
+
+@keyframes btnShimmerSweep {
+  0% { transform: translateX(-150%) skewX(-20deg); }
+  35%, 100% { transform: translateX(250%) skewX(-20deg); }
 }
 
 @keyframes cyberBadgeSweep {
@@ -90,10 +153,7 @@
 
 body {
   background-color: var(--bg-page);
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(0, 240, 255, 0.10) 0px, transparent 45%),
-    radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.10) 0px, transparent 45%),
-    radial-gradient(at 50% 100%, rgba(244, 63, 94, 0.08) 0px, transparent 50%);
+  background-image: var(--bg-page-mesh);
   background-attachment: fixed;
   color: var(--text-main);
   font-family: var(--font-sans);
@@ -119,11 +179,11 @@ body {
 
 /* 顶部导航条 TopBar */
 .topbar {
-  background: rgba(10, 15, 28, 0.75);
-  backdrop-filter: blur(20px) saturate(190%);
-  -webkit-backdrop-filter: blur(20px) saturate(190%);
-  border-bottom: 1px solid rgba(56, 189, 248, 0.2);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 -1px 0 rgba(0, 240, 255, 0.15);
+  background: var(--topbar-bg);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border-bottom: 1px solid var(--topbar-border);
+  box-shadow: var(--topbar-shadow);
   padding: 12px 28px;
   display: flex;
   align-items: center;
@@ -164,12 +224,17 @@ body {
 
 .brand-title {
   font-weight: 800;
-  font-size: 17px;
-  background: linear-gradient(90deg, #ffffff 0%, #00f0ff 50%, #c084fc 100%);
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #1e293b 0%, #4f46e5 50%, #7c3aed 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  letter-spacing: -0.2px;
-  filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.25));
+}
+
+body.dark-theme .brand-title {
+  background: linear-gradient(135deg, #ffffff 0%, #00f0ff 60%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .brand-subtitle {
@@ -288,13 +353,30 @@ body {
 }
 
 .btn-secondary {
-  background-color: rgba(255, 255, 255, 0.06);
-  border-color: var(--border-color);
+  background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border-color);
   color: var(--text-main);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .btn-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  color: var(--indigo);
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.12);
+}
+
+body.dark-theme .btn-secondary {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+body.dark-theme .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--cyan);
+  box-shadow: 0 4px 14px rgba(0, 240, 255, 0.2);
 }
 
 .btn-outline {
@@ -337,10 +419,10 @@ body {
 }
 
 .stat-card {
-  background: rgba(13, 20, 36, 0.72) !important;
-  backdrop-filter: blur(20px) saturate(190%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
-  border: 1px solid rgba(56, 189, 248, 0.18) !important;
+  background: var(--bg-card) !important;
+  backdrop-filter: blur(28px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+  border: 1px solid var(--border-color) !important;
   border-radius: var(--radius-lg);
   padding: 18px 24px;
   display: flex;
@@ -348,7 +430,13 @@ body {
   position: relative;
   overflow: hidden;
   box-shadow: var(--glass-shadow);
-  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-hover) !important;
+  box-shadow: var(--glass-shadow-hover);
 }
 
 .stat-card::before {
@@ -444,10 +532,18 @@ body {
 }
 
 .filter-btn.active {
+  background: var(--indigo);
+  border-color: var(--indigo);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+}
+
+body.dark-theme .filter-btn.active {
   background-color: var(--cyan-glow);
   border-color: var(--cyan);
   color: var(--cyan);
-  font-weight: 600;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
 }
 
 .search-box input {
@@ -474,37 +570,48 @@ body {
 }
 
 .task-card {
-  background: rgba(13, 20, 36, 0.72) !important;
-  backdrop-filter: blur(20px) saturate(190%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
-  border: 1px solid rgba(56, 189, 248, 0.18) !important;
+  background: var(--bg-card) !important;
+  backdrop-filter: blur(28px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+  border: 1px solid var(--border-color) !important;
   border-radius: var(--radius-lg);
   padding: 18px 20px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
   cursor: pointer;
   min-width: 0;
   overflow: hidden;
   box-sizing: border-box;
   box-shadow: var(--glass-shadow);
   position: relative;
+  transform-style: preserve-3d;
 }
 
 .task-card::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(420px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(0, 240, 255, 0.13), transparent 45%);
+  background: radial-gradient(420px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(99, 102, 241, 0.12), rgba(236, 72, 153, 0.08), transparent 60%);
   pointer-events: none;
   z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+body.dark-theme .task-card::before {
+  background: radial-gradient(420px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(0, 240, 255, 0.16), transparent 60%);
+}
+
+.task-card:hover::before {
+  opacity: 1;
 }
 
 .task-card:hover {
-  background: rgba(18, 28, 52, 0.85) !important;
-  border-color: rgba(0, 240, 255, 0.45) !important;
-  box-shadow: 0 18px 45px -8px rgba(0, 240, 255, 0.22), inset 0 1px 0 rgba(0, 240, 255, 0.35) !important;
+  background: var(--bg-card-hover) !important;
+  border-color: var(--border-hover) !important;
+  box-shadow: var(--glass-shadow-hover) !important;
 }
 
 .task-card-header,
@@ -527,8 +634,8 @@ body {
 .task-card-title,
 .task-card__title {
   font-size: 15px;
-  font-weight: 600;
-  color: #fff;
+  font-weight: 700;
+  color: var(--text-main);
   line-height: 1.3;
   white-space: nowrap;
   overflow: hidden;
@@ -701,9 +808,9 @@ body {
 }
 
 .detail-title-wrap h2 {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
-  color: #fff;
+  color: var(--text-main);
 }
 
 .detail-tags {
@@ -737,9 +844,9 @@ body {
 }
 
 .panel-title {
-  font-weight: 600;
-  font-size: 14px;
-  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-main);
 }
 
 .panel-subtitle {
@@ -1122,7 +1229,7 @@ body {
 .modal-title {
   font-size: 16px;
   font-weight: 700;
-  color: #fff;
+  color: var(--text-main);
 }
 
 .modal-close-btn {

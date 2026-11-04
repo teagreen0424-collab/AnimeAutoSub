@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AnimeAutoSub WebUI</title>
-  <link rel="stylesheet" href="style.css?v=20261104_cyber2">
+  <link rel="stylesheet" href="style.css?v=20261104_luminous">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
-<body class="dark-theme">
+<body class="light-theme">
   <!-- 赛博朋克粒子流动背景 (原生内联样式确保绝不脱离视图/绝不产生推挤) -->
   <canvas id="cyberCanvas" class="cyber-canvas" style="position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; pointer-events: none !important; z-index: 0 !important;"></canvas>
 
@@ -50,6 +50,15 @@
 
       <button class="btn btn-secondary btn-sm" id="btnRefresh" title="刷新任务列表">
         <span class="btn-icon">↻</span> 刷新
+      </button>
+
+      <!-- 交互音效与主题切换 -->
+      <button class="btn btn-secondary btn-sm" id="btnSoundToggle" title="触觉按键音效: 已开启 (点击静音)">
+        <span id="soundIcon">🔊</span>
+      </button>
+
+      <button class="btn btn-secondary btn-sm" id="btnThemeToggle" title="切换亮色/暗色主题">
+        <span id="themeIcon">☀️</span>
       </button>
 
       <button class="btn btn-secondary btn-sm" id="btnSettings" title="系统设置与只读环境信息">
@@ -812,7 +821,7 @@
     </div>
   </div>
 
-  <script type="module" src="cyber-fx.js?v=20261104_cyber2"></script>
-  <script type="module" src="app.js?v=20261104_cyber2"></script>
+  <script type="module" src="cyber-fx.js?v=20261104_luminous"></script>
+  <script type="module" src="app.js?v=20261104_luminous"></script>
 </body>
 </html>
