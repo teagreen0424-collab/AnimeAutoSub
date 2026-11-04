@@ -119,7 +119,16 @@ class TaskManager:
         task_id = d.name
         is_legacy = not has_manifest and not has_meta and not is_in_work_tasks
 
-        # 读取 manifest 数据
+        # 读取 task_meta 与 manifest 数据
+        meta_data = {}
+        meta_file = d / "task_meta.json"
+        if meta_file.exists():
+            try:
+                with open(meta_file, "r", encoding="utf-8") as mf:
+                    meta_data = json.load(mf)
+            except Exception:
+                meta_data = {}
+
         manifest_data = {}
         if has_manifest:
             try:
@@ -129,32 +138,34 @@ class TaskManager:
                 manifest_data = {}
 
         # 语言与模式识别
-        lang = "ja"
-        mode = "ocr"
-        title = d.name
+        lang = meta_data.get("lang") or "ja"
+        mode = meta_data.get("mode") or "ocr"
+        title = meta_data.get("title") or d.name
+        engine_id = meta_data.get("engine_id") or manifest_data.get("engine_id") or manifest_data.get("stages", {}).get("translate", {}).get("engine_id") or "sakura-14b"
 
         name_lower = d.name.lower()
-        if "ko" in name_lower:
+        if "ko" in name_lower and not meta_data.get("lang"):
             lang = "ko"
-        elif "114877" in name_lower or "408309" in name_lower or "ja" in name_lower:
+        elif ("114877" in name_lower or "408309" in name_lower or "ja" in name_lower) and not meta_data.get("lang"):
             lang = "ja"
 
-        if "asr" in name_lower:
+        if "asr" in name_lower and not meta_data.get("mode"):
             mode = "asr"
-        else:
+        elif not meta_data.get("mode"):
             mode = "ocr"
 
-        # 友好的标题命名
-        if "ko_1080p_final" in name_lower:
-            title = "韩语 1080p 模拟压制全链路成片"
-        elif "ko_720p_final" in name_lower:
-            title = "韩语 720p 模拟压制全链路成片"
-        elif "ko_asr_final" in name_lower:
-            title = "韩语 Whisper large-v3 ASR 语音成片"
-        elif "114877" in name_lower:
-            title = "114877-720p 日文硬字幕成片 (Chain B)"
-        elif "408309" in name_lower:
-            title = "408309-1080p 日文语音成片 (Chain A)"
+        # 友好的标题命名 (仅在无显式 title 时)
+        if not meta_data.get("title"):
+            if "ko_1080p_final" in name_lower:
+                title = "韩语 1080p 模拟压制全链路成片"
+            elif "ko_720p_final" in name_lower:
+                title = "韩语 720p 模拟压制全链路成片"
+            elif "ko_asr_final" in name_lower:
+                title = "韩语 Whisper large-v3 ASR 语音成片"
+            elif "114877" in name_lower:
+                title = "114877-720p 日文硬字幕成片 (Chain B)"
+            elif "408309" in name_lower:
+                title = "408309-1080p 日文语音成片 (Chain A)"
 
         # M4 状态机推导
         status, status_reason = self.derive_task_status(manifest_data, d, is_legacy, video_file)
@@ -191,11 +202,18 @@ class TaskManager:
         if video_file:
             mtime = video_file.stat().st_mtime
 
+        trans_stage = manifest_data.get("stages", {}).get("translate", {})
+        token_usage = trans_stage.get("token_usage")
+        cost_estimate = trans_stage.get("cost_estimate")
+
         return {
             "task_id": task_id,
             "title": title,
             "lang": lang,
             "mode": mode,
+            "engine_id": engine_id,
+            "token_usage": token_usage,
+            "cost_estimate": cost_estimate,
             "status": status,
             "status_reason": status_reason,
             "is_legacy": is_legacy,

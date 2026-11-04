@@ -187,6 +187,15 @@ async def create_new_task(req: Request):
 
     lang = body.get("lang", "ja")
     title = body.get("title", "").strip() or video_path.stem
+    engine_id = body.get("engine_id", "sakura-14b")
+
+    from core.translation_engine import load_engine_configs
+    available_engines = load_engine_configs()
+    if engine_id not in available_engines:
+        raise HTTPException(
+            status_code=400,
+            detail=f"不支持的翻译引擎 [{engine_id}]，可选引擎: {list(available_engines.keys())}"
+        )
 
     # 生成规范任务目录
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -203,6 +212,7 @@ async def create_new_task(req: Request):
         "video_path": str(video_path.resolve()),
         "lang": lang,
         "mode": mode,
+        "engine_id": engine_id,
         "created_at": datetime.now().isoformat()
     }
     with open(work_dir / "task_meta.json", "w", encoding="utf-8") as f:
@@ -226,6 +236,7 @@ async def create_new_task(req: Request):
             "title": title,
             "lang": lang,
             "mode": mode,
+            "engine_id": engine_id,
             "work_dir": str(work_dir),
             "queue_info": queue_info
         }
@@ -858,10 +869,24 @@ async def download_task_file(task_id: str, file_name: str):
     )
 
 
+@app.get("/api/system/engines")
+async def get_system_engines():
+    """获取所有可用翻译引擎配置与状态 (密钥脱敏)"""
+    from core.translation_engine import load_engine_configs
+    engines = load_engine_configs()
+    data = [cfg.to_dict(mask_secrets=True) for cfg in engines.values()]
+    return {
+        "code": 0,
+        "message": "success",
+        "data": data
+    }
+
+
 @app.get("/api/system/settings")
 async def get_system_settings():
     """P4: 系统只读设置与运行环境"""
     import os
+    from core.translation_engine import load_engine_configs
     ollama_models = os.environ.get("OLLAMA_MODELS", r"D:\Dev\ollama\models")
     ffmpeg_path = r"D:\Dev\ffmpeg\bin\ffmpeg.exe" if Path(r"D:\Dev\ffmpeg\bin\ffmpeg.exe").exists() else "ffmpeg"
     return {
@@ -876,7 +901,8 @@ async def get_system_settings():
             "ocr_engine": "RapidOCR (ONNX Runtime CUDA)",
             "ffmpeg_path": str(ffmpeg_path),
             "workspace_root": str(PROJECT_ROOT),
-            "schema_version": 2
+            "schema_version": 2,
+            "engines": [cfg.to_dict(mask_secrets=True) for cfg in load_engine_configs().values()]
         }
     }
 

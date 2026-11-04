@@ -169,6 +169,11 @@ class WebUIApp {
     this.selectLang = document.getElementById("selectLang");
     this.selectMode = document.getElementById("selectMode");
     this.inputTaskTitle = document.getElementById("inputTaskTitle");
+    this.selectEngine = document.getElementById("selectEngine");
+    this.engineCostEstimateRow = document.getElementById("engineCostEstimateRow");
+    this.engineCostEstimateText = document.getElementById("engineCostEstimateText");
+    this.settingsEnginesTableBody = document.getElementById("settingsEnginesTableBody");
+    this.availableEngines = [];
     this.dragDropOverlay = document.getElementById("dragDropOverlay");
     this.uploadProgressContainer = document.getElementById("uploadProgressContainer");
     this.uploadStatusText = document.getElementById("uploadStatusText");
@@ -466,6 +471,11 @@ class WebUIApp {
       }
     });
 
+    // 翻译引擎选择切换预估费用显示
+    if (this.selectEngine) {
+      this.selectEngine.addEventListener("change", () => this.onEngineChange());
+    }
+
     // 断点续跑与取消操作
     this.btnResumeTask.addEventListener("click", () => this.resumeCurrentTask());
     this.btnCancelTask.addEventListener("click", () => this.cancelCurrentTask());
@@ -611,6 +621,26 @@ class WebUIApp {
         if (this.cfgOcrEngine) this.cfgOcrEngine.textContent = d.ocr_engine;
         if (this.cfgFfmpegPath) this.cfgFfmpegPath.textContent = d.ffmpeg_path;
         if (this.cfgSchemaVersion) this.cfgSchemaVersion.textContent = `Schema v${d.schema_version}`;
+
+        if (this.settingsEnginesTableBody && Array.isArray(d.engines)) {
+          this.settingsEnginesTableBody.innerHTML = d.engines.map(e => {
+            const keyPill = e.type === "api"
+              ? (e.configured ? `<span style="color:#10b981;">✓ ${escapeHtml(e.masked_key)}</span>` : `<span style="color:#ef4444;">✗ 未配置</span>`)
+              : `<span style="color:#94a3b8;">免密 (本地离线)</span>`;
+            const pricingStr = e.type === "api"
+              ? `入 ￥${e.pricing.input_per_m || 0} / 出 ￥${e.pricing.output_per_m || 0} ${e.pricing.currency || 'CNY'}`
+              : `免费 (本地 GPU 显存)`;
+            return `<tr>
+              <td><code>${escapeHtml(e.id)}</code></td>
+              <td style="font-weight: 500;">${escapeHtml(e.name)}</td>
+              <td><span class="tag-badge ${e.type === 'api' ? 'tag-formal' : 'tag-mode'}">${e.type.toUpperCase()}</span></td>
+              <td><code>${escapeHtml(e.model_name)}</code></td>
+              <td>${keyPill}</td>
+              <td style="font-size: 12px; color: #38bdf8;">${pricingStr}</td>
+              <td style="font-size: 12px; color: #94a3b8;">${escapeHtml(e.description || '-')}</td>
+            </tr>`;
+          }).join("");
+        }
       }
     } catch (e) {
       console.warn("加载系统设置失败:", e);
@@ -986,7 +1016,18 @@ class WebUIApp {
     const langBadge = `<span class="tag-badge tag-lang-${task.lang}">${task.lang.toUpperCase()}</span>`;
     const modeBadge = `<span class="tag-badge tag-mode">${task.mode.toUpperCase()}</span>`;
     const idBadge = `<span class="tag-badge tag-mode">ID: ${task.task_id}</span>`;
-    this.detailTags.innerHTML = `${formalBadge} ${debugBadge} ${langBadge} ${modeBadge} ${idBadge}`;
+    const engId = task.engine_id || "sakura-14b";
+    const isCloud = engId.includes("chat") || engId.includes("api") || engId.includes("gpt");
+    const engBadge = `<span class="tag-badge ${isCloud ? 'tag-formal' : ''}" style="${isCloud ? 'background:rgba(56,189,248,0.18);color:#38bdf8;border:1px solid rgba(56,189,248,0.4);' : ''}">引擎: ${escapeHtml(engId)}</span>`;
+    let costBadge = "";
+    if (task.cost_estimate && task.cost_estimate.cost !== undefined && task.cost_estimate.cost > 0) {
+      costBadge = `<span class="tag-badge" style="background:rgba(16,185,129,0.18);color:#10b981;border:1px solid rgba(16,185,129,0.4);">费用: ￥${task.cost_estimate.cost.toFixed(4)} ${task.cost_estimate.currency || 'CNY'}</span>`;
+    }
+    let tokenBadge = "";
+    if (task.token_usage && task.token_usage.total_tokens) {
+      tokenBadge = `<span class="tag-badge" style="background:rgba(168,85,247,0.18);color:#c084fc;border:1px solid rgba(168,85,247,0.4);">Token: ${task.token_usage.total_tokens.toLocaleString()}</span>`;
+    }
+    this.detailTags.innerHTML = `${formalBadge} ${debugBadge} ${langBadge} ${modeBadge} ${engBadge} ${costBadge} ${tokenBadge} ${idBadge}`;
 
     // 状态药丸与控制按钮
     this.detailStatusPill.className = `status-pill status-${task.status}`;
@@ -1664,6 +1705,44 @@ class WebUIApp {
     }
   }
 
+  onEngineChange() {
+    if (!this.selectEngine || !this.engineCostEstimateRow) return;
+    const selectedId = this.selectEngine.value;
+    const eng = this.availableEngines.find(e => e.id === selectedId);
+    if (eng && eng.type === "api") {
+      this.engineCostEstimateRow.style.display = "block";
+      const inRate = eng.pricing.input_per_m || 0;
+      const outRate = eng.pricing.output_per_m || 0;
+      const curr = eng.pricing.currency || "CNY";
+      if (this.engineCostEstimateText) {
+        this.engineCostEstimateText.textContent = `约 ￥${(inRate * 0.02 + outRate * 0.01).toFixed(3)} ~ ￥${(inRate * 0.08 + outRate * 0.04).toFixed(3)} ${curr} (费率: 入 ￥${inRate}/M, 出 ￥${outRate}/M)`;
+      }
+    } else {
+      this.engineCostEstimateRow.style.display = "none";
+    }
+  }
+
+  async loadAvailableEngines() {
+    try {
+      const resp = await fetch("/api/system/engines");
+      const res = await resp.json();
+      if (res.code === 0 && Array.isArray(res.data)) {
+        this.availableEngines = res.data;
+        if (this.selectEngine) {
+          this.selectEngine.innerHTML = res.data.map(e => {
+            const keyHint = e.type === "api"
+              ? (e.configured ? ` [已配密钥: ${e.masked_key}]` : " [未配置密钥]")
+              : " [本地免密]";
+            return `<option value="${e.id}">${escapeHtml(e.name)}${keyHint}</option>`;
+          }).join("");
+          this.onEngineChange();
+        }
+      }
+    } catch (e) {
+      console.warn("加载翻译引擎列表失败:", e);
+    }
+  }
+
   async loadServerInputFiles() {
     try {
       const resp = await fetch("/api/server/input_files");
@@ -1688,7 +1767,10 @@ class WebUIApp {
       this.inputTaskTitle.value = defaultFilename.substring(0, defaultFilename.lastIndexOf('.')) || defaultFilename;
     }
 
-    await this.loadServerInputFiles();
+    await Promise.all([
+      this.loadServerInputFiles(),
+      this.loadAvailableEngines()
+    ]);
   }
 
   closeNewTaskModal() {
@@ -1847,6 +1929,7 @@ class WebUIApp {
       video_path: videoPath,
       lang: this.selectLang.value,
       mode: this.selectMode.value,
+      engine_id: this.selectEngine ? this.selectEngine.value : "sakura-14b",
       title: this.inputTaskTitle.value.trim(),
       auto_start: true
     };

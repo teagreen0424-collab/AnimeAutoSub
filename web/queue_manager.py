@@ -414,6 +414,7 @@ class QueueManager:
 
         lang_code = meta.get("lang", "ja")
         mode = meta.get("mode", "ocr")
+        engine_id = meta.get("engine_id") or "sakura-14b"
 
         self._update_task_state(task_id, {
             "status": "running",
@@ -457,7 +458,8 @@ class QueueManager:
                 output_dir=work_dir,
                 lang=lang_plugin,
                 mode=mode,
-                cancel_token=token
+                cancel_token=token,
+                engine_id=engine_id
             )
 
             pipeline = Pipeline(ctx)
