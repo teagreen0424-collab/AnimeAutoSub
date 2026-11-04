@@ -21,6 +21,46 @@
       },
       "description": "本地离线推理，无内容审查，受限于 8GB 显存，适合私密与无网络环境"
     },
+    "deepseek-flash": {
+      "id": "deepseek-flash",
+      "name": "DeepSeek-Flash (官方高速 API)",
+      "type": "api",
+      "api_url": "https://api.deepseek.com/v1/chat/completions",
+      "model_name": "deepseek-flash",
+      "api_key_env": "DEEPSEEK_API_KEY",
+      "api_key_file": "config/deepseek_key.txt",
+      "requires_gpu": false,
+      "temperature": 0.3,
+      "top_p": 0.7,
+      "context_lines": 3,
+      "max_retries": 3,
+      "pricing": {
+        "input_per_m": 0.5,
+        "output_per_m": 1.0,
+        "currency": "CNY"
+      },
+      "description": "DeepSeek-V4.1-Flash 超高速轻量模型，高并发极低延迟影视字幕翻译"
+    },
+    "deepseek-v4-pro": {
+      "id": "deepseek-v4-pro",
+      "name": "DeepSeek-V4-Pro (官方旗舰 API)",
+      "type": "api",
+      "api_url": "https://api.deepseek.com/v1/chat/completions",
+      "model_name": "deepseek-v4-pro",
+      "api_key_env": "DEEPSEEK_API_KEY",
+      "api_key_file": "config/deepseek_key.txt",
+      "requires_gpu": false,
+      "temperature": 0.3,
+      "top_p": 0.7,
+      "context_lines": 3,
+      "max_retries": 3,
+      "pricing": {
+        "input_per_m": 2.0,
+        "output_per_m": 8.0,
+        "currency": "CNY"
+      },
+      "description": "DeepSeek-V4-Pro 官方旗舰大模型，影视文化高质精翻"
+    },
     "deepseek-chat": {
       "id": "deepseek-chat",
       "name": "DeepSeek-V3 (官方 API)",

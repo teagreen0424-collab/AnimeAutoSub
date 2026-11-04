@@ -1017,7 +1017,7 @@ class WebUIApp {
     const modeBadge = `<span class="tag-badge tag-mode">${task.mode.toUpperCase()}</span>`;
     const idBadge = `<span class="tag-badge tag-mode">ID: ${task.task_id}</span>`;
     const engId = task.engine_id || "sakura-14b";
-    const isCloud = engId.includes("chat") || engId.includes("api") || engId.includes("gpt");
+    const isCloud = engId.includes("chat") || engId.includes("api") || engId.includes("gpt") || engId.includes("flash") || engId.includes("deepseek");
     const engBadge = `<span class="tag-badge ${isCloud ? 'tag-formal' : ''}" style="${isCloud ? 'background:rgba(56,189,248,0.18);color:#38bdf8;border:1px solid rgba(56,189,248,0.4);' : ''}">引擎: ${escapeHtml(engId)}</span>`;
     let costBadge = "";
     if (task.cost_estimate && task.cost_estimate.cost !== undefined && task.cost_estimate.cost > 0) {
