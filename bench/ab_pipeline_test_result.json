@@ -1,0 +1,36 @@
+{
+  "task1": {
+    "id": "work_20261104_185723_test_3min",
+    "engine": "sakura-14b",
+    "fingerprint": "66fc526c75f2955237a7e2a48c32d26409d91408a5e86815c9588ce8174f2415",
+    "duration_total_sec": 94.2,
+    "translate_duration_sec": 67.978376,
+    "video_size_mb": 7.122236251831055,
+    "video_duration_sec": 180.146633
+  },
+  "task2": {
+    "id": "work_20261104_185858_test_3min",
+    "engine": "deepseek-chat",
+    "fingerprint": "58d0d964ffad4b7d20d0e1aa52f2ec92bb65bdde14ff1c2886972d5e4654e985",
+    "duration_total_sec": 128.0,
+    "translate_duration_sec": 102.442436,
+    "token_usage": {
+      "prompt_tokens": 24088,
+      "completion_tokens": 1764,
+      "total_tokens": 25852
+    },
+    "cost_estimate": {
+      "cost": 0.027616,
+      "currency": "CNY"
+    },
+    "video_size_mb": 7.128462791442871,
+    "video_duration_sec": 180.146633
+  },
+  "checks": {
+    "criterion_1_real_execution_and_time_gt_30s": true,
+    "criterion_2_engine_and_fingerprint_distinct": true,
+    "criterion_3_zero_refusal_in_chinese_json": true,
+    "criterion_4_cost_broadcast_in_logs": true,
+    "criterion_5_both_videos_valid_ffprobe": true
+  }
+}
