@@ -35,6 +35,8 @@ class TranslatorConfig:
     max_retries: int = 3
     # 格式化针对该语言的 prompt
     prompt_builder: Optional[Callable[[str, Dict[str, str], List[tuple]], str]] = None
+    engine_id: Optional[str] = "sakura-14b"
+    prompt_version: Optional[str] = "sakura_v1.0"
 
 
 @dataclass

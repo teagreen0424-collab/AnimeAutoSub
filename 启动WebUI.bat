@@ -32,26 +32,27 @@ set PYTHONIOENCODING=utf-8
 chcp 65001 >nul
 
 echo [INFO] Work directory: %~dp0
-echo [INFO] 正在预检本地服务与在途任务状态...
+echo [INFO] Checking running tasks on local server...
 
 set FORCE_ARG=
 "%~dp0venv\Scripts\python.exe" -m web.app --check-running
 if errorlevel 2 (
     echo.
     echo ============================================================
-    echo [警告] 检测到当前有任务正在执行！
+    echo [WARNING] Active task currently running!
     echo ============================================================
-    echo 强行停止将打断在途任务（虽支持断点续跑，但仍需重新计算当前未完成阶段）。
+    echo Stopping service will interrupt the active task.
+    echo Although resume is supported, current stage must recompute.
     echo.
-    set /p USER_CONFIRM="有任务正在运行，确定要停止吗？(y/N): "
+    set /p USER_CONFIRM="Tasks are running. Force stop anyway? (y/N): "
     if /i not "%USER_CONFIRM%"=="y" (
         echo.
-        echo [INFO] 已取消操作，保留当前正在运行的任务。
-        echo [INFO] 请等待任务完成，或进入 Web 界面手动操作。
+        echo [INFO] Operation cancelled. Keeping active task running.
+        echo [INFO] Wait for completion or manage via Web UI.
         pause
         exit /b 0
     )
-    echo [INFO] 用户已确认强制重启，正在安全保存中断标记并重启服务...
+    echo [INFO] Confirmed. Gracefully marking interrupted and restarting...
     set FORCE_ARG=--force
 )
 

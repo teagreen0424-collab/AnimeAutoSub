@@ -1,0 +1,65 @@
+{
+  "default_engine": "sakura-14b",
+  "engines": {
+    "sakura-14b": {
+      "id": "sakura-14b",
+      "name": "本地 Sakura-14B (Ollama)",
+      "type": "ollama",
+      "api_url": "http://127.0.0.1:11434/v1/chat/completions",
+      "model_name": "sakura-14b-qwen2.5-v1.0-iq4_xs",
+      "api_key_env": "",
+      "api_key_file": "",
+      "requires_gpu": true,
+      "temperature": 0.1,
+      "top_p": 0.3,
+      "context_lines": 5,
+      "max_retries": 3,
+      "pricing": {
+        "input_per_m": 0.0,
+        "output_per_m": 0.0,
+        "currency": "CNY"
+      },
+      "description": "本地离线推理，无内容审查，受限于 8GB 显存，适合私密与无网络环境"
+    },
+    "deepseek-chat": {
+      "id": "deepseek-chat",
+      "name": "DeepSeek-V3 (官方 API)",
+      "type": "api",
+      "api_url": "https://api.deepseek.com/v1/chat/completions",
+      "model_name": "deepseek-chat",
+      "api_key_env": "DEEPSEEK_API_KEY",
+      "api_key_file": "config/deepseek_key.txt",
+      "requires_gpu": false,
+      "temperature": 0.3,
+      "top_p": 0.7,
+      "context_lines": 3,
+      "max_retries": 3,
+      "pricing": {
+        "input_per_m": 1.0,
+        "output_per_m": 2.0,
+        "currency": "CNY"
+      },
+      "description": "官方云端高性价比大模型，影视文化剧作对白翻译首选"
+    },
+    "openai-gpt4o-mini": {
+      "id": "openai-gpt4o-mini",
+      "name": "OpenAI GPT-4o-mini (官方 API)",
+      "type": "api",
+      "api_url": "https://api.openai.com/v1/chat/completions",
+      "model_name": "gpt-4o-mini",
+      "api_key_env": "OPENAI_API_KEY",
+      "api_key_file": "config/openai_key.txt",
+      "requires_gpu": false,
+      "temperature": 0.3,
+      "top_p": 0.7,
+      "context_lines": 3,
+      "max_retries": 3,
+      "pricing": {
+        "input_per_m": 1.1,
+        "output_per_m": 4.4,
+        "currency": "CNY"
+      },
+      "description": "OpenAI 官方小模型，响应极快，语义理解扎实"
+    }
+  }
+}

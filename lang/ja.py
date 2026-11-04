@@ -142,6 +142,29 @@ def build_japanese_prompt(text: str, glossary: dict, context_pairs: list) -> str
     return f"将下面的日文文本翻译成中文：{text}"
 
 
+# 云端 API 专属影视字幕 Prompt (cinematic dialogue)
+CLOUD_JA_SYSTEM_PROMPT = (
+    "你是一位专业的日汉影视字幕翻译专家。请将日文台词准确、自然、流畅地翻译为符合中文普通话母语表达习惯的字幕。"
+    "保持人物语气、情绪与语境一致，语句精炼紧凑，适合屏幕阅读。"
+    "遇到术语表中的专有名词，严格遵循术语表翻译。"
+    "严禁添加原文不存在的内容，严禁输出任何解释、说明或问答，直接输出翻译结果。"
+)
+
+
+def build_cloud_japanese_prompt(text: str, glossary: dict, context_pairs: list) -> str:
+    """构建针对日文影视文化作品的云端 API 字幕翻译 Prompt"""
+    matched = {k: v for k, v in glossary.items() if k in text} if glossary else {}
+    if matched:
+        dict_lines = [f"{k}->{v}" for k, v in matched.items()]
+        return (
+            "【专有名词对照表】\n"
+            + "\n".join(dict_lines)
+            + "\n\n请将以下日文台词翻译为符合影视字幕风格的中文，仅输出译文：\n"
+            + text
+        )
+    return f"请将以下日文台词翻译为符合影视字幕风格的中文，仅输出译文：\n{text}"
+
+
 # 4. 构建日语语言插件单例
 japanese_plugin = LanguagePlugin(
     code="ja",

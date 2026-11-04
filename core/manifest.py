@@ -167,6 +167,10 @@ class ManifestManager:
             "produces": stage.produces,
             "completed_at": datetime.now().isoformat()
         })
+        engine_id = getattr(ctx, "engine_id", None) or (ctx.custom_params.get("engine_id") if hasattr(ctx, "custom_params") and ctx.custom_params else None) or "sakura-14b"
+        if stage.name == "translate" or "engine_id" not in self._data:
+            prev["engine_id"] = engine_id
+            self._data["engine_id"] = engine_id
         self._data["stages"][stage.name] = prev
         self.save()
 
