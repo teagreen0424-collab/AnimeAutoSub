@@ -124,3 +124,33 @@ if actual_algo != "HEURISTIC":
      - **若返回退出码 2（检测到在途任务），必须原地等待任务完成，严禁传入 `--force`，严禁杀端口，严禁擅自重启接管！**
      - 只有当退出码为 0（服务空闲或离线）时，才允许启动新实例或执行维护。
   3. 若必须在任务执行期间进行代码调试或接口回归，**必须且只能使用 `TestClient` 内存沙箱或隔离端口（`--port 8099`）**，绝对不许触碰正在服务用户的生产实例。
+
+
+---
+
+## 六、密钥与外部 API 纪律 (Secrets & External API Discipline)
+
+### 6.1 密钥零泄漏五处铁律 (Strict Secret Redaction)
+- **绝对禁令**：API Key 与敏感凭据**绝不许**以任何明文形式出现在以下 5 个位置：
+  1. **Git 仓库**：`config/engines.json`、`config/*_key.txt`、`.env` 必须严格列入 `.gitignore`，版本库中只允许提交示例脱敏模板 `config/engines.example.json`；
+  2. **日志文件**：`pipeline.log`、控制台输出、异常 Traceback 打印前必须统一经 `core.translation_engine.redact_secrets()` 过滤；
+  3. **产物清单**：`manifest.json`、`chinese.json`、`task_meta.json` 中禁止记录密钥明文，只允许记录 `engine_id` 与脱敏配置；
+  4. **API 接口响应**：`GET /api/system/settings`、`GET /api/system/engines`、`GET /api/tasks/{id}` 等响应中，密钥字段必须使用掩码（如 `sk-****4f2a`）；
+  5. **前端代码与 DOM**：静态 HTML、JavaScript 文件或浏览器渲染的 DOM 元素中，禁止直接暴露、内联注入或提供不安全的明文输入框。
+
+### 6.2 离线化与单元测试安全 (Offline & Mock-First Testing)
+- **纪律**：**严禁在单元测试和日常自动化测试中发起对外部真实商业 API 的带凭据扣费请求！**
+- **规范**：
+  1. 所有针对云端翻译分支的自动化测试（如 `test_translation_engines.py`、`test_webui_engines.py`）必须使用 `unittest.mock.patch` 或本地隔离沙箱模拟网络响应与 Usage 消耗；
+  2. 严禁因为单测运行而消耗真实用户的账户额度，保障在无网络连接、未配置 API Key 的离线环境下所有测试均能 100% 稳定运行。
+
+### 6.3 云端引擎 GPU 租约隔离 (Zero GPU Lease for Cloud API)
+- **纪律**：官方云端 API 引擎必须显式声明 `requires_gpu: false`。
+- **规范**：
+  1. `TranslateStage` 阶段在选定云端 API 引擎时，严禁请求 `acquire_gpu_lease()` 独占锁；
+  2. 云端 API 的网络并发与本地 OCR、ASR、视频压制互不挤占显存，保障本地 GPU 资源的高效利用。
+
+### 6.4 拒答与失败处理铁律 (Zero Auto-Fallback & Refusal Protection)
+- **纪律**：
+  1. **严禁自动静默降级 (Zero Auto-Fallback)**：云端 API 发生拒答、网络不可达或超时报错时，必须如实向用户报错中止，严禁擅自自动 fallback 回本地 Sakura 引擎，防止同一片源中字幕译风、人称断层撕裂；
+  2. **拒答话术绝不上屏**：严格检测“抱歉我无法协助”等内容审查拒答话术，一旦命中绝不写进 `chinese.json`；若累计拒答率超过 20%，立即触发任务熔断，并向用户提供明确的改选建议。
