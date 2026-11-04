@@ -927,14 +927,12 @@ class WebUIApp {
             </div>
             <div class="task-card-status-wrap">
               ${statusBadge}
-              ${!task.is_legacy ? `
-                <button class="btn-card-delete" 
-                        data-task-id="${escapeHtml(task.task_id)}" 
-                        title="${task.status === 'running' ? '任务正在执行中，不可删除' : '删除此任务及关联资源'}"
-                        ${task.status === 'running' ? 'disabled' : ''}>
-                  🗑️
-                </button>
-              ` : ''}
+              <button class="btn-card-delete" 
+                      data-task-id="${escapeHtml(task.task_id)}" 
+                      title="${task.status === 'running' ? '任务正在执行中，不可删除' : (task.is_legacy ? '删除历史产物目录及全部关联资源' : '删除此任务及关联资源')}"
+                      ${task.status === 'running' ? 'disabled' : ''}>
+                🗑️
+              </button>
             </div>
           </div>
 

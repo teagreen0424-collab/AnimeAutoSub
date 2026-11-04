@@ -113,19 +113,33 @@ def test_full_delete_removes_directory_safely(mock_task_dir):
     assert f.raw_video.exists()
 
 
-def test_legacy_task_is_protected():
-    """断言历史基准任务受到系统保护，不可删除"""
-    tm = TaskManager()
-    # 寻找一个 legacy 任务
-    legacy_id = None
-    for tid, info in tm.tasks.items():
-        if info.get("is_legacy"):
-            legacy_id = tid
-            break
+def test_legacy_task_can_be_deleted(tmp_path):
+    """断言历史产物也可以被用户安全删除，以释放大量磁盘空间"""
+    legacy_dir = tmp_path / "output" / "mock_legacy_999"
+    legacy_dir.mkdir(parents=True)
+    (legacy_dir / "output.mp4").write_bytes(b"LEGACY_VIDEO_DATA" * 1000)
+    (legacy_dir / "subtitle.ass").write_text("Dialogue: ...", encoding="utf-8")
 
-    if legacy_id:
-        with pytest.raises(PermissionError, match="历史基准产物受系统保护"):
-            tm.delete_task(legacy_id, mode="full")
+    tm = TaskManager(project_root=tmp_path)
+    assert "mock_legacy_999" in tm.tasks
+    assert tm.tasks["mock_legacy_999"]["is_legacy"] is True
+
+    res = tm.delete_task("mock_legacy_999", mode="full")
+    assert res["mode"] == "full"
+    assert not legacy_dir.exists()
+    assert "mock_legacy_999" not in tm.tasks
+
+
+def test_forbidden_directories_are_protected(tmp_path):
+    """断言系统关键目录 (如 ocr_input, venv, core) 受到系统保护，坚决禁止删除"""
+    tm = TaskManager(project_root=tmp_path)
+    ocr_input = tmp_path / "ocr_input"
+    ocr_input.mkdir(parents=True, exist_ok=True)
+    (ocr_input / "raw_video.mp4").write_bytes(b"VIDEO")
+
+    tm.tasks["illegal_task"] = {"work_dir": str(ocr_input), "is_legacy": False}
+    with pytest.raises(PermissionError, match="目标目录受到系统安全保护"):
+        tm.delete_task("illegal_task", mode="full")
 
 
 def test_api_endpoints_for_delete_and_storage(mock_task_dir, monkeypatch):

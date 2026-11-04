@@ -483,9 +483,7 @@ class TaskManager:
             work_dir = Path(task["work_dir"])
             is_legacy = task.get("is_legacy", False)
 
-        # 保护 1: 历史基准产物受保护
-        if is_legacy:
-            raise PermissionError("历史基准产物受系统保护，不可删除")
+        # 历史产物允许被用户按需删除以释放磁盘空间
 
         # 保护 2: 正在运行的任务不可直接物理删除 (防止 WinError 32 和线程崩溃)
         from web.queue_manager import queue_manager
@@ -499,6 +497,8 @@ class TaskManager:
         work_dir = work_dir.resolve()
         safe_bases = [
             (self.project_root / "work_tasks").resolve(),
+            (self.project_root / "output").resolve(),
+            (self.project_root / "ocr_output").resolve(),
             self.project_root.resolve()
         ]
         forbidden_dirs = [
@@ -509,6 +509,9 @@ class TaskManager:
             (self.project_root / "web").resolve(),
             (self.project_root / "venv").resolve(),
             (self.project_root / "tests").resolve(),
+            (self.project_root / "work_tasks").resolve(),
+            (self.project_root / "output").resolve(),
+            (self.project_root / "ocr_output").resolve(),
         ]
         if work_dir in forbidden_dirs or not any(str(work_dir).startswith(str(base)) for base in safe_bases):
             raise PermissionError(f"目标目录受到系统安全保护，禁止删除: {work_dir}")
