@@ -149,7 +149,8 @@ def run_regression_60():
         work_dir=new_dir,
         output_dir=new_dir,
         lang=get_language("ja"),
-        mode="ocr"
+        mode="ocr",
+        custom_params={"overlay_style": "replace_mask", "font_size": 68, "max_line_chars": 18, "outline": 3.2, "shadow": 0.5, "margin_v": 16}
     )
     
     stage = LayoutAssStage()
@@ -198,7 +199,8 @@ def run_regression_10min():
         work_dir=new_dir,
         output_dir=new_dir,
         lang=get_language("ja"),
-        mode="ocr"
+        mode="ocr",
+        custom_params={"overlay_style": "replace_mask", "font_size": 68, "max_line_chars": 18, "outline": 3.2, "shadow": 0.5, "margin_v": 16}
     )
     
     stage = LayoutAssStage()

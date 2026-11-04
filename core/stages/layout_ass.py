@@ -86,16 +86,19 @@ class LayoutAssStage(Stage):
         with open(chinese_path, "r", encoding="utf-8") as f:
             translated = json.load(f)
 
-        layout = ctx.lang.layout
-        overlay_style = layout.get("overlay_style", "replace_mask")
+        layout = dict(ctx.lang.layout)
+        if hasattr(ctx, "custom_params") and ctx.custom_params:
+            layout.update(ctx.custom_params)
+
+        overlay_style = layout.get("overlay_style", "below")
         auto_wrap_enabled = layout.get("auto_wrap", True)
-        max_line_chars = layout.get("max_line_chars", 18)
+        max_line_chars = layout.get("max_line_chars", 20)
         font_name = layout.get("font_name", "Microsoft YaHei")
-        base_fontsize = layout.get("font_size", 68)
+        base_fontsize = layout.get("font_size", 52)
         is_bold = layout.get("bold", True)
-        base_outline = layout.get("outline", 3.2)
-        base_shadow = layout.get("shadow", 0.5)
-        base_margin_v = layout.get("margin_v", 16)
+        base_outline = layout.get("outline", 3.0)
+        base_shadow = layout.get("shadow", 0.8)
+        base_margin_v = layout.get("margin_v", 28)
         mask_padding = layout.get("mask_padding", 8)
         mask_grid_quant = layout.get("mask_grid_quant", 8)
         char_width_ratio = layout.get("char_width_ratio", 0.95)
@@ -117,16 +120,28 @@ class LayoutAssStage(Stage):
         shadow = round(base_shadow * scale_y, 1)
         bold = -1 if is_bold else 0
 
-        if overlay_style in ("replace_mask", "slim_box", "box"):
+        is_asr_mode = (ctx.mode == "asr")
+        # 纯语音转写模式没有原生字幕，严禁生成任何黑幕遮罩；OCR 模式默认采用无黑幕贴原日文下方
+        effective_overlay_style = "clean_asr" if is_asr_mode else overlay_style
+
+        if effective_overlay_style in ("replace_mask", "slim_box", "box"):
             styles_section = (
                 f"Style: Mask,Arial,10,&H00000000,&H00000000,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,0,0,7,0,0,0,1\n"
                 f"Style: Default,{font_name},{fontsize},&H00FFFFFF,&H000000FF,&H00000000,&H00000000,{bold},0,0,0,100,100,0,0,1,{outline},{shadow},5,10,10,10,1"
             )
-        elif overlay_style == "above":
+        elif effective_overlay_style == "above":
             styles_section = f"Style: Default,{font_name},{fontsize},&H00FFFFFF,&H000000FF,&H00000000,&H00000000,{bold},0,0,0,100,100,0,0,1,{outline},{shadow},2,30,30,115,1"
-        else:
-            margin_v = max(10, int(round(base_margin_v * scale_y)))
+        elif effective_overlay_style == "clean_asr":
+            # ASR 纯语音模式: 经典底部居中无遮罩，白字黑边清晰雅致
+            margin_v = max(18, int(round(base_margin_v * scale_y)))
             styles_section = f"Style: Default,{font_name},{fontsize},&H00FFFFFF,&H000000FF,&H00000000,&H00000000,{bold},0,0,0,100,100,0,0,1,{outline},{shadow},2,20,20,{margin_v},1"
+        else:
+            # OCR 模式默认 (below / below_no_mask): 无黑幕，紧贴原日文字幕下方
+            margin_v = max(16, int(round(base_margin_v * scale_y)))
+            styles_section = (
+                f"Style: Default,{font_name},{fontsize},&H00FFFFFF,&H000000FF,&H00000000,&H00000000,{bold},0,0,0,100,100,0,0,1,{outline},{shadow},2,20,20,{margin_v},1\n"
+                f"Style: PosBelow,{font_name},{fontsize},&H00FFFFFF,&H000000FF,&H00000000,&H00000000,{bold},0,0,0,100,100,0,0,1,{outline},{shadow},8,10,10,10,1"
+            )
 
         ass_header = f"""[Script Info]
 Title: OCR Anime Subtitles
@@ -161,7 +176,13 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             start_ass = format_timestamp_ass(seg["start"])
             end_ass = format_timestamp_ass(seg["end"])
 
-            if overlay_style in ("replace_mask", "slim_box", "box"):
+            if effective_overlay_style == "clean_asr":
+                # === ASR 纯语音模式: 0 黑幕，经典底部居中 ===
+                line = f"Dialogue: 0,{start_ass},{end_ass},Default,,0,0,0,,{zh_wrapped}"
+                ass_lines.append(line)
+
+            elif effective_overlay_style in ("replace_mask", "slim_box", "box"):
+                # === 传统黑幕遮罩 (仅在显式配置时保留) ===
                 box = seg.get("box")
                 if box is not None:
                     xmin, ymin, xmax, ymax = box
@@ -213,9 +234,39 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                 )
                 ass_lines.append(mask_line)
                 ass_lines.append(sub_line)
+
             else:
-                line = f"Dialogue: 0,{start_ass},{end_ass},Default,,0,0,0,,{zh_wrapped}"
-                ass_lines.append(line)
+                # === OCR 模式默认无黑幕: 紧贴原日文字幕下方 (\an8\pos) ===
+                box = seg.get("box")
+                if box is not None:
+                    xmin, ymin, xmax, ymax = box
+                    cx = int(round((xmin + xmax) / 2.0))
+                    # 若横向居中则吸附屏幕中心
+                    if abs(cx - video_width / 2.0) < video_width * 0.15:
+                        cx = int(video_width / 2.0)
+
+                    gap = max(4, int(round(6 * scale_y)))
+                    zh_top = int(round(ymax + gap))
+
+                    lines = zh_wrapped.split(r"\N")
+                    zh_height = int(round(len(lines) * fontsize * 1.25))
+                    max_bottom = video_height - int(round(8 * scale_y))
+
+                    if zh_top + zh_height > max_bottom:
+                        top_clamped = max_bottom - zh_height
+                        if top_clamped >= ymax:
+                            zh_top = top_clamped
+                        elif ymin - zh_height - gap >= int(round(16 * scale_y)):
+                            # 原日文紧贴底沿无下移空间时，浮于原日文上方
+                            zh_top = int(round(ymin - zh_height - gap))
+                        else:
+                            zh_top = max(0, top_clamped)
+
+                    sub_line = f"Dialogue: 0,{start_ass},{end_ass},PosBelow,,0,0,0,,{{\\pos({cx},{zh_top})}}{zh_wrapped}"
+                else:
+                    sub_line = f"Dialogue: 0,{start_ass},{end_ass},Default,,0,0,0,,{zh_wrapped}"
+
+                ass_lines.append(sub_line)
 
             # SRT 行
             start_srt = format_timestamp_srt(seg["start"])
