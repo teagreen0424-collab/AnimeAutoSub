@@ -2,35 +2,84 @@
    AnimeAutoSub WebUI 现代暗色主题样式表 (web/static/style.css)
    ========================================================================== */
 
-:root {
-  --bg-page: #0b0f17;
-  --bg-card: #131924;
-  --bg-card-hover: #18202e;
-  --bg-input: #0e141f;
-  --bg-terminal: #080c12;
-  
-  --border-color: #232c3d;
-  --border-focus: #06b6d4;
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
 
-  --text-main: #f1f5f9;
+:root {
+  --bg-page: #06090f;
+  --bg-card: rgba(13, 20, 36, 0.72);
+  --bg-card-hover: rgba(19, 30, 56, 0.85);
+  --bg-card-active: rgba(25, 40, 75, 0.9);
+  --bg-input: rgba(9, 14, 26, 0.85);
+  --bg-terminal: #04070d;
+  
+  --border-color: rgba(56, 189, 248, 0.16);
+  --border-focus: #00f0ff;
+  --border-hover: rgba(0, 240, 255, 0.4);
+
+  --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --text-dim: #64748b;
 
-  --cyan: #06b6d4;
-  --cyan-glow: rgba(6, 182, 212, 0.15);
-  --emerald: #10b981;
-  --emerald-glow: rgba(16, 185, 129, 0.15);
-  --amber: #f59e0b;
-  --amber-glow: rgba(245, 158, 11, 0.15);
+  --cyan: #00f0ff;
+  --cyan-glow: rgba(0, 240, 255, 0.22);
+  --cyan-deep: #0284c7;
+
+  --emerald: #00ff88;
+  --emerald-glow: rgba(0, 255, 136, 0.22);
+
+  --amber: #facc15;
+  --amber-glow: rgba(250, 204, 21, 0.22);
+
+  --purple: #a855f7;
+  --purple-glow: rgba(168, 85, 247, 0.22);
+
   --rose: #f43f5e;
+  --rose-glow: rgba(244, 63, 94, 0.22);
+
   --indigo: #6366f1;
+  --pink: #ec4899;
 
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
 
-  --font-sans: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: 'Outfit', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', Consolas, "Courier New", monospace;
+
+  --glass-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+@keyframes radarPing {
+  0% { transform: scale(0.9); opacity: 0.9; }
+  70% { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+@keyframes gpuStripeMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 24px 0; }
+}
+
+@keyframes cyberBadgeSweep {
+  0% { filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.4)); }
+  50% { filter: drop-shadow(0 0 16px rgba(168, 85, 247, 0.6)); }
+  100% { filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.4)); }
+}
+
+@keyframes neonPulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(0, 240, 255, 0.3), inset 0 0 6px rgba(0, 240, 255, 0.2); }
+  50% { box-shadow: 0 0 22px rgba(0, 240, 255, 0.6), inset 0 0 12px rgba(0, 240, 255, 0.4); }
+}
+
+@keyframes laserTravel {
+  0% { transform: translateX(-100%); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(200%); opacity: 0; }
+}
+
+@keyframes modalPop {
+  0% { transform: scale(0.94) translateY(12px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
 }
 
 * {
@@ -41,6 +90,11 @@
 
 body {
   background-color: var(--bg-page);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(0, 240, 255, 0.10) 0px, transparent 45%),
+    radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.10) 0px, transparent 45%),
+    radial-gradient(at 50% 100%, rgba(244, 63, 94, 0.08) 0px, transparent 50%);
+  background-attachment: fixed;
   color: var(--text-main);
   font-family: var(--font-sans);
   font-size: 14px;
@@ -48,13 +102,29 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.cyber-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* 顶部导航条 TopBar */
 .topbar {
-  background-color: var(--bg-card);
-  border-bottom: 1px solid var(--border-color);
-  padding: 10px 24px;
+  background: rgba(10, 15, 28, 0.75);
+  backdrop-filter: blur(20px) saturate(190%);
+  -webkit-backdrop-filter: blur(20px) saturate(190%);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 -1px 0 rgba(0, 240, 255, 0.15);
+  padding: 12px 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -70,17 +140,21 @@ body {
 }
 
 .logo-badge {
-  background: linear-gradient(135deg, var(--cyan), var(--indigo));
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(168, 85, 247, 0.3));
+  border: 1px solid #00f0ff;
   color: #fff;
-  font-weight: 700;
+  font-family: var(--font-mono);
+  font-weight: 800;
   font-size: 15px;
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-md);
-  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.45), inset 0 0 10px rgba(0, 240, 255, 0.3);
+  animation: cyberBadgeSweep 4s ease-in-out infinite;
+  letter-spacing: 0.5px;
 }
 
 .brand-text {
@@ -89,10 +163,13 @@ body {
 }
 
 .brand-title {
-  font-weight: 700;
-  font-size: 16px;
-  color: #fff;
-  letter-spacing: 0.5px;
+  font-weight: 800;
+  font-size: 17px;
+  background: linear-gradient(90deg, #ffffff 0%, #00f0ff 50%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.2px;
+  filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.25));
 }
 
 .brand-subtitle {
@@ -258,12 +335,32 @@ body {
 }
 
 .stat-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 16px 20px;
+  background: rgba(13, 20, 36, 0.72) !important;
+  backdrop-filter: blur(20px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.18) !important;
+  border-radius: var(--radius-lg);
+  padding: 18px 24px;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.6), transparent);
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0, 240, 255, 0.4) !important;
+  box-shadow: 0 16px 36px -8px rgba(0, 240, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .stat-num {
@@ -375,25 +472,37 @@ body {
 }
 
 .task-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 16px;
+  background: rgba(13, 20, 36, 0.72) !important;
+  backdrop-filter: blur(20px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.18) !important;
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  transition: all 0.2s;
+  gap: 12px;
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.22s ease, border-color 0.22s ease;
   cursor: pointer;
   min-width: 0;
   overflow: hidden;
   box-sizing: border-box;
+  box-shadow: var(--glass-shadow);
+  position: relative;
+}
+
+.task-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(420px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(0, 240, 255, 0.13), transparent 45%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .task-card:hover {
-  background-color: var(--bg-card-hover);
-  border-color: rgba(6, 182, 212, 0.5);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  background: rgba(18, 28, 52, 0.85) !important;
+  border-color: rgba(0, 240, 255, 0.45) !important;
+  box-shadow: 0 18px 45px -8px rgba(0, 240, 255, 0.22), inset 0 1px 0 rgba(0, 240, 255, 0.35) !important;
 }
 
 .task-card-header,
@@ -826,16 +935,18 @@ body {
    ========================================================================== */
 
 .btn-primary {
-  background: linear-gradient(135deg, #06b6d4, #0284c7);
-  color: #fff;
-  border: 1px solid #0891b2;
-  font-weight: 600;
-  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+  background: linear-gradient(135deg, #00f0ff 0%, #0284c7 50%, #6366f1 100%) !important;
+  color: #030712 !important;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  letter-spacing: 0.3px;
 }
 
-.btn-primary:hover {
-  background: linear-gradient(135deg, #0891b2, #0369a1);
-  transform: translateY(-1px);
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 28px rgba(0, 240, 255, 0.65), 0 6px 18px rgba(0, 0, 0, 0.4) !important;
+  filter: brightness(1.1);
 }
 
 .btn-emerald {
