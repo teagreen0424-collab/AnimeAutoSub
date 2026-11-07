@@ -66,39 +66,69 @@ body {
 
 html[data-theme="light"] body,
 body.light-theme {
-  /* 底色：暖中性白，不是纯白，不是冷灰 */
+  /* 底色：暖中性白 */
   --bg-page: #F6F6F4;
   --bg-page-mesh:
     radial-gradient(900px 420px at 12% -12%, rgba(14, 116, 144, 0.055), transparent 62%),
     radial-gradient(760px 380px at 88% -8%, rgba(79, 70, 229, 0.035), transparent 62%);
 
-  /* 卡片：纯白压在有底色的页面上，靠明度差分层 */
+  /* 卡片与输入框 */
   --bg-card: #FFFFFF;
   --bg-card-hover: #FFFFFF;
   --bg-card-active: #FFFFFF;
   --bg-input: #FFFFFF;
-  --bg-terminal: #14140F;   /* 日志/终端保持深色，必须高对比 */
+  --bg-terminal: #14140F;
 
-  /* 边框：浅色下边界感必须比暗色更强，否则卡片会糊在一起 */
+  /* 结构边界 */
   --border-color: rgba(23, 23, 20, 0.09);
   --border-focus: #0E7490;
   --border-hover: rgba(14, 116, 144, 0.35);
 
-  /* 文字：暖近黑，不用 #000 */
+  /* 文字 */
   --text-main: #17171A;
   --text-muted: #5A5A62;
   --text-dim: #8A8A93;
 
-  /* 语义色：浅底上必须加深才够对比度 */
-  --cyan: #0E7490;
-  --cyan-glow: rgba(14, 116, 144, 0.10);
-  --rose: #BE123C;
-  --rose-glow: rgba(190, 18, 60, 0.10);
+  /* ── 主强调：靛紫 ── */
+  --c-primary:      #6366F1;                       /* 填充：按钮底、图标、进度条 */
+  --c-primary-ink:  #4338CA;                       /* 白底上的文字（对比度 8.6:1）*/
+  --c-primary-soft: rgba(99, 102, 241, 0.10);      /* 淡底：标签、选中态、卡片 tint */
+  --c-primary-line: rgba(99, 102, 241, 0.28);      /* 描边 */
+
+  /* ── 青 ── */
+  --c-cyan:      #06B6D4;
+  --c-cyan-ink:  #0E7490;                          /* 5.6:1 */
+  --c-cyan-soft: rgba(6, 182, 212, 0.12);
+  --c-cyan-line: rgba(6, 182, 212, 0.30);
+
+  /* ── 玫瑰 ── */
+  --c-rose:      #F43F5E;
+  --c-rose-ink:  #BE123C;                          /* 6.9:1 */
+  --c-rose-soft: rgba(244, 63, 94, 0.10);
+  --c-rose-line: rgba(244, 63, 94, 0.28);
+
+  /* ── 琥珀 ── */
+  --c-amber:      #F59E0B;
+  --c-amber-ink:  #B45309;                         /* 5.6:1 */
+  --c-amber-soft: rgba(245, 158, 11, 0.14);
+  --c-amber-line: rgba(245, 158, 11, 0.32);
+
+  /* ── 翠绿 ── */
+  --c-emerald:      #10B981;
+  --c-emerald-ink:  #047857;                       /* 5.4:1 */
+  --c-emerald-soft: rgba(16, 185, 129, 0.12);
+  --c-emerald-line: rgba(16, 185, 129, 0.30);
+
+  /* 旧名映射别名，确保向前兼容 */
+  --cyan: var(--c-primary);
+  --cyan-glow: var(--c-primary-soft);
+  --rose: var(--c-rose);
+  --rose-glow: var(--c-rose-soft);
 
   --neutral-done: #6B6B72;
   --neutral-pill: rgba(23, 23, 20, 0.065);
 
-  /* 阴影：浅色下必须有真实投影，暗色靠发光，浅色靠落地 */
+  /* 阴影 */
   --glass-shadow:
     inset 0 1px 0 0 #FFFFFF,
     0 1px 2px rgba(23, 23, 20, 0.055),
@@ -3088,4 +3118,75 @@ html[data-theme="light"] .at-launchpad-btn:hover,
 body.light-theme .at-launchpad-btn:hover {
   background: var(--cyan) !important;
   color: #FFFFFF !important;
+}
+
+
+/* ==========================================================================
+   C2: 四张统计卡四色相独立上色 (去维基化)
+   ========================================================================== */
+html[data-theme="light"] .stat-card:nth-child(1),
+body.light-theme .stat-card:nth-child(1) {
+  background: var(--c-primary-soft) !important;
+  border: 1px solid var(--c-primary-line) !important;
+}
+html[data-theme="light"] .stat-card:nth-child(2),
+body.light-theme .stat-card:nth-child(2) {
+  background: var(--c-cyan-soft) !important;
+  border: 1px solid var(--c-cyan-line) !important;
+}
+html[data-theme="light"] .stat-card:nth-child(3),
+body.light-theme .stat-card:nth-child(3) {
+  background: var(--c-amber-soft) !important;
+  border: 1px solid var(--c-amber-line) !important;
+}
+html[data-theme="light"] .stat-card:nth-child(4),
+body.light-theme .stat-card:nth-child(4) {
+  background: var(--c-emerald-soft) !important;
+  border: 1px solid var(--c-emerald-line) !important;
+}
+
+html[data-theme="light"] .stat-card:nth-child(1) .stat-num,
+html[data-theme="light"] .stat-card:nth-child(1) .stat-value,
+body.light-theme .stat-card:nth-child(1) .stat-num,
+body.light-theme .stat-card:nth-child(1) .stat-value {
+  color: var(--c-primary-ink) !important;
+}
+html[data-theme="light"] .stat-card:nth-child(2) .stat-num,
+html[data-theme="light"] .stat-card:nth-child(2) .stat-value,
+body.light-theme .stat-card:nth-child(2) .stat-num,
+body.light-theme .stat-card:nth-child(2) .stat-value {
+  color: var(--c-cyan-ink) !important;
+}
+html[data-theme="light"] .stat-card:nth-child(3) .stat-num,
+html[data-theme="light"] .stat-card:nth-child(3) .stat-value,
+body.light-theme .stat-card:nth-child(3) .stat-num,
+body.light-theme .stat-card:nth-child(3) .stat-value {
+  color: var(--c-amber-ink) !important;
+}
+html[data-theme="light"] .stat-card:nth-child(4) .stat-num,
+html[data-theme="light"] .stat-card:nth-child(4) .stat-value,
+body.light-theme .stat-card:nth-child(4) .stat-num,
+body.light-theme .stat-card:nth-child(4) .stat-value {
+  color: var(--c-emerald-ink) !important;
+}
+
+html[data-theme="light"] .stat-card:nth-child(1) .stat-index,
+body.light-theme .stat-card:nth-child(1) .stat-index {
+  color: var(--c-primary-ink) !important;
+  opacity: 0.85;
+}
+html[data-theme="light"] .stat-card:nth-child(2) .stat-index,
+body.light-theme .stat-card:nth-child(2) .stat-index {
+  color: var(--c-cyan-ink) !important;
+  opacity: 0.85;
+}
+html[data-theme="light"] .stat-card:nth-child(3) .stat-index,
+body.light-theme .stat-card:nth-child(3) .stat-index {
+  color: var(--c-amber-ink) !important;
+  opacity: 0.85;
+}
+html[data-theme="light"] .stat-card:nth-child(4) .stat-index,
+body.light-theme .stat-card:nth-child(4) .stat-index {
+  color: var(--c-emerald-ink) !important;
+  opacity: 0.85;
 }
