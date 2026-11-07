@@ -3,7 +3,10 @@
    Pure CSS / Low Visual Noise / Optical Precision / Hardware Friendly
    ========================================================================== */
 
-:root, body.dark-theme, body {
+:root,
+html[data-theme="dark"] body,
+body.dark-theme,
+body {
   /* 2026 Spatial Dark Ground */
   --bg-page: #09090b;
   --bg-page-mesh: 
@@ -61,44 +64,54 @@
   --topbar-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
+html[data-theme="light"] body,
 body.light-theme {
-  --bg-page: #f8f9fb;
-  --bg-page-mesh: 
-    radial-gradient(900px 420px at 12% -12%, rgba(34, 211, 238, 0.06), transparent 62%),
-    radial-gradient(760px 380px at 88% -8%, rgba(99, 102, 241, 0.04), transparent 62%);
-  --bg-card: rgba(255, 255, 255, 0.85);
-  --bg-card-hover: #ffffff;
-  --bg-card-active: #ffffff;
-  --bg-input: #ffffff;
-  --bg-terminal: #09090b;
+  /* 底色：暖中性白，不是纯白，不是冷灰 */
+  --bg-page: #F6F6F4;
+  --bg-page-mesh:
+    radial-gradient(900px 420px at 12% -12%, rgba(14, 116, 144, 0.055), transparent 62%),
+    radial-gradient(760px 380px at 88% -8%, rgba(79, 70, 229, 0.035), transparent 62%);
 
-  --border-color: rgba(0, 0, 0, 0.08);
-  --border-focus: #0284c7;
-  --border-hover: rgba(2, 132, 199, 0.4);
+  /* 卡片：纯白压在有底色的页面上，靠明度差分层 */
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #FFFFFF;
+  --bg-card-active: #FFFFFF;
+  --bg-input: #FFFFFF;
+  --bg-terminal: #14140F;   /* 日志/终端保持深色，必须高对比 */
 
-  --text-main: #09090b;
-  --text-muted: #52525b;
-  --text-dim: #71717a;
+  /* 边框：浅色下边界感必须比暗色更强，否则卡片会糊在一起 */
+  --border-color: rgba(23, 23, 20, 0.09);
+  --border-focus: #0E7490;
+  --border-hover: rgba(14, 116, 144, 0.35);
 
-  --cyan: #0284c7;
-  --cyan-glow: rgba(2, 132, 199, 0.12);
-  --rose: #e11d48;
-  --rose-glow: rgba(225, 29, 72, 0.12);
+  /* 文字：暖近黑，不用 #000 */
+  --text-main: #17171A;
+  --text-muted: #5A5A62;
+  --text-dim: #8A8A93;
 
-  --neutral-done: #52525b;
-  --neutral-pill: rgba(0, 0, 0, 0.04);
+  /* 语义色：浅底上必须加深才够对比度 */
+  --cyan: #0E7490;
+  --cyan-glow: rgba(14, 116, 144, 0.10);
+  --rose: #BE123C;
+  --rose-glow: rgba(190, 18, 60, 0.10);
 
+  --neutral-done: #6B6B72;
+  --neutral-pill: rgba(23, 23, 20, 0.065);
+
+  /* 阴影：浅色下必须有真实投影，暗色靠发光，浅色靠落地 */
   --glass-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.85),
-    0 1px 3px rgba(0, 0, 0, 0.04);
+    inset 0 1px 0 0 #FFFFFF,
+    0 1px 2px rgba(23, 23, 20, 0.055),
+    0 0 0 1px rgba(23, 23, 20, 0.045);
   --glass-shadow-hover:
-    inset 0 1px 0 0 #ffffff,
-    0 12px 32px -8px rgba(2, 132, 199, 0.14);
-  --shadow-float: 0 16px 40px -12px rgba(0, 0, 0, 0.12);
+    inset 0 1px 0 0 #FFFFFF,
+    0 10px 30px -10px rgba(14, 116, 144, 0.17),
+    0 0 0 1px rgba(14, 116, 144, 0.20);
+  --shadow-float: 0 18px 44px -16px rgba(23, 23, 20, 0.15);
 
-  --topbar-bg: rgba(255, 255, 255, 0.85);
-  --topbar-border: rgba(0, 0, 0, 0.06);
-  --topbar-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.03);
+  --topbar-bg: rgba(246, 246, 244, 0.74);
+  --topbar-border: rgba(23, 23, 20, 0.07);
+  --topbar-shadow: 0 1px 0 rgba(23, 23, 20, 0.04), 0 4px 16px -8px rgba(23, 23, 20, 0.09);
 }
 
 
@@ -2654,7 +2667,7 @@ body.dark-theme .at-cell-num {
 
 
 
-/* 2.2 2026 卡片统一规格: 无边框 + 顶部高光 + 模糊透光 */
+/* 2.2 2026 卡片统一规格: 无边框 + 顶部高光/阴影环 + 空间微透光 (变量驱动) */
 .card,
 .task-card,
 .panel,
@@ -2667,51 +2680,24 @@ body.dark-theme .at-cell-num {
 .editor-actions-card,
 .subtitles-table-panel,
 .subtitles-preview-panel {
-  background: rgba(255, 255, 255, 0.028) !important;
-  backdrop-filter: blur(14px) saturate(130%) !important;
-  -webkit-backdrop-filter: blur(14px) saturate(130%) !important;
-  border: none !important;
-  border-radius: var(--radius-card, 16px) !important;
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.06),
-    0 1px 2px rgba(0, 0, 0, 0.18) !important;
+  background: var(--bg-card);
+  backdrop-filter: blur(14px) saturate(130%);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+  border: none;
+  border-radius: var(--radius-card, 16px);
+  box-shadow: var(--glass-shadow);
   transition: background var(--dur-fast, 180ms) var(--ease-out-spring),
               box-shadow var(--dur-base, 320ms) var(--ease-out-spring),
-              transform var(--dur-base, 320ms) var(--ease-out-spring) !important;
+              transform var(--dur-base, 320ms) var(--ease-out-spring);
 }
 
 .card:hover,
 .task-card:hover,
 .panel-card:hover,
 .stat-card:hover {
-  background: rgba(255, 255, 255, 0.045) !important;
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.10),
-    0 8px 32px -12px rgba(34, 211, 238, 0.22) !important;
+  background: var(--bg-card-hover);
+  box-shadow: var(--glass-shadow-hover);
 }
-
-body.light-theme .card,
-body.light-theme .task-card,
-body.light-theme .panel,
-body.light-theme .panel-card,
-body.light-theme .stat-card,
-body.light-theme .empty-state-wrap,
-body.light-theme .at-launchpad-wrap {
-  background: rgba(255, 255, 255, 0.75) !important;
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
-    0 4px 20px -2px rgba(0, 0, 0, 0.04) !important;
-}
-
-body.light-theme .card:hover,
-body.light-theme .task-card:hover {
-  background: rgba(255, 255, 255, 0.95) !important;
-  box-shadow:
-    inset 0 1px 0 0 #ffffff,
-    0 12px 32px -8px rgba(2, 132, 199, 0.14) !important;
-}
-
-
 
 /* 2.4 字号层级跃迁 (32 -> 20 -> 15 -> 13.5 -> 12 -> 11) */
 .stat-num {
@@ -2827,7 +2813,7 @@ body.light-theme tbody tr:hover {
   border-bottom: none !important;
 }
 
-/* 按钮微调: 弱化普通边框，增加顶部高光 */
+/* 按钮微调: 弱化普通边框，增加顶部高光 (多主题适配) */
 .btn-primary {
   background: var(--cyan) !important;
   color: #09090b !important;
@@ -2835,29 +2821,271 @@ body.light-theme tbody tr:hover {
   box-shadow: 0 12px 40px -16px rgba(34, 211, 238, 0.45) !important;
 }
 
+html[data-theme="light"] .btn-primary,
+body.light-theme .btn-primary {
+  color: #ffffff !important;
+  box-shadow: 0 8px 24px -6px rgba(14, 116, 144, 0.35) !important;
+}
+
 .btn-secondary,
 .btn-outline {
-  background: rgba(255, 255, 255, 0.03) !important;
-  color: var(--text-main) !important;
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05) !important;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-main);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
 }
+
+html[data-theme="light"] .btn-secondary,
+html[data-theme="light"] .btn-outline,
 body.light-theme .btn-secondary,
 body.light-theme .btn-outline {
-  background: rgba(0, 0, 0, 0.03) !important;
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.8) !important;
+  background: #ffffff !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-main) !important;
+  box-shadow: 0 1px 2px rgba(23, 23, 20, 0.04) !important;
 }
 
 .btn-secondary:hover,
 .btn-outline:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.065) !important;
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08), 0 4px 16px -4px rgba(34, 211, 238, 0.2) !important;
+  background: rgba(255, 255, 255, 0.065);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08), 0 4px 16px -4px rgba(34, 211, 238, 0.2);
   transform: translateY(-1px);
 }
 
+html[data-theme="light"] .btn-secondary:hover,
+html[data-theme="light"] .btn-outline:hover:not(:disabled),
+body.light-theme .btn-secondary:hover,
+body.light-theme .btn-outline:hover:not(:disabled) {
+  background: #ffffff !important;
+  border-color: var(--border-hover) !important;
+  color: var(--cyan) !important;
+  box-shadow: 0 4px 14px -2px rgba(14, 116, 144, 0.16) !important;
+}
 
 /* 下拉菜单 Option 兜底深色主题，彻底杜绝白底白字 */
 .form-select option {
   background-color: #12131a !important;
   color: #f1f5f9 !important;
   padding: 10px 14px;
+}
+
+
+/* ==========================================================================
+   2026 Studio Light Theme Refinements (T4 & T5)
+   Warm Neutral Paper-Feel / High Contrast / Scoped Optical Precision
+   ========================================================================== */
+
+/* 3.3 噪点强度减半 */
+html[data-theme="light"] body::before,
+body.light-theme::before {
+  opacity: 0.011 !important;
+}
+
+/* 3.4 光斑卡片大幅减弱 (浅底避免污渍感) */
+html[data-theme="light"] .fx-spot::after,
+body.light-theme .fx-spot::after {
+  background: radial-gradient(
+    360px circle at var(--fx-x, 50%) var(--fx-y, 0%),
+    rgba(14, 116, 144, 0.055),
+    rgba(14, 116, 144, 0.018) 34%,
+    transparent 64%
+  ) !important;
+}
+
+/* 3.5 环境光强度减到 45% */
+html[data-theme="light"] body::after,
+body.light-theme::after {
+  background:
+    radial-gradient(900px 420px at 12% -12%, rgba(14, 116, 144, 0.055), transparent 62%),
+    radial-gradient(760px 380px at 88% -8%, rgba(79, 70, 229, 0.035), transparent 62%) !important;
+}
+
+/* 3.6 焦点环：暗色发光，浅色实描边 */
+html[data-theme="light"] :focus-visible,
+body.light-theme :focus-visible {
+  outline: 2px solid #0E7490 !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+
+/* 3.7 滚动条：浅色下深灰 */
+html[data-theme="light"] ::-webkit-scrollbar,
+body.light-theme ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+html[data-theme="light"] ::-webkit-scrollbar-thumb,
+body.light-theme ::-webkit-scrollbar-thumb {
+  background: rgba(23, 23, 20, 0.20) !important;
+  border-radius: 99px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+html[data-theme="light"] ::-webkit-scrollbar-thumb:hover,
+body.light-theme ::-webkit-scrollbar-thumb:hover {
+  background: rgba(23, 23, 20, 0.32) !important;
+}
+
+/* 浅色结构化表单输入框 */
+html[data-theme="light"] .form-input,
+body.light-theme .form-input,
+html[data-theme="light"] .search-box input,
+body.light-theme .search-box input {
+  background: #FFFFFF !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-main) !important;
+  box-shadow: 0 1px 2px rgba(23, 23, 20, 0.04) !important;
+}
+html[data-theme="light"] .form-input:focus,
+body.light-theme .form-input:focus,
+html[data-theme="light"] .search-box input:focus,
+body.light-theme .search-box input:focus {
+  border-color: var(--border-focus) !important;
+  box-shadow: 0 0 0 3px var(--cyan-glow) !important;
+}
+
+/* 浅色弹窗浮层 */
+html[data-theme="light"] .modal-card,
+body.light-theme .modal-card {
+  background: #FFFFFF !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-float) !important;
+}
+html[data-theme="light"] .modal-header,
+body.light-theme .modal-header {
+  border-bottom: 1px solid var(--border-color) !important;
+}
+html[data-theme="light"] .modal-footer,
+body.light-theme .modal-footer {
+  border-top: 1px solid var(--border-color) !important;
+}
+
+/* 浅色顶栏与品牌 */
+html[data-theme="light"] .brand-title,
+body.light-theme .brand-title {
+  color: var(--text-main) !important;
+  -webkit-text-fill-color: var(--text-main) !important;
+}
+
+/* 浅色任务卡片微装饰 */
+html[data-theme="light"] .task-card::before,
+body.light-theme .task-card::before {
+  background: var(--cyan) !important;
+  opacity: 0.22 !important;
+}
+
+/* 浅色筛选按钮高亮状态 */
+html[data-theme="light"] .filter-btn:hover,
+body.light-theme .filter-btn:hover {
+  background: rgba(23, 23, 20, 0.05) !important;
+}
+html[data-theme="light"] .filter-btn.active,
+body.light-theme .filter-btn.active {
+  background: #17171A !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(23, 23, 20, 0.18) !important;
+}
+
+/* 浅色徽章与标签高对比版本 (T5 补偿) */
+html[data-theme="light"] .tag-badge,
+body.light-theme .tag-badge {
+  background: var(--neutral-pill) !important;
+  color: var(--text-muted) !important;
+}
+html[data-theme="light"] .tag-formal,
+body.light-theme .tag-formal {
+  background: rgba(14, 116, 144, 0.08) !important;
+  border: 1px solid rgba(14, 116, 144, 0.25) !important;
+  color: #0E7490 !important;
+}
+html[data-theme="light"] .tag-legacy,
+body.light-theme .tag-legacy {
+  background: rgba(180, 83, 9, 0.08) !important;
+  border: 1px solid rgba(180, 83, 9, 0.25) !important;
+  color: #B45309 !important;
+}
+html[data-theme="light"] .tag-lang-ko,
+body.light-theme .tag-lang-ko {
+  background: rgba(124, 58, 237, 0.08) !important;
+  border: 1px solid rgba(124, 58, 237, 0.25) !important;
+  color: #7C3AED !important;
+}
+html[data-theme="light"] .tag-lang-ja,
+body.light-theme .tag-lang-ja {
+  background: rgba(190, 18, 60, 0.08) !important;
+  border: 1px solid rgba(190, 18, 60, 0.25) !important;
+  color: #BE123C !important;
+}
+html[data-theme="light"] .tag-debug,
+body.light-theme .tag-debug {
+  background: rgba(190, 18, 60, 0.08) !important;
+  border: 1px solid rgba(190, 18, 60, 0.25) !important;
+  color: #BE123C !important;
+}
+html[data-theme="light"] .tag-mode,
+body.light-theme .tag-mode {
+  background: rgba(23, 23, 20, 0.05) !important;
+  border: 1px solid rgba(23, 23, 20, 0.12) !important;
+  color: #5A5A62 !important;
+}
+
+/* 浅色表格与粘性表头 */
+html[data-theme="light"] .subtitles-table th,
+body.light-theme .subtitles-table th,
+html[data-theme="light"] .editor-subtitles-table th,
+body.light-theme .editor-subtitles-table th {
+  background-color: #F0F0EE !important;
+  color: var(--text-muted) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+html[data-theme="light"] .subtitles-table tr.selected-row td,
+body.light-theme .subtitles-table tr.selected-row td,
+html[data-theme="light"] .editor-subtitles-table tr.selected-row td,
+body.light-theme .editor-subtitles-table tr.selected-row td {
+  background-color: rgba(14, 116, 144, 0.08) !important;
+}
+
+/* Active Theory 动效光标浅色适配 (低饱和优雅色) */
+html[data-theme="light"] .at-cursor-ring,
+body.light-theme .at-cursor-ring {
+  border-color: rgba(14, 116, 144, 0.45);
+}
+html[data-theme="light"] .at-cursor-ring.hover,
+body.light-theme .at-cursor-ring.hover {
+  border-color: #0E7490;
+  background-color: rgba(14, 116, 144, 0.10);
+}
+html[data-theme="light"] .at-cursor-dot,
+body.light-theme .at-cursor-dot {
+  background: #0E7490;
+}
+html[data-theme="light"] .at-telemetry-hud,
+body.light-theme .at-telemetry-hud {
+  background: rgba(23, 23, 20, 0.04);
+  border: 1px solid rgba(23, 23, 20, 0.08);
+  color: var(--text-muted);
+}
+html[data-theme="light"] .hud-tag,
+body.light-theme .hud-tag {
+  color: var(--cyan);
+}
+html[data-theme="light"] .at-reticle-corner,
+body.light-theme .at-reticle-corner {
+  display: none !important;
+}
+html[data-theme="light"] .at-launchpad-badge,
+body.light-theme .at-launchpad-badge {
+  color: var(--cyan) !important;
+  background: var(--cyan-glow) !important;
+  border: none !important;
+}
+html[data-theme="light"] .at-launchpad-btn,
+body.light-theme .at-launchpad-btn {
+  background: #17171A !important;
+  color: #FFFFFF !important;
+}
+html[data-theme="light"] .at-launchpad-btn:hover,
+body.light-theme .at-launchpad-btn:hover {
+  background: var(--cyan) !important;
+  color: #FFFFFF !important;
 }

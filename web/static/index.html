@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+  <script>
+    (function () {
+      try {
+        var s = localStorage.getItem("aas-theme") || localStorage.getItem("aas_theme");
+        var d = false;
+        if (s === "dark") d = true;
+        else if (s === "light") d = false;
+        else if (s === "auto" && window.matchMedia) d = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var t = d ? "dark" : "light";
+        document.documentElement.dataset.theme = t;
+      } catch (e) {
+        document.documentElement.dataset.theme = "light";
+      }
+    })();
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AnimeAutoSub WebUI</title>
@@ -10,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
-<body class="dark-theme">
+<body class="light-theme">
   <!-- 赛博朋克粒子流动背景 (原生内联样式确保绝不脱离视图/绝不产生推挤) -->
   <canvas id="cyberCanvas" class="cyber-canvas" style="display: none !important;"></canvas>
 
@@ -59,7 +74,7 @@
       </button>
 
       <button class="btn btn-secondary btn-sm" id="btnThemeToggle" title="切换亮色/暗色主题">
-        <span id="themeIcon">☀️</span>
+        <span id="themeIcon">🌙</span>
       </button>
 
       <button class="btn btn-secondary btn-sm" id="btnSettings" title="系统设置与只读环境信息">
@@ -508,6 +523,19 @@
           <div class="settings-card-body">
             <div class="setting-row">
               <div class="setting-info">
+                <div class="setting-name">界面主题风格</div>
+                <div class="setting-desc">切换工作区视觉外观。支持 2026 Studio 纸感浅色、Spatial 暗场深色或跟随系统自动调度。</div>
+              </div>
+              <div class="setting-control">
+                <select id="selectThemeMode" class="form-select" style="min-width: 150px;">
+                  <option value="light">Studio 浅色 (Light)</option>
+                  <option value="dark">Spatial 暗色 (Dark)</option>
+                  <option value="auto">跟随系统 (System Auto)</option>
+                </select>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
                 <div class="setting-name">显示调试任务 (test_*)</div>
                 <div class="setting-desc">开启后将在任务列表中展示以 test_ 开头的自动化测试产物。默认隐藏以保持工作区整洁。</div>
               </div>
@@ -851,6 +879,7 @@
     </div>
   </div>
 
+  <script type="module" src="theme.js?v=20261107_studio"></script>
   <script type="module" src="ui-fx.js?v=20261106_modern"></script>
   <script type="module" src="app.js?v=20261104_activetheory_v4"></script>
 </body>
